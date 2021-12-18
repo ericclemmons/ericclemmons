@@ -22,11 +22,10 @@ Feature request? Check the past discussions to see if it has been brough up prev
 - [Demo Blog](https://tailwind-nextjs-starter-blog.vercel.app/) - this repo
 - [My personal blog](https://www.timlrx.com) - modified to auto-generate blog posts with dates
 - [Aloisdg's cookbook](https://tambouille.vercel.app/) - with pictures and recipes!
-- [GautierArcin's demo with next translate](https://tailwind-nextjs-starter-blog-seven.vercel.app/) - includes translation of mdx posts, [source code](https://github.com/GautierArcin/tailwind-nextjs-starter-blog/tree/demo/next-translate)
+- [GauthierArcin's demo with next translate](https://tailwind-nextjs-starter-blog-seven.vercel.app/) - includes translation of mdx posts, [source code](https://github.com/GautierArcin/tailwind-nextjs-starter-blog/tree/demo/next-translate)
 - [David Levai's digital garden](https://davidlevai.com/) - customized design and added email subscriptions
 - [Thinh's Corner](https://thinhcorner.com/) - [customized layout](https://github.com/Th1nhNg0/th1nhng0.vercel.app/blob/5e73a420828d82f01e7147512a2c3273c4ec19f8/layouts/PostLayout.js) with sticky side table of contents
 - [Leo's Blog](https://leohuynh.dev) - Tuan Anh Huynh's personal site. Add Snippets Page, Author Profile Card, Image Lightbox, ...
-- [thvu.dev](https://thvu.dev) - Added `mdx-embed`, view count, reading minutes and more.
 
 Using the template? Feel free to create a PR and add your blog to this list.
 
@@ -38,16 +37,15 @@ I wanted it to be nearly as feature-rich as popular blogging templates like [bea
 
 ## Features
 
-- Easy styling customization with [Tailwind 3.0](https://tailwindcss.com/blog/tailwindcss-v3) and primary color attribute
+- Easy styling customization with [Tailwind 2.0](https://blog.tailwindcss.com/tailwindcss-v2) and primary color attribute
 - Near perfect lighthouse score - [Lighthouse report](https://www.webpagetest.org/result/210111_DiC1_08f3670c3430bf4a9b76fc3b927716c5/)
-- Lightweight, 45kB first load JS, uses Preact in production build
+- Lightweight, 39kB first load JS, uses Preact in production build
 - Mobile-friendly view
 - Light and dark theme
 - Supports [plausible](https://plausible.io/), [simple analytics](https://simpleanalytics.com/) and google analytics
 - [MDX - write JSX in markdown documents!](https://mdxjs.com/)
 - Server-side syntax highlighting with line numbers and line highlighting via [rehype-prism-plus](https://github.com/timlrx/rehype-prism-plus)
 - Math display supported via [KaTeX](https://katex.org/)
-- Citation and biliography support via [rehype-citation](https://github.com/timlrx/rehype-citation)
 - Automatic image optimization via [next/image](https://nextjs.org/docs/basic-features/image-optimization)
 - Flexible data retrieval with [mdx-bundler](https://github.com/kentcdodds/mdx-bundler)
 - Support for tags - each unique tag will be its own page
@@ -55,7 +53,7 @@ I wanted it to be nearly as feature-rich as popular blogging templates like [bea
 - Blog templates
 - TOC component
 - Support for nested routing of blog posts
-- Newsletter component with support for mailchimp, buttondown, convertkit and klaviyo
+- Newsletter component with support for mailchimp, buttondown and convertkit
 - Supports [giscus](https://github.com/laymonage/giscus), [utterances](https://github.com/utterance/utterances) or disqus
 - Projects page
 - SEO friendly with RSS feed, sitemaps and more!
@@ -71,18 +69,7 @@ I wanted it to be nearly as feature-rich as popular blogging templates like [bea
 
 ## Quick Start Guide
 
-1. JS (official support)
-
-```bash
-npx degit https://github.com/timlrx/tailwind-nextjs-starter-blog.git
-```
-
-    or TS (community support)
-
-```bash
-npx degit timlrx/tailwind-nextjs-starter-blog#typescript
-```
-
+1. JS (official support) - `npx degit https://github.com/timlrx/tailwind-nextjs-starter-blog.git` or TS (community support) - `npx degit timlrx/tailwind-nextjs-starter-blog#typescript`
 2. Personalize `siteMetadata.js` (site related information)
 3. Personalize `authors/default.md` (main author)
 4. Modify `projectsData.js`
@@ -96,11 +83,7 @@ First, run the development server:
 
 ```bash
 npm start
-```
-
-    or
-
-```bash
+# or
 npm run dev
 ```
 

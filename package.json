@@ -44,6 +44,10 @@
   "devDependencies": {
     "@next/bundle-analyzer": "12.0.7",
     "@svgr/webpack": "^6.1.2",
+    "@types/react": "^17.0.14",
+    "@types/tailwindcss": "^2.2.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
     "cross-env": "^7.0.3",
     "dedent": "^0.7.0",
     "eslint": "^7.29.0",
@@ -56,9 +60,10 @@
     "inquirer": "^8.1.1",
     "lint-staged": "^11.0.0",
     "next-remote-watch": "^1.0.0",
-    "prettier": "2.2.1",
     "socket.io": "^4.1.3",
-    "socket.io-client": "^4.1.3"
+    "socket.io-client": "^4.1.3",
+    "prettier": "2.2.1",
+    "typescript": "^4.3.5"
   },
   "lint-staged": {
     "*.+(js|jsx|ts|tsx)": [
