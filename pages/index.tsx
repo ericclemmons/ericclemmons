@@ -22,7 +22,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div
-          className="pt-6 pb-8 space-y-2 text-center md:space-y-5 bg-gradient-to-r from-gray-900 via-fuchsia-900 to-gray-900"
+          className="pt-6 pb-8 space-y-2 text-center shadow-inner md:space-y-5 bg-gradient-to-r from-slate-900 via-fuchsia-900 to-slate-900 dark:from-gray-900 dark:via-fuchsia-900 dark:to-gray-900"
           style={{
             position: 'relative',
             padding: '10%',
@@ -33,15 +33,17 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
             marginRight: '-50vw',
           }}
         >
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-white sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-300 to-white sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 drop-shadow-xl">
             &lt;
-            <span role="img" aria-label="waving hand" className="wave">
+            <span role="img" aria-label="waving hand" className="text-white wave">
               👋🏻
             </span>{' '}
             Hello, World! /&gt;
           </h1>
-          <p className="text-lg leading-7 text-gray-200">{siteMetadata.description}</p>
-          <div className="text-base font-medium leading-6">
+          <p className="text-lg leading-7 text-gray-200 drop-shadow-lg">
+            {siteMetadata.description}
+          </p>
+          <div className="text-base font-medium leading-6 drop-shadow-lg">
             <Link href="/about" className="text-gray-400 hover:text-gray-200">
               More about me &rarr;
             </Link>
@@ -68,7 +70,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
                           <h2 className="text-2xl font-bold leading-8 tracking-tight">
                             <Link
                               href={`/blog/${slug}`}
-                              className="text-gray-900 dark:text-gray-100"
+                              className="text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-red-600"
                             >
                               {title}
                             </Link>

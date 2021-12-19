@@ -30,7 +30,9 @@ export default function AuthorLayout({ children, frontMatter }: Props) {
               height="192px"
               className="w-48 h-48 rounded-full"
             />
-            <h3 className="pt-4 pb-2 text-2xl font-bold leading-8 tracking-tight">{name}</h3>
+            <h3 className="pt-4 pb-2 text-2xl font-bold leading-8 tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-red-600">
+              {name}
+            </h3>
             <div className="text-gray-500 dark:text-gray-400">{occupation}</div>
             <div className="text-gray-500 dark:text-gray-400">{company}</div>
             <div className="flex pt-6 space-x-3">

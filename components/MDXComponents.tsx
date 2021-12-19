@@ -14,6 +14,14 @@ const Wrapper: React.ComponentType<{ layout: string }> = ({ layout, ...rest }) =
 }
 
 export const MDXComponents: ComponentMap = {
+  h2(props) {
+    return (
+      <h2
+        className="text-transparent bg-clip-text bg-gradient-to-br from-pink-400 to-red-600"
+        {...props}
+      />
+    )
+  },
   Image,
   CodeSandbox,
   Gist,
