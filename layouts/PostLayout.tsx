@@ -59,10 +59,10 @@ export default function PostLayout({ frontMatter, authorDetails, next, prev, chi
                 <PageTitle>{title}</PageTitle>
               </div>
               {process.env.NODE_ENV === 'development' && (
-                <div className="prose">
+                <p>
                   ✏️&nbsp;
                   <Link href={`vscode-insiders://file/${mdxPath}`}>{'Edit in VS Code'}</Link>
-                </div>
+                </p>
               )}
             </div>
           </header>
