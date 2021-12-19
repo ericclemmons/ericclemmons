@@ -27,3 +27,22 @@ input:-webkit-autofill:focus {
     margin-right: -50vw;
   }
 }
+
+/* Newlines in blockquotes exist for a reason */
+.prose blockquote p {
+  white-space: pre-line;
+}
+
+/* Make horizontal rules look like Medium's – https://medium.com/@ericclemmons/javascript-fatigue-48d4011b6fc4 */
+.prose hr::before {
+  content: '• • •';
+  @apply text-xs tracking-[1em];
+}
+.prose hr {
+  @apply h-auto text-center border-t-0 text-fuchsia-500;
+}
+
+/* Make bold blockquotes look like callouts */
+.prose blockquote > p:only-child > strong:only-child {
+  @apply text-2xl not-italic font-normal text-gray-500;
+}
