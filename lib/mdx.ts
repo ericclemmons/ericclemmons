@@ -31,7 +31,7 @@ export function getFiles(type: 'blog' | 'authors') {
 }
 
 export function formatSlug(slug: string) {
-  return slug.replace(/\.(mdx|md)/, '')
+  return slug.replace(/\.(mdx|md)/, '').replace(/\/index$/, '')
 }
 
 export function dateSortDesc(a: string, b: string) {
@@ -41,8 +41,8 @@ export function dateSortDesc(a: string, b: string) {
 }
 
 export async function getFileBySlug<T>(type: 'authors' | 'blog', slug: string | string[]) {
-  const mdxPath = path.join(root, 'data', type, `${slug}.mdx`)
-  const mdPath = path.join(root, 'data', type, `${slug}.md`)
+  const mdxPath = path.join(root, 'data', type, `${slug}/index.mdx`)
+  const mdPath = path.join(root, 'data', type, `${slug}/index.md`)
   const source = fs.existsSync(mdxPath)
     ? fs.readFileSync(mdxPath, 'utf8')
     : fs.readFileSync(mdPath, 'utf8')
