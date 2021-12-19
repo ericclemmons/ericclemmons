@@ -1,4 +1,5 @@
 /* eslint-disable react/display-name */
+import { CodeSandbox, Tweet, YouTube } from 'mdx-embed'
 import React, { useMemo } from 'react'
 import { ComponentMap, getMDXComponent } from 'mdx-bundler/client'
 import Image from './Image'
@@ -14,6 +15,11 @@ const Wrapper: React.ComponentType<{ layout: string }> = ({ layout, ...rest }) =
 
 export const MDXComponents: ComponentMap = {
   Image,
+  CodeSandbox,
+  Tweet(props) {
+    return <Tweet align="center" hideConversation={true} theme="dark" {...props} />
+  },
+  YouTube,
   //@ts-ignore
   TOCInline,
   a: CustomLink,
