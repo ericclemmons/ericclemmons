@@ -1,0 +1,126 @@
+---
+title: Filesystem Routers & Indexes
+date: 2019-06-19
+---
+
+<blockquote className="twitter-tweet"><p lang="en" dir="ltr">Beauty turned filesystem structure<a href="https://t.co/7iNIAyq4DU">https://t.co/7iNIAyq4DU</a> <a href="https://t.co/6U7003KvCZ">pic.twitter.com/6U7003KvCZ</a></p>&mdash; Guillermo ▲ (@rauchg) <a href="https://twitter.com/rauchg/status/1141158790580133888?ref_src=twsrc%5Etfw">June 19, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charSet="utf-8"></script>
+
+Soon, [Next.js will support FS-based routes](https://github.com/zeit/next.js), like
+[Sapper](https://sapper.svelte.dev/docs#Pages),
+[Nuxt.js](https://nuxtjs.org/guide/routing#dynamic-routes),
+and my own [polydev](https://github.com/ericclemmons/polydev/#defining-routes)
+and [mdx-site](https://github.com/ericclemmons/mdx-site/#authoring).
+
+But, there's one design decision I've made that differs from the rest:
+**all routes are `index`-based**.
+
+---
+
+A lot of engineers work **from the bottom up**.
+
+> "I'll connect to the DB, query for the data I need, expose it as an API, then wire it up to the HTML."
+
+But, I've found it more intuitive to work **from the user down**.
+(Because, ultimately, the implementation details don't matter).
+
+> "I'll create `/some/url`, hit an API, then return a query from the DB".
+
+### Maybe we can call this approach **`404`-driven-development**.
+
+Since [Cool URIs don't change](https://www.w3.org/Provider/Style/URI),
+designing URL structure _is_ good design.
+
+## The Filesystem _Looks_ Like a URL
+
+Even when I `git clone` a project, **I have a habit of making the filesystem look like a URL**.
+
+For example, my `~/Projects` directory looks like my [GitHub repos](https://github.com/ericclemmons?tab=repositories&type=source):
+
+```shell
+$ tree -L2
+.
+├── ericclemmons
+│   ├── mdx-site
+│   ├── medium-to-markdown
+│   ├── node-recorder
+│   ├── polydev
+│   └── ...
+├── webpack-contrib
+│   └── npm-install-webpack-plugin
+└── zeit
+    └── next.js
+```
+
+So it makes sense that projects like [UmiJS](https://umijs.org/guide/router.html#conventional-routing)
+would find a way to map `/users/:id` to the filesystem:
+
+```
++ pages/
+  + $post/
+    - index.js
+    - comments.js
+  + users/
+    $id.js
+  - index.js
+```
+
+In my projects, however, **I whitelist `index.*` files** for route creation.
+
+## Why Indexes Matter
+
+For a small project, this seems fine:
+
+```
+pages/
+  index.js
+  about.js
+  contact-us.js
+```
+
+But, as complexity grows, you'll find yourself with an _underscore smell_:
+
+```
+pages/
+  _app.js
+  _document.js
+  _layout.js
+  _fetchFromDB.js
+  ...
+  index.js
+  about.js
+  contact-us.js
+```
+
+Because every file under `pages/` _automatically becomes a page_,
+we have to find ways to get these files _blacklisted_.
+
+### When designing URL structure upfront, a whitelist allows our app to grow without side-effects.
+
+For comparison, my suggested structure is:
+
+```
+pages/
+  index.js
+  about/
+    index.js
+  contact-us/
+    index.js
+```
+
+## Benefits to Index-based Routes
+
+- Statically compiling `about/index.js` to `about/index.html` is well-suppored by many static servers at the URL `/about`.
+
+- Dependencies of `index.js` can be called whatever you'd like, without accidentally generating new pages for each file.
+
+- Customizing the extension allows for more functionality in the future:
+
+  - `post/:id/index.GET.js` could return `/post/123`.
+
+  - `post/:id/index.POST.js` could handle updating `/post/123`'s content.
+
+  - `post/:id/index.*.js` could be a fallback for `/post/123/*` & show a custom `404` page.
+
+Of course, what people choose for denoting parameters (e.g. `:`, `[]`, `$`)
+has to be a [valid filename](https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words),
+but the most important goal is to **provide an quick, intuitive path from the URL in the browser to the file serving it**.
