@@ -132,6 +132,7 @@ export async function getAllFilesFrontMatter(folder: 'blog') {
       ('draft' in frontmatter && frontmatter.draft === false)
     ) {
       allFrontMatter.push({
+        tags: [],
         ...frontmatter,
         slug: formatSlug(fileName),
         date: frontmatter.date ? new Date(frontmatter.date).toISOString() : null,
