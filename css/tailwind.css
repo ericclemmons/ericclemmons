@@ -82,3 +82,7 @@ input:-webkit-autofill:focus {
     transform: rotate(0deg);
   }
 }
+
+a {
+  @apply transition duration-75 ease-out;
+}

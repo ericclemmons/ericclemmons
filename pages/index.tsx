@@ -22,7 +22,7 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div
-          className="pt-6 pb-8 space-y-2 text-center md:space-y-5 bg-gradient-to-tl from-orange-400 to-rose-400"
+          className="pt-6 pb-8 space-y-2 text-center md:space-y-5 bg-gradient-to-r from-gray-900 via-fuchsia-900 to-gray-900"
           style={{
             position: 'relative',
             padding: '10%',
@@ -33,19 +33,16 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
             marginRight: '-50vw',
           }}
         >
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-white sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
             &lt;
             <span role="img" aria-label="waving hand" className="wave">
               👋🏻
             </span>{' '}
             Hello, World! /&gt;
           </h1>
-          <p className="text-lg leading-7 text-gray-700">{siteMetadata.description}</p>
+          <p className="text-lg leading-7 text-gray-200">{siteMetadata.description}</p>
           <div className="text-base font-medium leading-6">
-            <Link
-              href="/about"
-              className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
-            >
+            <Link href="/about" className="text-gray-400 hover:text-gray-200">
               More about me &rarr;
             </Link>
           </div>
