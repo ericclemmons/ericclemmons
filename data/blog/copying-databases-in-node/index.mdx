@@ -1,11 +1,8 @@
 ---
 date: 2014-04-11
-layout: post
-title: Copying Databases in Node
-categories: [node]
+summary: Tips for programmatically migrating data using Node.
 tags: [node, mysql, knex]
-image:
-  feature: node/copyRows.png
+title: Copying Databases in Node
 ---
 
 Yes, there are tons of great, StackOverflow-accepted ways to copy giant databases betweens servers. _But_, sometimes you have a special need for a project that requires selectively copying subsets of data instead of an _entire_ 15GB database.
@@ -81,24 +78,24 @@ var getStats = function(table) {
 Now that we have a lot of `stats` based around a _25Mb_ memory limit, now we can copy the table:
 
 ```js
-var copyTable = function(table) {
-  return getTableStats(table).then(function(stats) {
+var copyTable = function (table) {
+  return getTableStats(table).then(function (stats) {
     // Empty array to make it easy to iterate for insertion group
-    var iterations = new Array(Math.ceil(stats.totalRows / stats.rowLimit));
+    var iterations = new Array(Math.ceil(stats.totalRows / stats.rowLimit))
 
     // Promise.reduce ensures iterations are done sequentially, whereas
     // Promise.all/map runs in parallel
     return Promise.reduce(
       iterations,
-      function(previous, iteration, i) {
-        var rowOffset = stats.rowLimit * i;
+      function (previous, iteration, i) {
+        var rowOffset = stats.rowLimit * i
 
-        return copyRows(table, rowOffset, stats.rowLimit, stats.totalRows);
+        return copyRows(table, rowOffset, stats.rowLimit, stats.totalRows)
       },
       []
-    );
-  });
-};
+    )
+  })
+}
 ```
 
 #### 4. Copy individual rows
@@ -106,40 +103,40 @@ var copyTable = function(table) {
 All that our `copyTable` function is missing is `copyRows`:
 
 ```js
-var copyRows = function(table, offset, limit, total) {
+var copyRows = function (table, offset, limit, total) {
   return remote(table)
-    .select("*")
+    .select('*')
     .offset(offset)
     .limit(limit)
-    .then(function(rows) {
+    .then(function (rows) {
       // "[DATABASE] Inserting records N-M of O into TABLE"
       var msg = [
-        "[" + chalk.yellow(local.client.connectionSettings.database) + "]",
-        "Inserting records",
-        chalk.green(offset + 1) + "-" + chalk.green(offset + rows.length),
-        "of",
+        '[' + chalk.yellow(local.client.connectionSettings.database) + ']',
+        'Inserting records',
+        chalk.green(offset + 1) + '-' + chalk.green(offset + rows.length),
+        'of',
         chalk.green(total),
-        "into",
+        'into',
         chalk.yellow(table),
-        "[:bar] :percent :etas"
-      ].join(" ");
+        '[:bar] :percent :etas',
+      ].join(' ')
 
       var bar = new Progress(msg, {
         total: rows.length,
-        width: 20
-      });
+        width: 20,
+      })
 
       // Insert each record individually because it's actually faster (!?)
       // and gives us a pretty progress bar.
-      return Promise.map(rows, function(row) {
+      return Promise.map(rows, function (row) {
         return local(table)
           .insert(row)
-          .then(function() {
-            bar.tick();
-          });
-      });
-    });
-};
+          .then(function () {
+            bar.tick()
+          })
+      })
+    })
+}
 ```
 
 #### 5. Finish
@@ -147,16 +144,16 @@ var copyRows = function(table, offset, limit, total) {
 Finally, kick off the whole promise chain:
 
 ```js
-copyTable("something_huge").then(
-  function() {
-    console.log("Success!");
-    process.exit(0);
+copyTable('something_huge').then(
+  function () {
+    console.log('Success!')
+    process.exit(0)
   },
-  function(err) {
-    console.error(err);
-    process.exit(1);
+  function (err) {
+    console.error(err)
+    process.exit(1)
   }
-);
+)
 ```
 
 ![demo](/images/node/sql.gif)

@@ -1,9 +1,8 @@
 ---
-layout: post
 date: 2014-12-07
+tags: [angularjs]
+summary: Sometimes content needs to live dangerously.
 title: Angular Trust Filter
-categories: [angular]
-tags: [angular, filter]
 ---
 
 It seems every Angular project I write, at some point, sees the error:
@@ -57,15 +56,15 @@ response['title'] = $sce.trustAsHtml(response['title']);
 Instead, **create a `trust` filter.**
 
 ```js
-angular.module("example", []).filter("trust", [
-  "$sce",
-  function($sce) {
-    return function(value, type) {
+angular.module('example', []).filter('trust', [
+  '$sce',
+  function ($sce) {
+    return function (value, type) {
       // Defaults to treating trusted text as `html`
-      return $sce.trustAs(type || "html", text);
-    };
-  }
-]);
+      return $sce.trustAs(type || 'html', text)
+    }
+  },
+])
 ```
 
 Now your view an simply read:

@@ -1,9 +1,8 @@
 ---
 date: 2014-01-04
-layout: post
-title: Using HTML5, Not Hash Routes
-categories: [angular]
+summary: Creating a SPA router with AngularJS
 tags: [angular, html5, javascript]
+title: Using HTML5, Not Hash Routes
 ---
 
 By default AngularJS' [`$locationProvider`][1] defaults to URLs like:
@@ -30,32 +29,30 @@ for, say, an `ng-include` or `templateUrl`.
 
 ```js
 // client/app.js
-angular.module("app", []).config([
-  "$httpProvider",
-  function($httpProvider) {
+angular.module('app', []).config([
+  '$httpProvider',
+  function ($httpProvider) {
     // Expose XHR requests to server
-    $httpProvider.defaults.headers.common["X-Requested-With"] =
-      "XMLHttpRequest";
-  }
-]);
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
+  },
+])
 ```
 
 ### Step 2: Enable HTML5 Routing
 
 ```js
 // client/app.js
-angular.module("app", []).config([
-  "$httpProvider",
-  "$locationProvider",
-  function($httpProvider, $locationProvider) {
+angular.module('app', []).config([
+  '$httpProvider',
+  '$locationProvider',
+  function ($httpProvider, $locationProvider) {
     // Expose XHR requests to server
-    $httpProvider.defaults.headers.common["X-Requested-With"] =
-      "XMLHttpRequest";
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
     // This is `false` by default
-    $locationProvider.html5Mode(true);
-  }
-]);
+    $locationProvider.html5Mode(true)
+  },
+])
 ```
 
 ### Step 3: Create a Wildcard Route
@@ -67,15 +64,15 @@ client-side page, AngularJS to handle.
 
 ```js
 // server/app.js
-app.get("/*", function(req, res) {
+app.get('/*', function (req, res) {
   // AJAX requests are aren't expected to be redirected to the AngularJS app
   if (req.xhr) {
-    return res.status(404).send(req.url + " not found");
+    return res.status(404).send(req.url + ' not found')
   }
 
   // `sendfile` requires the safe, resolved path to your AngularJS app
-  res.sendfile(path.resolve(__dirname + "/path/to/index.html"));
-});
+  res.sendfile(path.resolve(__dirname + '/path/to/index.html'))
+})
 ```
 
 The important part is the check for `req.xhr`. If you didn't include this,

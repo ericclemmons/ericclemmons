@@ -1,9 +1,8 @@
 ---
 date: 2014-04-12
-layout: post
-title: Simple Node Cluster
-categories: [node]
+summary: Simple Node scaling using `cluster`
 tags: [node, cluster, express]
+title: Simple Node Cluster
 ---
 
 After much testing of our internal API, we made it available for several sites to use & got _terrible_ performance.
@@ -32,12 +31,12 @@ Implementation was _dead easy_.
 
 ```js
 // app/server.js
-var app = require("./app");
-var http = require("http");
+var app = require('./app')
+var http = require('http')
 
-http.createServer(app).listen(app.get("port"), function() {
-  console.log("Express server listening on port " + app.get("port"));
-});
+http.createServer(app).listen(app.get('port'), function () {
+  console.log('Express server listening on port ' + app.get('port'))
+})
 ```
 
 For development, we will run `node app/server`:
@@ -52,23 +51,23 @@ Express server listening on port 3000
 ```js
 // app/cluster.js
 
-var cluster = require("cluster");
+var cluster = require('cluster')
 
 if (cluster.isMaster) {
   // Count the machine's CPUs
-  var cpuCount = require("os").cpus().length;
+  var cpuCount = require('os').cpus().length
 
   // Create a worker for each CPU
   for (var i = 0; i < cpuCount; i += 1) {
-    cluster.fork();
+    cluster.fork()
   }
 
   // Listen for dying workers & start 'em back up!
-  cluster.on("exit", function() {
-    cluster.fork();
-  });
+  cluster.on('exit', function () {
+    cluster.fork()
+  })
 } else {
-  require("./server");
+  require('./server')
 }
 ```
 
