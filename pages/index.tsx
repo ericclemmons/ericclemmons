@@ -21,14 +21,36 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
     <>
       <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="pt-6 pb-8 space-y-2 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            Latest
+        <div
+          className="pt-6 pb-8 space-y-2 text-center md:space-y-5 bg-gradient-to-tl from-orange-400 to-rose-400"
+          style={{
+            position: 'relative',
+            padding: '10%',
+            width: '100vw',
+            left: '50%',
+            right: '50%',
+            marginLeft: '-50vw',
+            marginRight: '-50vw',
+          }}
+        >
+          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
+            &lt;
+            <span role="img" aria-label="waving hand" className="wave">
+              👋🏻
+            </span>{' '}
+            Hello, World! /&gt;
           </h1>
-          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">
-            {siteMetadata.description}
-          </p>
+          <p className="text-lg leading-7 text-gray-700">{siteMetadata.description}</p>
+          <div className="text-base font-medium leading-6">
+            <Link
+              href="/about"
+              className="text-gray-500 hover:text-gray-600 dark:hover:text-gray-400"
+            >
+              More about me &rarr;
+            </Link>
+          </div>
         </div>
+
         <ul className="divide-y divide-gray-200 dark:divide-gray-700">
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((frontMatter) => {

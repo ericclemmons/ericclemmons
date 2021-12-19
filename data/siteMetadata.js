@@ -3,7 +3,7 @@ const siteMetadata = {
   author: 'Eric Clemmons',
   headerTitle: 'Eric Clemmons',
   description:
-    'Engineering leader specializing in autonomous, outcome-driven remote teams. Open-source JavaScript/Node.js developer focused on UX/DX.',
+    "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://ericclemmons.com',
