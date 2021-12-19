@@ -69,7 +69,8 @@ export default function Blog({
 
   return (
     <>
-      {'draft' in frontMatter && frontMatter.draft !== true ? (
+      {process.env.NODE_ENV === 'development' ||
+      ('draft' in frontMatter && frontMatter.draft === false) ? (
         <MDXLayoutRenderer
           layout={frontMatter.layout || DEFAULT_LAYOUT}
           toc={toc}
