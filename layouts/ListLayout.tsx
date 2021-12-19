@@ -31,6 +31,7 @@ export default function ListLayout({ posts, title, initialDisplayPosts = [], pag
           </h1>
           <div className="relative max-w-lg">
             <input
+              autoFocus
               aria-label="Search articles"
               type="text"
               onChange={(e) => setSearchValue(e.target.value)}
