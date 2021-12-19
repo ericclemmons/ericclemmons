@@ -1,16 +1,16 @@
 ---
-name: Tails Azimuth
-avatar: /static/images/avatar.png
-occupation: Professor of Atmospheric Science
-company: Stanford University
-email: address@yoursite.com
-twitter: https://twitter.com/Twitter
-linkedin: https://www.linkedin.com
-github: https://github.com
+name: Eric Clemmons
+avatar: /static/images/avatar.jpg
+occupation: Staff Frontend Engineer
+company: Stripe
+email: eric@smarterspam.com
+twitter: https://twitter.com/ericclemmons
+linkedin: https://www.linkedin.com/in/ericclemmons
+github: https://github.com/ericclemmons
 ---
 
-Tails Azimuth is a professor of atmospheric sciences at the Stanford AI Lab. His research interests includes complexity modelling of tailwinds, headwinds and crosswinds.
+Eric Clemmons is an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX/DX.
 
-He leads the clean energy group which develops 3D air pollution-climate models, writes differential equation solvers, and manufactures titanium plated air ballons. In his free time he bakes raspberry pi.
+His industry experience ranges from organic SEO lead-generation in online eudcation (HigherEducation.com), to cross-team mobile experiences (Starbucks), to leading new open-source UI teams (AWS Amplify).
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed neque elit, tristique placerat feugiat ac, facilisis vitae arcu. Proin eget egestas augue. Praesent ut sem nec arcu pellentesque aliquet. Duis dapibus diam vel metus tempus vulputate.
+In his free time, he cooks & plays music with his family in Austin, TX.
