@@ -32,7 +32,7 @@ interface Props {
 }
 
 export default function PostLayout({ frontMatter, authorDetails, next, prev, children }: Props) {
-  const { slug, fileName, date, title, tags } = frontMatter
+  const { mdxPath, slug, fileName, date, title, tags } = frontMatter
 
   return (
     <SectionContainer>
@@ -58,6 +58,12 @@ export default function PostLayout({ frontMatter, authorDetails, next, prev, chi
               <div>
                 <PageTitle>{title}</PageTitle>
               </div>
+              {process.env.NODE_ENV === 'development' && (
+                <div className="prose">
+                  ✏️&nbsp;
+                  <Link href={`vscode-insiders://file/${mdxPath}`}>{'Edit in VS Code'}</Link>
+                </div>
+              )}
             </div>
           </header>
           <div
