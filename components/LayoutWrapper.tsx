@@ -1,6 +1,6 @@
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
-import Logo from '@/data/logo.svg'
+import Image from 'next/image'
 import Link from './Link'
 import SectionContainer from './SectionContainer'
 import Footer from './Footer'
@@ -19,10 +19,16 @@ const LayoutWrapper = ({ children }: Props) => {
         <header className="flex items-center justify-between py-10">
           <div>
             <Link href="/" aria-label="Tailwind CSS Blog">
-              <div className="flex items-center justify-between">
-                <div className="mr-3">
-                  <Logo />
+              <div className="flex items-center justify-between relative top-[-0.25rem]">
+                <div className="relative top-[0.4em] mr-3">
+                  <Image
+                    className="rounded-full"
+                    src="/static/favicons/android-chrome-192x192.png"
+                    width="24"
+                    height="24"
+                  />
                 </div>
+
                 {typeof siteMetadata.headerTitle === 'string' ? (
                   <div className="hidden h-6 text-2xl font-semibold sm:block">
                     {siteMetadata.headerTitle}

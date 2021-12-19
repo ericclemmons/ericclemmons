@@ -8,7 +8,7 @@ const siteMetadata = {
   theme: 'system', // system, dark or light
   siteUrl: 'https://ericclemmons.com',
   siteRepo: 'https://github.com/ericclemmons/ericclemmons',
-  siteLogo: '/static/images/logo.png',
+  siteLogo: '/static/favicons/android-chrome-384x384.png',
   image: '/static/images/avatar.png',
   socialBanner: '/static/images/twitter-card.png',
   email: 'eric@smarterspam.com',
