@@ -22,6 +22,7 @@ const LayoutWrapper = ({ children }: Props) => {
               <div className="flex items-center justify-between relative top-[-0.25rem]">
                 <div className="relative top-[0.4em] mr-3">
                   <Image
+                    alt="Eric Clemmons avatar"
                     className="rounded-full"
                     src="/static/favicons/android-chrome-192x192.png"
                     width="24"

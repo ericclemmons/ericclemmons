@@ -57,7 +57,7 @@ const Giscus = ({ mapping }: Props) => {
     observer.observe(intersectionRef.current)
 
     return () => observer.disconnect()
-  }, [intersectionRef.current])
+  }, [LoadComments])
 
   // Reload on theme change
   useEffect(() => {

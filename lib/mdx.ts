@@ -5,7 +5,6 @@ import path from 'path'
 import readingTime from 'reading-time'
 import getAllFilesRecursively from './utils/files'
 import { PostFrontMatter } from 'types/PostFrontMatter'
-import { AuthorFrontMatter } from 'types/AuthorFrontMatter'
 import { Toc } from 'types/Toc'
 // Remark packages
 import remarkGfm from 'remark-gfm'
@@ -40,6 +39,7 @@ export function dateSortDesc(a: string, b: string) {
   return 0
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function getFileBySlug<T>(type: 'authors' | 'blog', slug: string | string[]) {
   const mdxPath = path.join(root, 'data', type, `${slug}/index.mdx`)
   const mdPath = path.join(root, 'data', type, `${slug}/index.md`)
