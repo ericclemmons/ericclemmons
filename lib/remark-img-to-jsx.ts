@@ -20,8 +20,10 @@ export default function remarkImgToJsx() {
       (node: Parent) => {
         const imageNode = node.children.find((n) => n.type === 'image') as ImageNode
 
+        // !! Next.js <Image> creates a bunch of inline `style` properties that *breaks* full-bleed styles
         // only local files
-        if (fs.existsSync(`${process.cwd()}/public${imageNode.url}`)) {
+        // eslint-disable-next-line no-constant-condition
+        if (false && fs.existsSync(`${process.cwd()}/public${imageNode.url}`)) {
           const dimensions = sizeOf(`${process.cwd()}/public${imageNode.url}`)
 
           // Convert original node to next/image
