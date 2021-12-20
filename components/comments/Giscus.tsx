@@ -9,6 +9,7 @@ interface Props {
 
 const Giscus = ({ mapping }: Props) => {
   const [enableLoadComments, setEnabledLoadComments] = useState(true)
+  const intersectionRef = React.useRef(null)
   const { theme, resolvedTheme } = useTheme()
   const commentsTheme =
     siteMetadata.comment.giscusConfig.themeURL === ''
@@ -43,6 +44,21 @@ const Giscus = ({ mapping }: Props) => {
     }
   }, [commentsTheme, mapping])
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      const { isIntersecting } = entry
+
+      if (isIntersecting) {
+        LoadComments()
+        observer.disconnect()
+      }
+    })
+
+    observer.observe(intersectionRef.current)
+
+    return () => observer.disconnect()
+  }, [intersectionRef.current])
+
   // Reload on theme change
   useEffect(() => {
     const iframe = document.querySelector('iframe.giscus-frame')
@@ -51,7 +67,7 @@ const Giscus = ({ mapping }: Props) => {
   }, [LoadComments])
 
   return (
-    <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300">
+    <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300" ref={intersectionRef}>
       {enableLoadComments && <button onClick={LoadComments}>Load Comments</button>}
       <div className="giscus" id={COMMENTS_ID} />
     </div>
