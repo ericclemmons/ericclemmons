@@ -128,10 +128,7 @@ export async function getAllFilesFrontMatter(folder: 'blog') {
     const source = fs.readFileSync(file, 'utf8')
     const matterFile = matter(source)
     const frontmatter = matterFile.data as PostFrontMatter
-    if (
-      process.env.NODE_ENV === 'development' ||
-      ('draft' in frontmatter && frontmatter.draft === false)
-    ) {
+    if (process.env.NODE_ENV === 'development' || frontmatter.draft !== true) {
       allFrontMatter.push({
         tags: [],
         ...frontmatter,
