@@ -6,7 +6,13 @@ const colors = require('tailwindcss/colors')
 
 /** @type {import("tailwindcss/tailwind-config").TailwindConfig } */
 module.exports = {
-  content: ['./pages/**/*.tsx', './components/**/*.tsx', './layouts/**/*.tsx', './lib/**/*.ts'],
+  content: [
+    './components/**/*.tsx',
+    './data/**/index.mdx',
+    './layouts/**/*.tsx',
+    './lib/**/*.ts',
+    './pages/**/*.tsx',
+  ],
   darkMode: 'class',
   theme: {
     extend: {
