@@ -10,16 +10,23 @@ import NewsletterForm from '@/components/NewsletterForm'
 
 const MAX_DISPLAY = 5
 
-export const getStaticProps: GetStaticProps<{ posts: PostFrontMatter[] }> = async () => {
+export const getStaticProps: GetStaticProps<{
+  posts: PostFrontMatter[]
+}> = async () => {
   const posts = await getAllFilesFrontMatter('blog')
 
   return { props: { posts } }
 }
 
-export default function Home({ posts }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Home({
+  posts,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <PageSEO title={siteMetadata.title} description={siteMetadata.description} />
+      <PageSEO
+        title={siteMetadata.title}
+        description={siteMetadata.description}
+      />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div
           className="pt-6 pb-8 space-y-2 text-center shadow-inner md:space-y-5 bg-gradient-to-r from-slate-900 via-fuchsia-900 to-slate-900 dark:from-gray-900 dark:via-fuchsia-900 dark:to-gray-900"
@@ -35,7 +42,11 @@ export default function Home({ posts }: InferGetStaticPropsType<typeof getStatic
         >
           <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-300 to-white sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 drop-shadow-xl">
             &lt;
-            <span role="img" aria-label="waving hand" className="text-white wave">
+            <span
+              role="img"
+              aria-label="waving hand"
+              className="text-white wave"
+            >
               👋🏻
             </span>{' '}
             Hello, World! /&gt;
