@@ -137,12 +137,6 @@ export async function getAllFilesFrontMatter(folder: 'blog') {
   files.forEach((file: string) => {
     // Replace is needed to work on Windows
     const fileName = file.slice(prefixPaths.length + 1).replace(/\\/g, '/')
-
-    // Only only pages end with `/index.mdx`
-    if (!file.endsWith('/index.mdx')) {
-      return
-    }
-
     const source = fs.readFileSync(file, 'utf8')
     const matterFile = matter(source)
     const frontmatter = matterFile.data as PostFrontMatter
