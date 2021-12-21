@@ -8,7 +8,10 @@ import TOCInline from './TOCInline'
 import Pre from './Pre'
 import { BlogNewsletterForm } from './NewsletterForm'
 
-const Wrapper: React.ComponentType<{ layout: string }> = ({ layout, ...rest }) => {
+const Wrapper: React.ComponentType<{ layout: string }> = ({
+  layout,
+  ...rest
+}) => {
   const Layout = require(`../layouts/${layout}`).default
   return <Layout {...rest} />
 }
@@ -27,7 +30,9 @@ export const MDXComponents: ComponentMap = {
   CodeSandbox,
   Gist,
   Tweet(props) {
-    return <Tweet align="center" hideConversation={true} theme="dark" {...props} />
+    return (
+      <Tweet align="center" hideConversation={true} theme="dark" {...props} />
+    )
   },
   YouTube,
   //@ts-ignore

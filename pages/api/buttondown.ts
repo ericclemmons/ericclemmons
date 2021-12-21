@@ -22,7 +22,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     })
 
     if (response.status >= 400) {
-      return res.status(500).json({ error: `There was an error subscribing to the list.` })
+      return res
+        .status(500)
+        .json({ error: `There was an error subscribing to the list.` })
     }
 
     return res.status(201).json({ error: '' })

@@ -16,9 +16,12 @@ export default function remarkImgToJsx() {
       tree,
       // only visit p tags that contain an img element
       (node: Parent): node is Parent =>
-        node.type === 'paragraph' && node.children.some((n) => n.type === 'image'),
+        node.type === 'paragraph' &&
+        node.children.some((n) => n.type === 'image'),
       (node: Parent) => {
-        const imageNode = node.children.find((n) => n.type === 'image') as ImageNode
+        const imageNode = node.children.find(
+          (n) => n.type === 'image'
+        ) as ImageNode
 
         // !! Next.js <Image> creates a bunch of inline `style` properties that *breaks* full-bleed styles
         // only local files
@@ -32,8 +35,16 @@ export default function remarkImgToJsx() {
             (imageNode.attributes = [
               { type: 'mdxJsxAttribute', name: 'alt', value: imageNode.alt },
               { type: 'mdxJsxAttribute', name: 'src', value: imageNode.url },
-              { type: 'mdxJsxAttribute', name: 'width', value: dimensions.width },
-              { type: 'mdxJsxAttribute', name: 'height', value: dimensions.height },
+              {
+                type: 'mdxJsxAttribute',
+                name: 'width',
+                value: dimensions.width,
+              },
+              {
+                type: 'mdxJsxAttribute',
+                name: 'height',
+                value: dimensions.height,
+              },
             ])
 
           // Change node type from p to div to avoid nesting error

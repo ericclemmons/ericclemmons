@@ -9,7 +9,9 @@ const root = process.cwd()
 
 const getAuthors = () => {
   const authorPath = path.join(root, 'data', 'authors')
-  const authorList = fs.readdirSync(authorPath).map((filename) => path.parse(filename).name)
+  const authorList = fs
+    .readdirSync(authorPath)
+    .map((filename) => path.parse(filename).name)
   return authorList
 }
 
@@ -32,7 +34,8 @@ const genFrontMatter = (answers) => {
   const tagArray = answers.tags.split(',')
   tagArray.forEach((tag, index) => (tagArray[index] = tag.trim()))
   const tags = "'" + tagArray.join("','") + "'"
-  const authorArray = answers.authors.length > 0 ? "'" + answers.authors.join("','") + "'" : ''
+  const authorArray =
+    answers.authors.length > 0 ? "'" + answers.authors.join("','") + "'" : ''
 
   let frontMatter = dedent`---
   title: ${answers.title ? answers.title : 'Untitled'}
