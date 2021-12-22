@@ -1,0 +1,125 @@
+---
+title: Advent of JavaScript, Day 3
+date: '2021-12-21.17:27:00'
+tags: ['advent', 'javascript', 'challenge']
+summary: 'Challenge #2 – Creating a keyboard'
+---
+
+![Advent of JS Homepage](/static/images/advent-of-js.png)
+
+Challenge #3 is creating a keyboard:
+
+![Screenshot of keyboard](https://coachtestprep.s3.amazonaws.com/direct-uploads/user-117025/2a1d26cf-9640-4269-a8fc-8be0e7b13c6d/COVER--small.png)
+
+With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-js-day-3-sep2s?file=/index.html), I'm ready to get going!
+
+---
+
+Again, let's start with the _User Requirements_ and speculate how I can solve these:
+
+> ## Users should be able to:
+>
+> - See the keyboard centered on the page
+
+Done!
+
+> - Whenever a user hovers over a specific key it will change colors
+>   - White keys will change to yellow #ffd200
+
+Done!
+
+> - Black keys will change to pink #f40082
+
+Done!
+
+> - When a user clicks on a specific key, it will play an audio clip.
+
+This seems straightforward – [`new Audio(url)`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio).
+
+> - The audio clips are numbered, but I did not specifically number the keys. You can pick which key should be associated with each audio file.
+
+The files are named `audio/key-{1-23}.mp3`, so the initial implementation can just increment by key position.
+
+> - If a user clicks on one key, then immediately clicks on a second key. The 2 files should both play. Meaning, clicking on one key will not stop an existing audio file from playing.
+
+What this tells me is that there won't be a re-use of variable references.
+
+## Initial Approach
+
+- Vanilla JS (no libraries), since there doesn't seem to be much complexity here
+
+- `document.querySelectorAll('.piano a')` to find all keys
+- `.addEventListener('click', ...)` to listen for clicks
+- `new Audio(url)` to create & `.play` the audio
+
+  The URLs load asynchronously, so it may be best to initialize these immediately and `.play` once clicked.
+
+## Making it Work
+
+This wasn't much of a challenge. I was able to get this completed while an episode of Spongebob was playing...
+
+Anyway, the only surprise was with the SVG keys being out of order:
+_the `<a>` elements aren't in left-to-write order, but seemingly random in the SVG._
+
+To solve this, I used `.sort` to find the mid-point of each key and order those left-to-right:
+
+```js {3, 10}
+const keyElements = Array.from(document.querySelectorAll('.piano a'))
+
+keyElements.sort((a, b) => {
+  const aRect = a.getBoundingClientRect()
+  const aMiddle = aRect.left + aRect.width / 2
+
+  const bRect = b.getBoundingClientRect()
+  const bMiddle = bRect.left + bRect.width / 2
+
+  return aMiddle - bMiddle
+})
+```
+
+Then, I mapped those keys to the sound they would play:
+
+```js {2}
+const keyAudios = keyElements.map((keyElement, i) => {
+  return new Audio(`audio/key-${i + 1}.mp3`)
+})
+```
+
+_(The browser automatically marks these as `preload`, so they should be ready to go once you click a key.)_
+
+One way to associate clicks-to-keys is to `keyElements.forEach(keyElement, ...)` and `keyElement.addEventListener('click', ...)`.
+
+An alternative is to use `window.addEventListener('click', ...)` so there's _one_ event listener rather than _N_ (23).
+
+This optimization isn't necessary here, but can be a good idea when indescriminately adding events to an unknown number of elements:
+
+- Points on a graph
+- Rows in a table
+- Links on a page
+- etc.
+
+```js {3, 14-15}
+window.addEventListener('click', (event) => {
+  // click is on the `<path>`, so traverse up to the <a>
+  const a = event.target.parentNode
+
+  if (!keyElements.includes(a)) {
+    return
+  }
+
+  event.preventDefault()
+
+  const i = keyElements.indexOf(a)
+  const audio = keyAudios[i]
+
+  audio.currentTime = 0
+  audio.play()
+})
+```
+
+Since each `keyAudios` is separate, the sounds automatically overlap.
+
+But, I wanted to make sure repeatedly clicking a key would _repeat_ the sound from the beginning.
+The `Audio` API **does not have a `.stop` or `.restart` method**, so setting `audio.currentTime = 0` effectively accomplishes the same thing.
+
+<CodeSandbox codeSandboxId="advent-of-js-day-3-sep2s" />
