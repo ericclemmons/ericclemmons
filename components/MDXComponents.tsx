@@ -1,5 +1,6 @@
 /* eslint-disable react/display-name */
 import { CodeSandbox, Gist, Tweet, YouTube } from 'mdx-embed'
+import Script from 'next/script'
 import React, { useMemo } from 'react'
 import { ComponentMap, getMDXComponent } from 'mdx-bundler/client'
 import Image from './Image'
@@ -29,6 +30,7 @@ export const MDXComponents: ComponentMap = {
   Image,
   CodeSandbox,
   Gist,
+  Script,
   Tweet(props) {
     return (
       <Tweet align="center" hideConversation={true} theme="dark" {...props} />
