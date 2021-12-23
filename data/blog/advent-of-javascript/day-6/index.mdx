@@ -1,0 +1,54 @@
+---
+title: Advent of JavaScript, Day 6
+date: '2021-12-22.20:02:00'
+tags: ['advent', 'javascript', 'challenge']
+summary: 'Challenge #6 – Range Slider'
+---
+
+![Advent of JS Homepage](/static/images/advent-of-js.png)
+
+Challenge #6 is creating a Range Slider that updates a dollar amount:
+
+![Screenshot of slider](https://coachtestprep.s3.amazonaws.com/direct-uploads/user-117025/b911c6f5-ee2b-4b9b-99d5-03edc4258e24/CleanShot%202021-12-06%20at%2007.50.27.png)
+
+With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-js-day-6-kdn21?file=/app.js:0-346), I'm ready to get going!
+
+---
+
+## User Requirements
+
+Again, let's start with the _User Requirements_ and speculate how I can solve these:
+
+> - Move the knob on the range and the dollar amount above it will update.
+
+That's it. In their video, it goes from `$0.00` to `$100.00`. Otherwise, it's a standard `<input type="range" />`
+
+## Wiring it Up
+
+`change` for `input`s fire _after_ the interaction is complete.
+
+For live-updating values, `input` is the best event to listen for.
+
+This is a _very_ straightforward solution using [`.toLocaleString`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/toLocaleString) to handle the currency conversion for me:
+
+```js {8,13}
+const $dollars = document.querySelector('.dollars')
+const $range = document.querySelector('#priceRange')
+
+$range.addEventListener('input', (event) => {
+  const { value } = event.target
+
+  $dollars.innerHTML = (value / 100)
+    .toLocaleString('en-US', {
+      currency: 'USD',
+      style: 'currency',
+    })
+    .slice(1) // Remove $
+})
+```
+
+## Demo
+
+Easy-peasy!
+
+<CodeSandbox codeSandboxId="advent-of-js-day-6-kdn21" />
