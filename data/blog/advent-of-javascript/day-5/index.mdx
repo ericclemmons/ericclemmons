@@ -1,0 +1,213 @@
+---
+title: Advent of JavaScript, Day 5
+date: '2021-12-22:18:00:00'
+tags: ['advent', 'javascript', 'challenge']
+summary: 'Challenge #5 – Multi-select Checkboxes in Preact & Vue'
+---
+
+![Advent of JS Homepage](/static/images/advent-of-js.png)
+
+Challenge #5 is selecting episode checkboxes from a podcast.
+The catch is that _Shift-Clicking_ a checkbox will select all the checkboxes between the first and the last selected checkbox:
+
+![Screenshot of Checklist](/static/images/podcast.png)
+
+With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-js-day-5-3ll65?file=/index.html), I'm ready to get going!
+
+---
+
+## User Requirements
+
+Again, let's start with the _User Requirements_ and speculate how I can solve these:
+
+> - See the list of podcast episodes
+
+There's a provided `app.js` with `episodes` defined. The static HTML only has 10 `<li>`s, so I'll already need to templatize these.
+
+I've been using Vue a _bunch_, so let's mix things up a bit by using [`htm`](https://github.com/developit/htm).
+
+> - Check one episode, shift-click to select all the episodes in between
+
+On the surface, this seems straightfward:
+
+1. `onClick`, check if `Shift` is pressed.
+1. If so, select all the episodes in between.
+
+The UX question I have is _what if a checkbox is checked, then focus goes elsewhere_?
+In this case, does <kbd>Shift+Click</kbd> **always** select the boxes in-between?
+
+The video explicitly states:
+
+> Track that first one, track the ending one, then checkbox all the ones in-between.
+
+## Wiring It Up
+
+### `htm`
+
+First, I need to make sure `app.js` is treated as an ES Module so I can use `import` within it:
+
+```html
+<script src="app.js" type="module"></script>
+```
+
+Then, I can move `episodes` to it's own file and `import` `htm` already bound to `preact`:
+
+```js
+import {
+  html,
+  Component,
+  render,
+} from 'https://unpkg.com/htm/preact/standalone.module.js'
+
+import { episodes } from './episodes.js'
+```
+
+Rendering looks _very similar to React_:
+
+```js
+render(
+  html`<${App} episodes=${episodes} />`,
+  document.querySelector('.wrapper')
+)
+```
+
+Now to make this static content _dynamic_!
+
+### Components
+
+Normally the 1st thing I do when I'm making a template _React_-ive (heh)
+is put the **entire** static markup into `App`'s `render` method.
+
+Then, the moment I want to loop over data (e.g. `episodes.map`),
+there's an opportunity for a new component.
+
+From there, any other components (e.g. `Header`, `Footer`, `Nav`) are abstractions
+to simplify the mental overhead of reading `App`.
+
+### Interpolation
+
+What's pretty amazing about `htm` is how natural it is coming from React.
+
+#### Static Markup
+
+```html
+<ul class="episodes">
+  <li>
+    <label for="episode-1">
+      <input type="checkbox" name="episode-1" id="episode-1" />
+      <span>1 || Trailer</span>
+    </label>
+  </li>
+  ...
+</ul>
+```
+
+#### Dynamic Markup
+
+Wow, this _just worked_! 🔥
+
+```html
+<ul class="episodes">
+  ${episodes.map(({ id, name }) => html`
+  <li>
+    <label for="episode-${id}">
+      <input type="checkbox" name="episode-${id}" id="episode-${id}" />
+      <span>${id} || ${name}</span>
+    </label>
+  </li>
+  `)}
+</ul>
+```
+
+### Tracking `checked`
+
+Since `htm` is managing the HTML, that naturally means that `checked` will _also_ be managed via local state.
+
+When `onClick` is fired, I'll check the following:
+
+- `event.shiftKey === true`
+- Pull `id` from the `data-id` attribute (so I don't have to do string splitting on `id` or `name`)
+- Set `lastChecked` and the updated `checked` object with this value toggled
+
+### Bugs
+
+For whatever reason, `checked = { [id]: true, ... }` doesn't seem to be updating immediately, _but one render later_:
+
+<video controls>
+  <source src="/static/images/preact-bug.mp4" type="video/mp4" />
+</video>
+
+I'm not sure what this bug is, but I generally make a rule of **spend 30 minutes on something and, if you stop making progress, find another way**.
+
+### Back to Vue
+
+I'm going to try Vue again, since it's worked so well in the previous examples.
+
+Most likely, **there's a bug _I_ introduced**. But, it can sometimes be helpful to solve a problem _another way_, identify similarities, and **make progress**.
+
+[I forked the CodeSandbox](https://codesandbox.io/s/advent-of-js-day-5-vue-gc22m) and ready to start over 🙃
+
+Luckily, it's pretty straightforward to get the same result with Vue:
+
+```html
+<ul class="episodes">
+  <li v-for="episode in episodes">
+    <label :for="'episode-' + episode.id">
+      <input
+        @click="toggleEpisode(episode, $event)"
+        :id="'episode-' + episode.id"
+        :checked="episode.checked"
+        :name="'episode-' + episode.id"
+        type="checkbox"
+      />
+      <span>{{ episode.id }} || {{ episode.name }}</span>
+    </label>
+  </li>
+</ul>
+```
+
+```js
+methods: {
+  toggleEpisode(episode, event) {
+    episode.checked = !episode.checked;
+
+    if (episode.checked && event.shiftKey) {
+      const { episodes, lastChecked = episode } = this;
+      const [start, end] = [
+        episodes.indexOf(lastChecked),
+        episodes.indexOf(episode)
+      ].sort();
+
+      episodes.forEach((episode, i) => {
+        if (i >= start && i <= end) {
+          episode.checked = true;
+        }
+      });
+    }
+
+    this.lastChecked = episode;
+  }
+}
+```
+
+## Finishing Up
+
+I learned that **`@click.prevent` actually breaks the `checked` behavior!**
+
+This means it **wasn't** a bug in `htm` as expected, but a browser quirk!
+
+I went back to my `htm` sandbox, **removed `event.preventDefault()`**, and was able to get it working.
+
+When comparing the two, Vue was still easiest to get working from a static template.
+
+I can see this being my default framework of choice for these challenges 💪
+
+## Demos
+
+### `htm`
+
+<CodeSandbox codeSandboxId="advent-of-js-day-5-3ll65" />
+
+### Vue
+
+<CodeSandbox codeSandboxId="advent-of-js-day-5-vue-gc22m" />
