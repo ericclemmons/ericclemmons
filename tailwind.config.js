@@ -9,6 +9,7 @@ module.exports = {
   content: [
     './components/**/*.tsx',
     './data/**/index.mdx',
+    './data/**/*.tsx',
     './layouts/**/*.tsx',
     './lib/**/*.ts',
     './pages/**/*.tsx',
