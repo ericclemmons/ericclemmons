@@ -18,7 +18,7 @@ const LayoutWrapper = ({ children }: Props) => {
       <div className="flex flex-col justify-between h-screen">
         <header className="fixed left-0 z-10 flex items-center justify-between w-full p-4 md:p-10 backdrop-blur-sm bg-white/80 dark:bg-gray-900/80">
           <div>
-            <Link href="/" aria-label="Tailwind CSS Blog">
+            <Link href="/" aria-label={`${siteMetadata.headerTitle} Blog`}>
               <div className="flex items-center justify-between relative top-[-0.25rem]">
                 <div className="relative top-[0.4em] mr-3">
                   <Image
