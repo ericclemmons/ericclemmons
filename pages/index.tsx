@@ -7,6 +7,7 @@ import formatDate from '@/lib/utils/formatDate'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { PostFrontMatter } from 'types/PostFrontMatter'
 import NewsletterForm from '@/components/NewsletterForm'
+import Canvas from '@/components/Canvas'
 
 const MAX_DISPLAY = 5
 
@@ -29,10 +30,9 @@ export default function Home({
       />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div
-          className="pt-6 pb-8 space-y-2 text-center shadow-inner md:space-y-5 bg-gradient-to-r from-slate-900 via-fuchsia-900 to-slate-900 dark:from-gray-900 dark:via-fuchsia-900 dark:to-gray-900"
+          className="p-12 pt-32 space-y-2 text-center bg-black shadow-inner md:pt-48 md:p-20 md:space-y-5 -mt-28"
           style={{
             position: 'relative',
-            padding: '10%',
             width: '100vw',
             left: '50%',
             right: '50%',
@@ -40,7 +40,8 @@ export default function Home({
             marginRight: '-50vw',
           }}
         >
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-300 to-white sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 drop-shadow-xl">
+          <Canvas />
+          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-transparent bg-clip-text bg-gradient-to-t from-slate-700 to-black sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 drop-shadow-xl">
             &lt;
             <span
               role="img"
@@ -51,11 +52,11 @@ export default function Home({
             </span>{' '}
             Hello, World! /&gt;
           </h1>
-          <p className="text-lg leading-7 text-gray-200 drop-shadow-lg">
+          <p className="text-lg font-bold leading-7 drop-shadow-lg">
             {siteMetadata.description}
           </p>
-          <div className="text-base font-medium leading-6 drop-shadow-lg">
-            <Link href="/about" className="text-gray-400 hover:text-gray-200">
+          <div className="text-base font-bold leading-6 bold drop-shadow-lg">
+            <Link href="/about" className="text-gray-900 hover:text-gray-700">
               More about me &rarr;
             </Link>
           </div>
