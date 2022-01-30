@@ -15,6 +15,7 @@ module.exports = {
     './pages/**/*.tsx',
   ],
   darkMode: 'class',
+  mode: 'jit',
   theme: {
     extend: {
       spacing: {
