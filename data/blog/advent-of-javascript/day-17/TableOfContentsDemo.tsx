@@ -6,6 +6,7 @@ export function TableOfContentsDemo() {
   }, [])
 
   return (
+    // @ts-ignore
     <table-of-contents
       class="fixed top-2 left-8"
       heading-selector="main :is(h2, h3)"
@@ -13,9 +14,12 @@ export function TableOfContentsDemo() {
       <h3 slot="header">Table of Contents</h3>
       <ol slot="list" className="px-0 list-none">
         <li slot="item" className="px-0 text-sm">
-          <a slot="link" className="!no-underline"></a>
+          <a slot="link" className="!no-underline">
+            ...
+          </a>
         </li>
       </ol>
+      {/* @ts-ignore */}
     </table-of-contents>
   )
 }
