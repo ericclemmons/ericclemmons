@@ -109,6 +109,8 @@ inquirer
     const filePath = `data/blog/${fileName ? fileName : 'untitled'}/index.${
       answers.extension ? answers.extension : 'md'
     }`
+
+    fs.mkdirSync(path.dirname(filePath), { recursive: true })
     fs.writeFile(filePath, frontMatter, { flag: 'wx' }, (err) => {
       if (err) {
         throw err
