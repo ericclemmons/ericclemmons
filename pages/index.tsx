@@ -38,6 +38,7 @@ export default function Home({
             right: '50%',
             marginLeft: '-50vw',
             marginRight: '-50vw',
+            clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
           }}
         >
           <Canvas />
