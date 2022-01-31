@@ -28,9 +28,9 @@ export default function Home({
         title={siteMetadata.title}
         description={siteMetadata.description}
       />
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
+      <div>
         <div
-          className="p-12 pt-32 space-y-2 text-center bg-black shadow-inner md:pt-48 md:p-20 md:space-y-5 -mt-28"
+          className="p-12 pt-32 space-y-2 text-center shadow-inner md:pt-48 md:p-20 md:space-y-5 -mt-28"
           style={{
             position: 'relative',
             width: '100vw',
@@ -63,7 +63,7 @@ export default function Home({
           </div>
         </div>
 
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        <ul>
           {!posts.length && 'No posts found.'}
           {posts.slice(0, MAX_DISPLAY).map((frontMatter) => {
             const { slug, date, title, summary, tags } = frontMatter
