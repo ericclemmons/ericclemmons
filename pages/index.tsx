@@ -41,7 +41,7 @@ export default function Home({
           }}
         >
           <Canvas />
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-transparent bg-clip-text bg-gradient-to-t from-slate-700 to-black sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 drop-shadow-xl">
+          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-transparent text-white bg-clip-text bg-gradient-to-b sm:text-4xl sm:leading-10 md:text-6xl md:leading-14 drop-shadow-xl">
             &lt;
             <span
               role="img"
