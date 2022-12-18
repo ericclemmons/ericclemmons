@@ -1,0 +1,93 @@
+---
+title: Evolving from `useState` to `useStateMachine`
+date: '2022-01-30'
+tags: ['xstate', 'react', 'state machines']
+draft: true
+summary: Expressing complex UI logic can begin with a humble useState, but quickly benefits from XState
+---
+
+```jsx {3-10}
+import { get } from 'lodash'
+import { useState } from 'react'
+
+const getStateFromPath = (machine, path) => {
+  // Remove machine root path (e.g. `#something`.) when finding state node
+  path = path.split(`#${machine.id}.`).pop()
+
+  const state = path.split('.').reduce((node, name) => {
+    return get(node, ['states', name])
+  }, machine)
+
+  if (!state) {
+    throw new Error(
+      `Could not find state by path ${path}. This is a bug in the ${machine.id} machine or useMachine logic.`
+    )
+  }
+
+  return state
+}
+
+// I'm sorry for re-creating https://xstate.js.org/docs/recipes/react.html,
+// but it's similar to `useReducer` – the difference is matching the XState structure
+// to benefit from their visualizer.
+export default function useMachine(machine) {
+  const [state, setState] = useState({
+    context: { ...machine.context },
+    value: machine.initial,
+  })
+
+  const transition = (event, data) =>
+    setState((state) => {
+      const currentState = getStateFromPath(machine, state.value)
+      const on = get(currentState, ['on', event])
+
+      if (!on) {
+        console.warn(
+          `"${state.value}" does not have a ${event} transition:`,
+          currentState
+        )
+        return state
+      }
+
+      const { actions = [] } = on
+      const context = actions.reduce(
+        (acc, actionName) => ({
+          ...acc,
+          ...machine.actions[actionName](acc, data),
+        }),
+        state.context
+      )
+
+      // Some events only fire actions & don't transition
+      const { target = state.value } = on
+
+      // Support onDone/onError for XState visualization & consistency,
+      // but internally create `ON.RESOLVE` & `ON.REJECT` equivalents
+      const nextState = getStateFromPath(machine, target)
+
+      if (nextState.invoke) {
+        const { onDone, onError, src } = nextState.invoke
+        const service = machine.services[src]
+        const promise = (async () => service(context, data))()
+
+        if (onDone) {
+          nextState.on.RESOLVE = onDone
+          promise.then((data) => transition('RESOLVE', data))
+        }
+
+        if (onError) {
+          nextState.on.REJECT = onError
+          promise.catch((error) => transition('REJECT', error))
+        }
+      }
+
+      return {
+        context,
+        // Remove machine root path (e.g. `#something`.) when returning the target state
+        value: target.split(`#${machine.id}.`).pop(),
+      }
+    })
+
+  return [state, transition]
+}
+```
