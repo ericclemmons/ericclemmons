@@ -4,6 +4,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 
 import { Button } from '@/components/Button'
+import { Canvas } from '@/components/Canvas'
 import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
 import {
@@ -100,7 +101,7 @@ function Post({ post }) {
 function SocialLink({ icon: Icon, ...props }) {
   return (
     <Link className="group -m-1 p-1" {...props}>
-      <Icon className="h-6 w-6 fill-zinc-500 transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
+      <Icon className="h-6 w-6 text-black transition group-hover:fill-zinc-600 dark:fill-zinc-400 dark:group-hover:fill-zinc-300" />
     </Link>
   )
 }
@@ -109,7 +110,7 @@ function Newsletter() {
   return (
     <form
       action="/thank-you"
-      className="rounded-2xl border border-zinc-100 p-6 dark:border-zinc-700/40"
+      className="dark:zinc-600 rounded-2xl border border-zinc-100 bg-white p-6 shadow-sm dark:border-zinc-700/40"
     >
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <MailIcon className="h-6 w-6 flex-none" />
@@ -249,23 +250,37 @@ export default function Home({ posts }) {
     <>
       <Head>
         <title>
-          Spencer Sharp - Software designer, founder, and amateur astronaut
+          Eric Clemmons - Software designer, founder, and amateur astronaut
         </title>
         <meta
           name="description"
           content="I’m Spencer, a software designer and entrepreneur based in New York City. I’m the founder and CEO of Planetaria, where we develop technologies that empower regular people to explore space on their own terms."
         />
       </Head>
+      <div
+        className="absolute -mt-16 h-96 w-full shadow-inner"
+        style={{
+          clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
+        }}
+      >
+        <Canvas />
+      </div>
       <Container className="mt-9">
         <div className="max-w-2xl">
-          <h1 className="text-4xl font-bold tracking-tight text-zinc-800 dark:text-zinc-100 sm:text-5xl">
-            Software designer, founder, and amateur astronaut.
+          <h1 className="md:leading-14 text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-xl sm:text-4xl sm:leading-10 md:text-6xl">
+            Hi, I&apos;m Eric Clemmons{' '}
+            <span
+              role="img"
+              aria-label="waving hand"
+              className="wave text-white"
+            >
+              👋🏻
+            </span>
           </h1>
-          <p className="mt-6 text-base text-zinc-600 dark:text-zinc-400">
-            I’m Spencer, a software designer and entrepreneur based in New York
-            City. I’m the founder and CEO of Planetaria, where we develop
-            technologies that empower regular people to explore space on their
-            own terms.
+          <p className="mt-6 text-base text-black shadow-white drop-shadow-[0_0_9px_white]">
+            I've been contributing to & leading autonomous, outcome-driven
+            remote teams with over 15 years of experience as an open-source
+            developer focused on UX & DX.
           </p>
           <div className="mt-6 flex gap-6">
             <SocialLink
