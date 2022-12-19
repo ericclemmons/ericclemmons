@@ -1,0 +1,343 @@
+---
+title: Advent of JavaScript, Day 2
+date: '2021-12-21'
+tags: ['advent', 'javascript', 'challenge']
+summary: 'Challenge #2 – Creating an eCommerce component'
+---
+
+![Advent of JS Homepage](/static/images/advent-of-js.png)
+
+I enjoyed [Advent of JavaScript, Day 1](../day-1) so much that I'm continuing with Day 2.
+
+---
+
+Challenge #2 is creating an _eCommerce component_:
+
+![Screenshot of eCommerce component](https://coachtestprep.s3.amazonaws.com/direct-uploads/user-117025/606c2525-ca81-4d85-ac27-164a86df3194/Twitter%20post%20-%201.png)
+
+With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-js-day-2-q7857?file=/index.html), I'm ready to get going!
+
+---
+
+Again, let's start with the _User Requirements_ and speculate how I can solve these:
+
+> ## Users should be able to:
+>
+> - View the plates on the left side of the screen and add them to your cart on the right side.
+
+The moment there's duplication of data, **this data needs to be pulled out of the HTML and into a data-structure**.
+This means, unlike [Day 1](../day-1), I won't be re-using most of the HTML, but instead _templatizing_ it.
+
+The data looks like it has the following structure:
+
+```js
+interface MenuItem {
+  name: string;
+  price: number;
+  image: string;
+}
+
+const menu: MenuItem[] = [
+  {
+    name: 'French Fries with Ketchup'
+    price: 2.23,
+    image: 'images/plate__french-fries.png',
+  }
+]
+
+interface CartItem {
+  menuItem: MenuItem;
+  quantity: number;
+}
+
+const cart: CartItem[] = [
+  {
+    menuItem: {
+      name: 'French Fries with Ketchup',
+      price: 2.23,
+      image: 'images/plate__french-fries.png',
+    },
+    quantity: 1,
+  }
+]
+```
+
+**Edit – Whoops! Turns out there's an `app.js` I missed that already has a mutable structure they intended:**
+
+```js
+const menuItems = [
+  {
+    name: "French Fries with Ketchup",
+    price: 223,
+    image: "plate__french-fries.png",
+    alt: "French Fries",
+    count: 0
+  },
+```
+
+**Clearly this structure was intended to modify `count` directly then re-render the Menu & Cart panels in response.**
+
+For these use-cases, I like using `MobX`. Specifically, [MobX-state-tree (MST)](https://mobx-state-tree.js.org/intro/welcome).
+
+MST allows me to use models and easily create relationships between them.
+Plus, I don't have to think worry about mutations, context, or forcing re-renders in the views.
+
+I've only used it with React, so whether this works with [`mobx-vue-lite`](https://github.com/mobxjs/mobx-vue-lite) or via CDN is unknown.
+
+What's _not_ said in this description is:
+
+- Initially, menu items say _Add to Cart_.
+- After clicking _Add to Cart_, the text changes to _In Cart_.
+  - In the cart, the menu item appears with a default quantity of _1_.
+  - The price is a multiple of the menu item price and the quantity.
+
+> - When there are no plates within your cart, you should see a message that says, "Your cart is empty."
+
+This should be simple by checking `state.cart.length === 0`.
+
+> - When a plate is added to your cart, the Subtotal and Totals will automatically update.
+
+MobX will handle this automatically via computed properties like `state.cart.subtotal`, `state.cart.tax`, & `state.cart.total`.
+
+> - When products are in your cart, you should be able to increase and decrease the quantity.
+
+Updating `state.cart[selectedIndex].quantity` should solve this.
+
+> - A user should not be able to mark the quantity as a negative number.
+
+`quantity` isn't an `<input>`, so this just means that once a `quantity < 1`, the menu item is removed from the `cart`.
+
+The next bullet already comvers this...
+
+> - If the quantity goes down to 0, the user will have the option to delete or remove the product from their cart entirely.
+
+According to the UI, this is handled automatically.
+
+> - Tax is based on the state of Tennessee sales tax: 0.0975
+
+Ok, so `state.cart.total: () => state.cart.subtotal * (1 + state.cart.tax)`.
+
+## Validating the Technology Decisions
+
+Before I get too deep, I want to make sure the following constraints hold true:
+
+- Progressive enhancement
+
+  For a complex menu, this isn't really true like it would be for a "tooltip" use-case.
+  But, my goal is to "progressively enhance" and re-use markup as much as possible rather than re-writing the templates as React components.
+
+- Install dependencies via a CDN (e.g. `<script>`)
+
+  This is negotiable, since CodeSandbox can run CRA/Next.js apps.
+  But, my hope is that it simplifies the process of running the app.
+
+- MobX for state management
+
+  I prefer to work with instances of models when data presumably comes from a structured DB in the backend.
+
+- Vue for the view
+
+  Using React would require rewriting the templates into components, and I'd like to learn Vue more.
+  However, **if Vue cannot use MobX easily, it would be quicker to convert this project to React**.
+
+So, to validate these choices, I'm going to add MobX & Vue to the demo, setup a counter and test reactivity.
+
+### Vue
+
+Templatizing the HTML was pretty easy.
+
+First, I was able to Vue-ify the HTML with:
+
+```js
+const { Vue } = window;
+
+const menuItems = [...];
+
+const App = {
+  data() {
+    return {
+      menuItems
+    };
+  }
+};
+
+Vue.createApp(App).mount(document.querySelector(".wrapper"));
+```
+
+Next, I could faithfully recreate the static _To Go Menu_ from...
+
+```html
+<ul class="menu">
+  <li>
+    <div class="plate">
+      <img
+        src="images/plate__french-fries.png"
+        alt="French Fries"
+        class="plate"
+      />
+    </div>
+    <div class="content">
+      <p class="menu-item">French Fries with Ketchup</p>
+      <p class="price">$2.23</p>
+      <button class="in-cart">
+        <img src="images/check.svg" alt="Check" />
+        In Cart
+      </button>
+    </div>
+    ...
+  </li>
+</ul>
+```
+
+...to a loop with `v-for`:
+
+```html
+<ul class="menu">
+  <li v-for="menuItem in menuItems">
+    <div class="plate">
+      <img :src="'images/' + menuItem.image" alt="menuItem.alt" class="plate" />
+    </div>
+    <div class="content">
+      <p class="menu-item">{{ menuItem.name }}</p>
+      <p class="price">{{ formatPrice(menuItem.price) }}</p>
+      <button
+        v-if="menuItem.count === 0"
+        @click="addToCart(menuItem)"
+        class="add"
+      >
+        Add to Cart
+      </button>
+      <button v-else class="in-cart">
+        <img src="images/check.svg" alt="Check" />
+        In Cart
+      </button>
+    </div>
+  </li>
+</ul>
+```
+
+### MobX
+
+Since [`mobx-vue-lite`](https://github.com/mobxjs/mobx-vue-lite) has a hard-dependency on `@vueuse/core`, I can't use it via CDN.
+
+Knowing this, I'm **removing `mobx` and `mobx-state-tree`** from this use-case and instead going to mutate `menuItems` directly.
+
+## Wiring up Your Cart
+
+Now that I've removed technical complexity in favor of `Vue` + `menuItems`,
+making Your Cart reactive only took a few steps.
+
+1. Creating a `cartItems` computed property for those with `count > 0`:
+
+   ```js
+   computed: {
+     cartItems() {
+       return this.menuItems.filter((menuItem) => menuItem.count > 0);
+     }
+   },
+   ```
+
+1. Having an `addtoCart(menuItem)` method that updates the `count` of the menu item:
+
+   ```js
+   methods: {
+     addToCart(menuItem) {
+       menuItem.count = 1;
+     }
+   }
+   ```
+
+   Luckily, this is _almost exactly_ what it would've looked like with `mobx-state-tree`, so win-win!
+
+1. Replacing static HTML with reactive data:
+
+   ```html
+   <ul v-if="cartItems.length > 0" class="cart-summary">
+     <li v-for="cartItem in cartItems">
+       <div class="plate">
+         <img
+           :src="'images/' + cartItem.image"
+           :alt="cartItem.alt"
+           class="plate"
+         />
+         <div class="quantity">{{ cartItem.count }}</div>
+       </div>
+       <div class="content">
+         <p class="menu-item">{{ cartItem.name }}</p>
+         <p class="price">{{ formatPrice(cartItem.price) }}</p>
+       </div>
+       <div class="quantity__wrapper">
+         <button @click="decreaseCount(cartItem)" class="decrease">
+           <img src="images/chevron.svg" />
+         </button>
+         <div class="quantity">{{ cartItem.count }}</div>
+         <button @click="increaseCount(cartItem)" class="increase">
+           <img src="images/chevron.svg" />
+         </button>
+       </div>
+       <div class="subtotal">
+         {{ formatPrice(cartItem.price * cartItem.count) }}
+       </div>
+     </li>
+   </ul>
+   ```
+
+1. Adjusting `count` with dedicated `increaseCount` and `decreaseCount` methods:
+
+   ```js
+    increaseCount(cartItem) {
+      ++cartItem.count;
+    },
+    decreaseCount(cartItem) {
+      --cartItem.count;
+    },
+   ```
+
+1. Formatting currency using [`Intl.NumberFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat):
+
+   ```js
+   methods: {
+     formatPrice(price) {
+       return new Intl.NumberFormat("en-US", {
+         style: "currency",
+         currency: "USD"
+       }).format(price / 100);
+     }
+   }
+   ```
+
+1. Lastly, computing `subtotal`, `tax`, and `total`:
+
+   ```js
+   subtotal() {
+     return this.cartItems.reduce((acc, cartItem) => {
+       return acc + cartItem.price * cartItem.count;
+     }, 0);
+   },
+   tax() {
+     return this.subtotal * 0.08;
+   },
+   total() {
+     return this.subtotal + this.tax;
+   }
+   ```
+
+## Finishing Up
+
+This exercise took ~1 hour, end-to-end thanks to [Day 1](../day-1)'s experience.
+
+It showed how, though I initially wanted to leverage technology that I was familiar with in the past,
+**they simply weren't necessary nor worth the complexity or bloat.**
+
+Would I introduce `mobx` if this were a larger project? _Maybe_?
+I would first want to know what is the canonical way to manage relationships & model instances in Vue.
+
+Heck, it may be true that POJO (plain old JavaScript objects) are a good fit for this use-case!
+
+**I was genuinely surprised how _smart_ Vue is with automatically tracking nested mutations** –
+I didn't have to change much of the HTML at all. In fact, I was mostly _deleting_ markup and replacing it
+with `v-for` or `v-if`.
+
+**Note – the provided CSS is _not_ mobile friendly, so check this out on desktop:**
+
+<CodeSandbox codeSandboxId="advent-of-js-day-2-q7857" />

@@ -1,0 +1,84 @@
+---
+title: Advent of JavaScript, Day 8
+date: '2021-12-23.11:43:00'
+tags: ['advent', 'javascript', 'challenge']
+summary: 'Challenge #8 – Weather App'
+---
+
+![Advent of JS Homepage](/static/images/advent-of-js.png)
+
+Challenge #8 a live weather app:
+
+![Screenshot of app](https://coachtestprep.s3.amazonaws.com/direct-uploads/user-117025/cc5fe957-4af9-4ad4-9a1c-239e2e4370cc/CleanShot%202021-12-08%20at%2009.56.58.png)
+
+With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-javascript-day-8-9kkp6), I'm ready to get going!
+
+---
+
+## User Requirements
+
+Again, let's start with the _User Requirements_ and speculate how I can solve these:
+
+> - view weather for the upcoming week
+
+🤔 Ummm... these descriptions are getting ambiguous, aren't they?
+
+When reviewing `app.js` & `index.html`, we basically just have art resources:
+
+- Weather icons
+- Corresponding color palettes
+- Days of the week
+
+So, what's missing from this description?
+
+- 🎯 Getting the user's location
+
+  - From the browser's location services?
+
+    Permissions can prevent this from being accessible.
+
+  - From an input for City, State, or Zip code?
+
+    - Will this need geo-location to turn this into longitude/latitude?
+    - Sometimes you want to look up weather for a _different_ city, but that's not in the UI.
+
+- ⛅ Fetching the weather data
+
+  I'll need to find a public API that accepts longitude/latitude or city/state/zipcode.
+
+## Geolocation
+
+Most browsers support the [`Geolocation.getLocation` API](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition),
+which responds with `{ coords: { latitude, longitude } }`.
+
+## Fetching the Weather Data
+
+I can pass the longitude/latitude to a weather API like [weather.gov](https://www.weather.gov/documentation/services-web-api),
+but it doesn't include precipitation.
+
+After consulting [github.com/public-apis/public-apis](https://github.com/public-apis/public-apis#weather),
+I realized there _is_ `propabilityOfPrecipitation`, but from a different API endpoint:
+
+> https://weather-gov.github.io/api/gridpoints
+
+Example: https://api.weather.gov/gridpoints/FWD/53,103
+
+## 🚫 Cancelled
+
+I'm stopping on this one. The difficulty isn't in the logic or the template – **I don't want to waste time normalizing the weather API**.
+
+Personally, I feel like this sort of challenge left too much to change: **what would a junior engineer do in this situation?**
+I can unblock myself, but I would've made this challenge more about _the implementation_ than in comparing 3rd party APIs:
+
+- "If you're in the US, you can make calls to `https://some-weather-api.dev/location/{latitude},{longitude}`"
+- "If you're not in the US, there's an `<input>` field with the Seattle, WA coordinates already punched in."
+- "Use the browser's `Geolocation` API to get the user's location."
+
+Without these sort of prompts (or a structured API), it's anyone's guess how to pick the right symbol or which number means what.
+
+## Unfinished Demo
+
+**Sometimes development means known what problems to solve & when to move on so you can spend your energy elsewhere.**
+This is one of those – I'm at Legoland 👋
+
+<CodeSandbox codeSandboxId="advent-of-javascript-day-8-9kkp6" />

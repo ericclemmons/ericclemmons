@@ -1,0 +1,139 @@
+---
+title: Advent of JavaScript, Day 4
+date: '2021-12-21.20:08:00'
+tags: ['advent', 'javascript', 'challenge']
+summary: 'Challenge #4 – Computer Keyboard'
+---
+
+import { Shuffle } from '../data/blog/advent-of-javascript/day-4/Shuffle'
+
+![Advent of JS Homepage](/static/images/advent-of-js.png)
+
+Challenge #4 is creating a computer keyboard that jiggles the key it wants you to press:
+
+![Screenshot of keyboard](https://coachtestprep.s3.amazonaws.com/direct-uploads/user-117025/1c92f5d4-70c3-4d15-9c3e-9b774c54d6cf/computer-keyboard.png)
+
+With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-js-day-4-l4umn?file=/index.html), I'm ready to get going!
+
+---
+
+## User Requirements
+
+Again, let's start with the _User Requirements_ and speculate how I can solve these:
+
+> - See the computer keyboard centered on the page
+
+Done already via `styles.css`.
+
+> - A random letter will start to jiggle.
+
+The animation already exists via `styles.css`' `jiggle` class.
+
+As for choosing a _random_ letter, each `<button>` has a `data-key` that indicates what should be pressed (e.g. `TAB`).
+I can randomly pick one of these (ideally, from a dwindling list so repeats don't happen) and toggle `jiggle`.
+
+> - The user should type the same key that's jiggling and it will stop.
+
+I'll need to double-check the [`KeyboardEvent` properties](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#properties)
+to support `SHIFT` & possibly others.
+
+Otherwise, string matching against `event.key` should be enough!
+
+> - A new, random key will start jiggling
+
+I can have a `randomizeKey` function that will randomly pick a key from the `<button>`s and toggle `jiggle`.
+
+## Wiring it Up
+
+So, this was actually a little more fun than I expected!
+
+1. Getting a list of `keys` is straightforward:
+
+   ```js
+   let keys = Array.from(document.querySelectorAll('[data-key]'))
+   ```
+
+1. So is toggling the `jiggle` class:
+
+   ```js {1,4}
+   if (currentKey) currentKey.classList.remove('jiggle')
+
+   currentKey = keys[i]
+   currentKey.classList.add('jiggle')
+   ```
+
+1. And listening to events:
+
+   ```js
+   window.addEventListener('keyup', (event) => {
+     if (event.key.toUpperCase() === currentKey.getAttribute('data-key')) {
+       randomizeKey()
+     }
+   })
+   ```
+
+   I also listen to `click` events so I can click the Capslock button (since I have it mapped to `Escape` on my keyboard):
+
+   ```js
+   window.addEventListener('click', (event) => {
+     if (event.target.hasAttribute('data-key')) {
+       randomizeKey()
+     }
+   })
+   ```
+
+### Algorithms
+
+But, what I **haven't** done before was **swapping variables without an intermediate value**
+and **an optimal, simple shuffling algorithm**.
+
+1. Swapping variables without an intermediate value is easy with ES6:
+
+   ```js
+   ;[a, b] = [b, a]
+   ```
+
+   For this use-case, I swapped the random `i` key with key at the `end` of the array:
+
+   ```js
+   ;[keys[i], keys[end]] = [keys[end], keys[i]]
+   ```
+
+1. Next, I wanted to see if there's an official algorithm to what I proposed above, and there is: [Fisher-Yates Shuffle](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle)
+
+   There's a fantastic visualization from [Mike Bostocks](https://bost.ocks.org/mike/shuffle/):
+
+   <Shuffle />
+
+   ```js {3, 7, 17}
+   const randomizeKey = () => {
+     // If there are no available keys left, restart the shuffle
+     if (end === 0) end = keys.length
+
+     // Pick a random index from 0 to the end of the array,
+     // then shorten the array
+     i = Math.floor(Math.random() * end--)
+
+     // Stop jiggling the current key
+     if (currentKey) currentKey.classList.remove('jiggle')
+
+     currentKey = keys[i]
+     currentKey.classList.add('jiggle')
+
+     // Swap random key with the key at the end.
+     // This ensures it won't get picked again since it's been "shuffled" out to the end
+     ;[keys[i], keys[end]] = [keys[end], keys[i]]
+   }
+   ```
+
+   1. Initially, the `end` index is the length of the array.
+   1. We randomly pick `i` from 0 to the `end` of the array.
+   1. We decrement `end` by 1 so that we can move the random keys to the end of the array.
+   1. Using the previous swap algorithm, we swap the randomly selected key with the unshuffled key at the end.
+   1. After we finish shuffling and the `end` is `0`, we reset it back to `keys.length` & reshuffle the shuffled array all over again.
+
+## Demo
+
+I spent the most time actually writing this blog post and porting over [Mike Bostock's visualization](https://bost.ocks.org/mike/shuffle/) :)
+
+<CodeSandbox codeSandboxId="advent-of-js-day-4-l4umn" />
