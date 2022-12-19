@@ -1,10 +1,10 @@
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
 import clsx from 'clsx'
 
 import { Button } from '@/components/Button'
-import { Canvas } from '@/components/Canvas'
 import { Card } from '@/components/Card'
 import { Container } from '@/components/Container'
 import {
@@ -25,6 +25,13 @@ import logoStarbucks from '@/images/logos/starbucks.svg'
 import { generateRssFeed } from '@/lib/generateRssFeed'
 import { getAllPosts } from '@/lib/getAllPosts'
 import { formatDate } from '@/lib/formatDate'
+
+const Canvas = dynamic(
+  () => import('@/components/Canvas').then(({ Canvas }) => Canvas),
+  {
+    ssr: false,
+  }
+)
 
 function MailIcon(props) {
   return (
