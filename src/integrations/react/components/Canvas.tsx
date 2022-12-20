@@ -1,63 +1,65 @@
+/** @jsxImportSource react */
+
 // This is just boilerplate for rendering a WebGL canvas to the screen with variables like those on ShaderToy
 // All of the most interesting stuff is in the fragment shader in the HTMl section
 
-import * as React from 'react'
-import * as THREE from 'three'
+import * as React from "react";
+import * as THREE from "three";
 
 // See: https://codepen.io/ZachSaucier/pen/BawVxYe
-function main(canvas = document.querySelector('#canvas')) {
-  const renderer = new THREE.WebGLRenderer({ canvas })
-  renderer.autoClearColor = false
+function main(canvas = document.querySelector("#canvas")) {
+  const renderer = new THREE.WebGLRenderer({ canvas });
+  renderer.autoClearColor = false;
 
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1)
-  const scene = new THREE.Scene()
-  const plane = new THREE.PlaneGeometry(2, 2)
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
+  const scene = new THREE.Scene();
+  const plane = new THREE.PlaneGeometry(2, 2);
 
   const uniforms = {
     iTime: { value: 0 },
     iResolution: { value: new THREE.Vector3() },
-  }
+  };
   const material = new THREE.ShaderMaterial({
-    fragmentShader: (document.querySelector('#fragShader') as HTMLElement)
+    fragmentShader: (document.querySelector("#fragShader") as HTMLElement)
       .innerText,
     uniforms,
-  })
-  scene.add(new THREE.Mesh(plane, material))
+  });
+  scene.add(new THREE.Mesh(plane, material));
 
   function resizeRendererToDisplaySize(renderer) {
-    const canvas = renderer.domElement
-    const width = canvas.clientWidth
-    const height = canvas.clientHeight
-    const needResize = canvas.width !== width || canvas.height !== height
+    const canvas = renderer.domElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    const needResize = canvas.width !== width || canvas.height !== height;
     if (needResize) {
-      renderer.setSize(width, height, false)
+      renderer.setSize(width, height, false);
     }
-    return needResize
+    return needResize;
   }
 
   function render(time) {
-    time *= 0.001 // convert to seconds
+    time *= 0.001; // convert to seconds
 
-    resizeRendererToDisplaySize(renderer)
+    resizeRendererToDisplaySize(renderer);
 
-    const canvas = renderer.domElement
-    uniforms.iResolution.value.set(canvas.width, canvas.height, 1)
-    uniforms.iTime.value = time
+    const canvas = renderer.domElement;
+    uniforms.iResolution.value.set(canvas.width, canvas.height, 1);
+    uniforms.iTime.value = time;
 
-    renderer.render(scene, camera)
+    renderer.render(scene, camera);
 
-    requestAnimationFrame(render)
+    requestAnimationFrame(render);
   }
 
-  requestAnimationFrame(render)
+  requestAnimationFrame(render);
 }
 
 // main()
 
 export function Canvas() {
   React.useEffect(() => {
-    main()
-  }, [])
+    main();
+  }, []);
 
   return (
     <>
@@ -155,5 +157,5 @@ export function Canvas() {
         `}
       </script>
     </>
-  )
+  );
 }
