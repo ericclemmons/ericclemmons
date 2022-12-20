@@ -17,8 +17,8 @@ export function Button({ variant = "primary", className, href, ...props }) {
   );
 
   return href ? (
-    <a href={href} class={className} {...props} />
+    <a href={href} className={className} {...props} />
   ) : (
-    <button class={className} {...props} />
+    <button className={className} {...props} />
   );
 }

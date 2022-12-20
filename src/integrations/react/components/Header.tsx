@@ -110,16 +110,16 @@ function MobileNavigation(props) {
             focus
             className="bg-white ring-zinc-900/5 dark:bg-zinc-900 dark:ring-zinc-800 fixed inset-x-4 top-8 z-50 origin-top rounded-3xl p-8 ring-1"
           >
-            <div class="flex flex-row-reverse items-center justify-between">
+            <div className="flex flex-row-reverse items-center justify-between">
               <Popover.Button aria-label="Close menu" className="-m-1 p-1">
                 <CloseIcon className="text-zinc-500 dark:text-zinc-400 h-6 w-6" />
               </Popover.Button>
-              <h2 class="text-zinc-600 dark:text-zinc-400 text-sm font-medium">
+              <h2 className="text-zinc-600 dark:text-zinc-400 text-sm font-medium">
                 Navigation
               </h2>
             </div>
-            <nav class="mt-6">
-              <ul class="divide-zinc-100 text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300 -my-2 divide-y text-base">
+            <nav className="mt-6">
+              <ul className="divide-zinc-100 text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300 -my-2 divide-y text-base">
                 <MobileNavItem href="/about">About</MobileNavItem>
                 <MobileNavItem href="/blog">Blog</MobileNavItem>
                 <MobileNavItem href="/projects">Projects</MobileNavItem>
@@ -141,7 +141,7 @@ function NavItem({ href, children }) {
     <li>
       <a
         href={href}
-        class={clsx(
+        className={clsx(
           "relative block px-3 py-2 transition",
           isActive
             ? "text-fuchsia-500 dark:text-fuchsia-400"
@@ -150,7 +150,7 @@ function NavItem({ href, children }) {
       >
         {children}
         {isActive && (
-          <span class="from-fuchsia-500/0 via-fuchsia-500/40 to-fuchsia-500/0 dark:from-fuchsia-400/0 dark:via-fuchsia-400/40 dark:to-fuchsia-400/0 absolute inset-x-1 -bottom-px h-px bg-gradient-to-r" />
+          <span className="from-fuchsia-500/0 via-fuchsia-500/40 to-fuchsia-500/0 dark:from-fuchsia-400/0 dark:via-fuchsia-400/40 dark:to-fuchsia-400/0 absolute inset-x-1 -bottom-px h-px bg-gradient-to-r" />
         )}
       </a>
     </li>
@@ -160,7 +160,7 @@ function NavItem({ href, children }) {
 function DesktopNavigation(props) {
   return (
     <nav {...props}>
-      <ul class="bg-white/90 text-zinc-800 shadow-zinc-800/5 ring-zinc-900/5 dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 flex rounded-full px-3 text-sm font-medium shadow-lg ring-1 backdrop-blur">
+      <ul className="bg-white/90 text-zinc-800 shadow-zinc-800/5 ring-zinc-900/5 dark:bg-zinc-800/90 dark:text-zinc-200 dark:ring-white/10 flex rounded-full px-3 text-sm font-medium shadow-lg ring-1 backdrop-blur">
         <NavItem href="/about">About</NavItem>
         <NavItem href="/blog">Blog</NavItem>
         <NavItem href="/projects">Projects</NavItem>
@@ -215,7 +215,7 @@ function clamp(number, a, b) {
 function AvatarContainer({ className, ...props }) {
   return (
     <div
-      class={clsx(
+      className={clsx(
         className,
         "bg-white/90 shadow-zinc-800/5 ring-zinc-900/5 dark:bg-zinc-800/90 dark:ring-white/10 h-10 w-10 rounded-full p-0.5 shadow-lg ring-1 backdrop-blur"
       )}
@@ -229,17 +229,16 @@ function Avatar({ large = false, className, ...props }) {
     <a
       href="/"
       aria-label="Home"
-      class={clsx(className, "pointer-events-auto")}
+      className={clsx(className, "pointer-events-auto")}
       {...props}
     >
       <img
         src={avatarImage}
         alt=""
-        class={clsx(
+        className={clsx(
           "bg-zinc-100 ring-white dark:bg-zinc-800 rounded-full object-cover ring",
           large ? "h-16 w-16" : "h-9 w-9"
         )}
-        priority
       />
     </a>
   );
@@ -351,7 +350,7 @@ export function Header() {
   return (
     <>
       <header
-        class="pointer-events-none relative z-50 flex flex-col"
+        className="pointer-events-none relative z-50 flex flex-col"
         style={{
           height: "var(--header-height)",
           marginBottom: "var(--header-mb)",
@@ -361,7 +360,7 @@ export function Header() {
           <>
             <div
               ref={avatarRef}
-              class="order-last mt-[calc(theme(spacing.16)-theme(spacing.3))]"
+              className="order-last mt-[calc(theme(spacing.16)-theme(spacing.3))]"
             />
             <Container
               className="top-0 order-last -mb-3 pt-3"
@@ -391,27 +390,27 @@ export function Header() {
         )}
         <div
           ref={headerRef}
-          class="top-0 z-10 h-16 pt-6"
+          className="top-0 z-10 h-16 pt-6"
           style={{ position: "var(--header-position)" }}
         >
           <Container
             className="top-[var(--header-top,theme(spacing.6))] w-full"
             style={{ position: "var(--header-inner-position)" }}
           >
-            <div class="relative flex gap-4">
-              <div class="flex flex-1">
+            <div className="relative flex gap-4">
+              <div className="flex flex-1">
                 {!isHomePage && (
                   <AvatarContainer>
                     <Avatar />
                   </AvatarContainer>
                 )}
               </div>
-              <div class="flex flex-1 justify-end md:justify-center">
+              <div className="flex flex-1 justify-end md:justify-center">
                 <MobileNavigation className="pointer-events-auto md:hidden" />
                 <DesktopNavigation className="pointer-events-auto hidden md:block" />
               </div>
-              <div class="flex justify-end md:flex-1">
-                <div class="pointer-events-auto">
+              <div className="flex justify-end md:flex-1">
+                <div className="pointer-events-auto">
                   <ModeToggle />
                 </div>
               </div>
