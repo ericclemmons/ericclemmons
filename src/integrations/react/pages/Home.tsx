@@ -30,13 +30,6 @@ import { getAllPosts } from "~/lib/getAllPosts";
 import { formatDate } from "~/lib/formatDate";
 import { Canvas } from "../components/Canvas";
 
-// const Canvas = dynamic(
-//   () => import("../components/Canvas").then(({ Canvas }) => Canvas),
-//   {
-//     ssr: false,
-//   }
-// );
-
 function MailIcon(props) {
   return (
     <svg

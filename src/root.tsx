@@ -4,8 +4,8 @@ import {
   RouterOutlet,
   ServiceWorkerRegister,
 } from "@builder.io/qwik-city";
-import { Head } from "./components/Head";
 
+import { Head } from "./components/Head";
 import globalStyles from "./styles/global.css?inline";
 
 import "focus-visible";
@@ -18,7 +18,6 @@ export default component$(() => {
       <head>
         <meta charSet="utf-8" />
         <link rel="manifest" href="/manifest.json" />
-
         <Head />
       </head>
       <body

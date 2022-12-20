@@ -1,8 +1,5 @@
 /** @jsxImportSource react */
 
-// This is just boilerplate for rendering a WebGL canvas to the screen with variables like those on ShaderToy
-// All of the most interesting stuff is in the fragment shader in the HTMl section
-
 import * as React from "react";
 import * as THREE from "three";
 

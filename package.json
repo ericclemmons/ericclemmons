@@ -29,6 +29,7 @@
     "@types/node-fetch": "latest",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
+    "@types/three": "^0.146.0",
     "@typescript-eslint/eslint-plugin": "5.46.1",
     "@typescript-eslint/parser": "5.46.1",
     "autoprefixer": "10.4.11",
