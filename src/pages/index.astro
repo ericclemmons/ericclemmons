@@ -1,82 +1,133 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import Card from "@/components/Card.astro";
+import Layout from '@/layouts/Spotlight.astro'
+import { Canvas } from '@/components/Canvas'
+import { Container } from '@/components/Container'
+import { SocialLink } from '@/components/SocialLink'
+import {
+  TwitterIcon,
+  InstagramIcon,
+  GitHubIcon,
+  LinkedInIcon,
+} from '@/components/Icons'
+import Photos from '@/components/Photos.astro'
+import { Post } from '@/components/Post'
+import { Newsletter } from '@/components/Newsletter'
+import { Resume } from '@/components/Resume'
+
+const posts: any = []
 ---
 
-<Layout title="Welcome to Astro.">
-  <main>
-    <h1>Welcome to <span class="text-gradient">Astro</span></h1>
-    <p class="instructions">
-      To get started, open the directory <code>src/pages</code> in your project.<br
-      />
-      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-    </p>
-    <ul role="list" class="link-card-grid">
-      <Card
-        href="https://docs.astro.build/"
-        title="Documentation"
-        body="Learn how Astro works and explore the official API docs."
-      />
-      <Card
-        href="https://astro.build/integrations/"
-        title="Integrations"
-        body="Supercharge your project with new frameworks and libraries."
-      />
-      <Card
-        href="https://astro.build/themes/"
-        title="Themes"
-        body="Explore a galaxy of community-built starter themes."
-      />
-      <Card
-        href="https://astro.build/chat/"
-        title="Community"
-        body="Come say hi to our amazing Discord community. ❤️"
-      />
-    </ul>
-  </main>
-</Layout>
+<Layout>
+  <div
+    class="absolute -mt-16 h-96 w-full bg-fuchsia-500 shadow-inner"
+    style={{
+      clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
+    }}
+  >
+    <Canvas client:only />
+  </div>
+  <Container className="mt-9">
+    <div class="max-w-2xl">
+      <h1
+        class="md:leading-14 text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-xl sm:text-4xl sm:leading-10 md:text-6xl"
+      >
+        Hi, I&apos;m Eric Clemmons{' '}
+        <span role="img" aria-label="waving hand" class="wave text-white">
+          👋🏻
+        </span>
+        <style>
+          .wave {
+            animation-name: wave-animation;
+            /* Refers to the name of your @keyframes element below */
+            animation-duration: 2.5s;
+            /* Change to speed up or slow down */
+            animation-iteration-count: infinite;
+            /* Never stop waving :) */
+            transform-origin: 70% 70%;
+            /* Pivot around the bottom-left palm */
+            display: inline-block;
+          }
 
-<style>
-  main {
-    margin: auto;
-    padding: 1.5rem;
-    max-width: 60ch;
-  }
-  h1 {
-    font-size: 3rem;
-    font-weight: 800;
-    margin: 0;
-  }
-  .text-gradient {
-    background-image: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 400%;
-    background-position: 0%;
-  }
-  .instructions {
-    line-height: 1.6;
-    margin: 1rem 0;
-    border: 1px solid rgba(var(--accent), 25%);
-    background-color: white;
-    padding: 1rem;
-    border-radius: 0.4rem;
-  }
-  .instructions code {
-    font-size: 0.875em;
-    font-weight: bold;
-    background: rgba(var(--accent), 12%);
-    color: rgb(var(--accent));
-    border-radius: 4px;
-    padding: 0.3em 0.45em;
-  }
-  .instructions strong {
-    color: rgb(var(--accent));
-  }
-  .link-card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-    gap: 1rem;
-    padding: 0;
-  }
-</style>
+          @keyframes wave-animation {
+            0% {
+              transform: rotate(0deg);
+            }
+
+            10% {
+              transform: rotate(14deg);
+            }
+
+            /* The following five values can be played with to make the waving more or less extreme */
+            20% {
+              transform: rotate(-8deg);
+            }
+
+            30% {
+              transform: rotate(14deg);
+            }
+
+            40% {
+              transform: rotate(-4deg);
+            }
+
+            50% {
+              transform: rotate(10deg);
+            }
+
+            60% {
+              transform: rotate(0deg);
+            }
+
+            /* Reset for the last half to pause */
+            100% {
+              transform: rotate(0deg);
+            }
+          }
+          </style>
+      </h1>
+      <p
+        class="mt-6 text-base text-black shadow-white drop-shadow-[0_0_9px_white]"
+      >
+        I've been contributing to & leading autonomous, outcome-driven remote
+        teams with over 15 years of experience as an open-source developer
+        focused on UX & DX.
+      </p>
+      <div class="mt-6 flex gap-6">
+        <SocialLink
+          href="https://twitter.com"
+          aria-label="Follow on Twitter"
+          icon={TwitterIcon}
+        />
+        <SocialLink
+          href="https://instagram.com"
+          aria-label="Follow on Instagram"
+          icon={InstagramIcon}
+        />
+        <SocialLink
+          href="https://github.com"
+          aria-label="Follow on GitHub"
+          icon={GitHubIcon}
+        />
+        <SocialLink
+          href="https://linkedin.com"
+          aria-label="Follow on LinkedIn"
+          icon={LinkedInIcon}
+        />
+      </div>
+    </div>
+  </Container>
+  <Photos />
+  <Container className="mt-24 md:mt-28">
+    <div
+      class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"
+    >
+      <div class="flex flex-col gap-16">
+        {posts.map((post) => <Post key={post.slug} post={post} />)}
+      </div>
+      <div class="space-y-10 lg:pl-16 xl:pl-24">
+        <Newsletter />
+        <Resume />
+      </div>
+    </div>
+  </Container>
+</Layout>
