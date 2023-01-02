@@ -13,8 +13,11 @@ import Photos from '@/components/Photos.astro'
 import { Post } from '@/components/Post'
 import { Newsletter } from '@/components/Newsletter'
 import { Resume } from '@/components/Resume'
+import { getCollection } from 'astro:content'
 
-const posts: any = []
+const posts = (await getCollection('blog'))
+  .sort((a, z) => z.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 4)
 ---
 
 <Layout>
@@ -33,7 +36,7 @@ const posts: any = []
       >
         Hi, I&apos;m Eric Clemmons{' '}
         <span role="img" aria-label="waving hand" class="wave text-white">
-          👋🏻
+          {'👋🏻'}
         </span>
         <style>
           .wave {
@@ -83,7 +86,7 @@ const posts: any = []
               transform: rotate(0deg);
             }
           }
-          </style>
+        </style>
       </h1>
       <p
         class="mt-6 text-base text-black shadow-white drop-shadow-[0_0_9px_white]"
@@ -122,7 +125,7 @@ const posts: any = []
       class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"
     >
       <div class="flex flex-col gap-16">
-        {posts.map((post) => <Post key={post.slug} post={post} />)}
+        {posts.map((post) => <Post post={post} />)}
       </div>
       <div class="space-y-10 lg:pl-16 xl:pl-24">
         <Newsletter />
