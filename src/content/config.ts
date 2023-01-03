@@ -1,9 +1,6 @@
 import { z, defineCollection } from 'astro:content'
 
 const blog = defineCollection({
-  slug({ defaultSlug }) {
-    return defaultSlug.replace(/(\/index)?\.mdx$/, '')
-  },
   schema: {
     date: z.date(),
     summary: z.string().optional(),

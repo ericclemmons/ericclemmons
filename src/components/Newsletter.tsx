@@ -5,7 +5,7 @@ export function Newsletter() {
   return (
     <form
       action="/thank-you"
-      className="dark:zinc-600 rounded-2xl border border-zinc-100 bg-white p-6 shadow-sm dark:border-zinc-700/40"
+      className="dark:zinc-600 rounded-2xl border border-zinc-100 p-6 shadow-sm dark:border-zinc-700/40"
     >
       <h2 className="flex text-sm font-semibold text-zinc-900 dark:text-zinc-100">
         <MailIcon className="h-6 w-6 flex-none" />

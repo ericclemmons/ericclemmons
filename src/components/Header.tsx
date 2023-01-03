@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 import { Container } from '@/components/Container'
 import avatar from '@/images/avatar.jpg'
-import { Fragment, useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 
 import {
   ChevronDownIcon,
@@ -190,13 +190,15 @@ function Avatar({ large = false, className, ...props }) {
 }
 
 export function Header() {
-  let isHomePage = true // useRouter().pathname === '/'
+  let [isHomePage, setIsHomePage] = useState(false)
 
   let headerRef = useRef()
   let avatarRef = useRef()
   let isInitial = useRef(true)
 
   useEffect(() => {
+    setIsHomePage(window.location.pathname === '/')
+
     let downDelay = avatarRef.current?.offsetTop ?? 0
     let upDelay = 64
 
