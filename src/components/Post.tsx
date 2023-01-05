@@ -9,7 +9,7 @@ export function Post({ post }: { post: CollectionEntry<'blog'> }) {
       <Card.Title href={`/blog/${post.slug}`}>{post.data.title}</Card.Title>
       <Card.Eyebrow
         as="time"
-        datetime={formatDate(post.data.date)}
+        dateTime={formatDate(post.data.date)}
         title={formatDate(post.data.date)}
         decorate
       >
