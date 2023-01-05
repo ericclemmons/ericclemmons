@@ -1,0 +1,93 @@
+---
+import { Container } from '@/components/Container'
+import {
+  GitHubIcon,
+  LinkedInIcon,
+  MailIcon,
+  TwitterIcon,
+} from '@/components/Icons'
+import SocialLink from '@/components/SocialLink.astro'
+import portraitImage from '@/images/portrait.jpg'
+import Layout from '@/layouts/Spotlight.astro'
+---
+
+<!-- <Head>
+        <title>About - Eric Clemmons</title>
+        <meta
+          name="description"
+          content="I’m Eric Clemmons. I live in New York City, where I design the future."
+        />
+      </Head> -->
+<Layout>
+  <Container className="mt-16 sm:mt-32">
+    <div
+      class="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12"
+    >
+      <div class="lg:pl-20">
+        <div class="max-w-xs px-2.5 lg:max-w-none">
+          <img
+            src={portraitImage.src}
+            alt=""
+            sizes="(min-width: 1024px) 32rem, 20rem"
+            class="bg-zinc-100 dark:bg-zinc-800 aspect-square rotate-3 rounded-2xl object-cover"
+          />
+        </div>
+      </div>
+      <div class="lg:order-first lg:row-span-2">
+        <h1
+          class="text-zinc-800 dark:text-zinc-100 text-4xl font-bold tracking-tight sm:text-5xl"
+        >
+          I’m Eric Clemmons. I live in Austin, TX, where I create solutions that
+          positively impact teams & users.
+        </h1>
+        <div class="text-zinc-600 dark:text-zinc-400 mt-6 space-y-7 text-base">
+          <p>
+            I'm engineering leader specializing in autonomous, outcome-driven
+            remote teams with over 15 years of experience as an open-source
+            JavaScript/Node.js developer focused on UX/DX.
+          </p>
+
+          <p>
+            My industry experience ranges from organic SEO lead-generation in
+            online eudcation (HigherEducation.com), to cross-team mobile
+            experiences (Starbucks), to leading new open-source UI teams at AWS
+            Amplify & Stripe.
+          </p>
+
+          <p>
+            In my free time, I learn new recipes to cook for my family, play
+            music on drums & guitar, and sherpas clanmates in Destiny 2.
+          </p>
+        </div>
+      </div>
+      <div class="lg:pl-20">
+        <ul role="list">
+          <SocialLink href="https://twitter.com/ericclemmons" icon={TwitterIcon}
+            >Follow on Twitter</SocialLink
+          >
+          <SocialLink
+            href="https://github.com/ericclemmons"
+            icon={GitHubIcon}
+            className="mt-4"
+          >
+            Follow on GitHub
+          </SocialLink>
+          <SocialLink
+            href="https://www.linkedin.com/in/ericclemmons"
+            icon={LinkedInIcon}
+            className="mt-4"
+          >
+            Follow on LinkedIn
+          </SocialLink>
+          <SocialLink
+            href="mailto:eric@smarterspam.com"
+            icon={MailIcon}
+            className="border-zinc-100 dark:border-zinc-700/40 mt-8 border-t pt-8"
+          >
+            eric@smarterspam.com
+          </SocialLink>
+        </ul>
+      </div>
+    </div>
+  </Container>
+</Layout>

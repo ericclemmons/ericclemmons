@@ -1,18 +1,13 @@
 ---
-import Layout from '@/layouts/Spotlight.astro'
 import { Canvas } from '@/components/Canvas'
 import { Container } from '@/components/Container'
-import { SocialLink } from '@/components/SocialLink'
-import {
-  TwitterIcon,
-  InstagramIcon,
-  GitHubIcon,
-  LinkedInIcon,
-} from '@/components/Icons'
+import { HeroSocialLink } from '@/components/HeroSocialLink'
+import { GitHubIcon, LinkedInIcon, TwitterIcon } from '@/components/Icons'
+import { Newsletter } from '@/components/Newsletter'
 import Photos from '@/components/Photos.astro'
 import { Post } from '@/components/Post'
-import { Newsletter } from '@/components/Newsletter'
 import { Resume } from '@/components/Resume'
+import Layout from '@/layouts/Spotlight.astro'
 import { getCollection } from 'astro:content'
 
 const posts = (await getCollection('blog'))
@@ -96,17 +91,17 @@ const posts = (await getCollection('blog'))
         autonomous remote teams for over 15 years.
       </p>
       <div class="mt-6 flex gap-6">
-        <SocialLink
+        <HeroSocialLink
           href="https://twitter.com/ericclemmons"
           aria-label="Follow on Twitter"
           icon={TwitterIcon}
         />
-        <SocialLink
+        <HeroSocialLink
           href="https://github.com/ericclemmons"
           aria-label="Follow on GitHub"
           icon={GitHubIcon}
         />
-        <SocialLink
+        <HeroSocialLink
           href="https://www.linkedin.com/in/ericclemmons"
           aria-label="Follow on LinkedIn"
           icon={LinkedInIcon}
