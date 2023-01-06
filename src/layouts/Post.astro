@@ -44,7 +44,11 @@ const previousPathname = null
             >
               <span class="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500"
               ></span>
-              <span class="ml-3">{relativeDate(post.data.date)}</span>
+              <span class="ml-3"
+                >{formatDate(post.data.date)} ({
+                  relativeDate(post.data.date)
+                })</span
+              >
             </time>
           </header>
           <Prose className="mt-8">

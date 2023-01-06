@@ -13,7 +13,7 @@ export function Post({ post }: { post: CollectionEntry<'blog'> }) {
         title={formatDate(post.data.date)}
         decorate
       >
-        {relativeDate(post.data.date)}
+        {formatDate(post.data.date)} ({relativeDate(post.data.date)})
       </Card.Eyebrow>
       <Card.Description>{post.data.summary}</Card.Description>
       <Card.Cta>Read post</Card.Cta>
