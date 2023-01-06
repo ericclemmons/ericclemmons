@@ -1,0 +1,123 @@
+---
+import { Card } from '@/components/Card'
+import Layout from '@/layouts/Simple.astro'
+import LinkIcon from '@/components/LinkIcon.astro'
+import logoAWS from '@/images/logos/aws.svg'
+import logoCodelift from '@/images/logos/codelift.svg'
+import logoGithub from '@/images/logos/github.svg'
+
+const projects = [
+  {
+    name: 'AWS Amplify',
+    description:
+      'Lead for Amplify UI – accessible cloud-connected, cross-framework components.',
+    link: {
+      href: 'https://ui.docs.amplify.aws/',
+      label: 'ui.docs.amplify.aws',
+    },
+    logo: logoAWS,
+  },
+  {
+    name: 'codelift',
+    description: 'Visual Development for Tailwind CSS',
+    link: {
+      href: 'https://codelift.app/',
+      label: 'codelift.app',
+    },
+    logo: logoCodelift,
+  },
+  {
+    name: 'Click-to-Component',
+    description:
+      'Option+Click React components in your browser to instantly open the source in VS Code',
+    link: {
+      href: 'https://github.com/ericclemmons/click-to-component',
+      label: 'github.com',
+    },
+    logo: logoGithub,
+  },
+  {
+    name: 'node-recorder',
+    description:
+      'Simple recording & replaying of HTTP requests for predictable development & testing.',
+    link: {
+      href: 'https://github.com/ericclemmons/node-recorder',
+      label: 'github.com',
+    },
+    logo: logoGithub,
+  },
+  {
+    name: 'polydev',
+    description:
+      'Faster, route-centric development for Node.js apps with built-in Hot Module Replacement.',
+    link: {
+      href: 'https://github.com/ericclemmons/polydev',
+      label: 'github.com',
+    },
+    logo: logoGithub,
+  },
+  {
+    name: 'mdx-site',
+    description: 'Static site generator powered by TypeScript, MDX, & React.',
+    link: {
+      href: 'https://github.com/ericclemmons/mdx-site',
+      label: 'github.com',
+    },
+    logo: logoGithub,
+  },
+  {
+    name: 'Top Repositories',
+    description: 'View more...',
+    link: {
+      href: 'https://github.com/ericclemmons?tab=repositories&sort=stargazers',
+      label: 'github.com',
+    },
+    logo: logoGithub,
+  },
+]
+---
+
+<!-- 
+      <Head>
+        <title>Projects - Eric Clemmons</title>
+        <meta
+          name="description"
+          content="Things I’ve made trying to put my dent in the universe."
+        />
+      </Head> -->
+<Layout>
+  <Fragment slot="title">A few projects I'm proud of.</Fragment>
+
+  <Fragment slot="intro">
+    Where possible, I like to open-source generic solutions for the larger
+    community to benefit from. I also use my share my prototypes that improve DX
+    in the hopes others can benefit.
+  </Fragment>
+
+  <ul
+    role="list"
+    class="grid grid-cols-1 gap-x-12 gap-y-16 sm:grid-cols-2 lg:grid-cols-3"
+  >
+    {
+      projects.map((project) => (
+        <Card as="li">
+          <div class="bg-white shadow-zinc-800/5 ring-zinc-900/5 dark:border-zinc-700/50 dark:bg-zinc-800 relative z-10 flex h-12 w-12 items-center justify-center rounded-full shadow-md ring-1 dark:border dark:ring-0">
+            <img
+              src={project.logo}
+              alt=""
+              class="h-8 w-8 bg-white rounded-full"
+            />
+          </div>
+          <h2 class="text-zinc-800 dark:text-zinc-100 mt-6 text-base font-semibold">
+            <Card.Link href={project.link.href}>{project.name}</Card.Link>
+          </h2>
+          <Card.Description>{project.description}</Card.Description>
+          <p class="group-hover:text-fuchsia-500 text-zinc-400 dark:text-zinc-200 relative z-10 mt-6 flex text-sm font-medium transition">
+            <LinkIcon className="h-6 w-6 flex-none" />
+            <span class="ml-2">{project.link.label}</span>
+          </p>
+        </Card>
+      ))
+    }
+  </ul>
+</Layout>

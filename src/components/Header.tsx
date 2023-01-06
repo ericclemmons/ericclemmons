@@ -182,7 +182,7 @@ function Avatar({ large = false, className, ...props }) {
         alt=""
         width={large ? '4rem' : '2.25rem'}
         className={clsx(
-          'rounded-full bg-zinc-100 object-cover ring ring-white dark:bg-zinc-800',
+          'rounded-full bg-zinc-100 object-cover ring ring-white dark:bg-zinc-800 dark:ring-black',
           large ? 'h-16 w-16' : 'h-9 w-9'
         )}
       />
