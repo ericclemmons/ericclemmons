@@ -79,7 +79,8 @@ function MobileNavigation(props) {
 }
 
 function NavItem({ href, children }) {
-  let isActive = true // useRouter().pathname === href
+  let isActive =
+    typeof window === 'object' ? window.location.pathname === href : false
 
   return (
     <li>
