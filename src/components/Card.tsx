@@ -70,7 +70,7 @@ Card.Cta = function CardCta({ children }) {
 Card.Eyebrow = function CardEyebrow({
   as: Component = 'p',
   decorate = false,
-  className,
+  className = undefined,
   children,
   ...props
 }) {
