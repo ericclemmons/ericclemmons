@@ -1,0 +1,10 @@
+---
+const { props } = Astro
+import { Section } from '@/components/Section'
+---
+
+<Section {...props}>
+  <ul role="list" class="space-y-16">
+    <slot />
+  </ul>
+</Section>

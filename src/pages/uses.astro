@@ -1,0 +1,85 @@
+---
+import Layout from '@/layouts/Simple.astro'
+import Tool from '@/components/Tool.astro'
+import ToolsSection from '@/components/ToolsSection.astro'
+---
+
+<!-- <Head>
+        <title>Uses - Eric Clemmons</title>
+        <meta
+          name="description"
+          content="Software I use, gadgets I love, and other things I recommend."
+        />
+      </Head> -->
+<Layout>
+  <Fragment slot="title">My remote productivity office.</Fragment>
+  <Fragment slot="intro">
+    I get asked a lot about the things I use to build software, stay productive,
+    or buy to fool myself into thinking I’m being productive when I’m really
+    just procrastinating. Here’s a big list of all of my favorite stuff.
+  </Fragment>
+
+  <div class="space-y-20">
+    <ToolsSection title="Workstation">
+      <Tool title="13” MacBook Pro, Intel Core i7, 16GB RAM (2017)">
+        Looking forward to upgrading to an M1 or M2. But not today :)
+      </Tool>
+      <Tool title="Predator X34 Curved Gaming Monitor">
+        I prefer having a single, ultri-wide display over multiple monitors.
+      </Tool>
+      <Tool title="IBM Model M SSK Industrial Keyboard">
+        They don’t make keyboards the way they used to. I buy these any time I
+        see them go up for sale and keep them in storage in case I need parts or
+        need to retire my main.
+      </Tool>
+      <Tool title="Apple Magic Trackpad">
+        Something about all the gestures makes me feel like a wizard with
+        special powers. I really like feeling like a wizard with special powers.
+      </Tool>
+      <Tool title="Herman Miller Aeron Chair">
+        If I’m going to slouch in the worst ergonomic position imaginable all
+        day, I might as well do it in an expensive chair.
+      </Tool>
+    </ToolsSection>
+    <ToolsSection title="Development tools">
+      <Tool title="VS Code">
+        The VS Code ecosystem, especially with automatically synced settings,
+        makes it a breeze to be product Day 1 on a new machine.
+      </Tool>
+      <Tool title="iTerm2">
+        <kbd>Ctrl-'</kbd> and I'm ready to go! I prefer a dedicated Terminal with
+        visor mode over the drawer in VS Code, since `pnpm create` doesn't have a
+        folder to start in yet.
+      </Tool>
+    </ToolsSection>
+    <ToolsSection title="Design">
+      <Tool title="Operator Mono">
+        It was expensive, but I've really enjoyed using it for years.
+        Particularly for the italics to different comments from code.
+      </Tool>
+      <Tool title="Relaxed">
+        My favorite theme (for _everything_) that I've been using for years.
+      </Tool>
+    </ToolsSection>
+    <ToolsSection title="Productivity">
+      <Tool title="Jumpcut">
+        My preferred clipboard manager. <kbd>Command+Shift+V</kbd> brings up a bezel
+        with up to 99 items from my clipboard history. Arrow-keys, then <kbd
+          >Enter</kbd
+        >, & I'm done!
+      </Tool>
+      <Tool title="Rectangle">
+        My preferred window manager. I heavily use the keyboard shortcuts (e.g. <kbd
+          >Command+Option+Arrows</kbd
+        >) to toggle between 1/2, 1/3, 1/4 sizes.
+      </Tool>
+      <Tool title="Obsidian">
+        Subscribed with Obsidian Sync, my Daily Kanban & notes are shared across
+        all devices.
+      </Tool>
+      <Tool title="1Password">
+        The best password solution that hasn't been hacked yet.
+      </Tool>
+    </ToolsSection>
+  </div>
+</Layout>
