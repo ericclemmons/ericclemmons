@@ -2,6 +2,9 @@
 import Layout from '@/layouts/Simple.astro'
 import Tool from '@/components/Tool.astro'
 import ToolsSection from '@/components/ToolsSection.astro'
+
+import desk from '@/images/photos/desk.jpg'
+import drums from '@/images/photos/drums.jpg'
 ---
 
 <Layout
@@ -17,6 +20,11 @@ import ToolsSection from '@/components/ToolsSection.astro'
 
   <div class="space-y-20">
     <ToolsSection title="Workstation">
+      <img
+        src={desk.src}
+        alt="My desk"
+        class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
+      />
       <Tool title="13” MacBook Pro, Intel Core i7, 16GB RAM (2017)">
         Looking forward to upgrading to an M1 or M2. But not today :)
       </Tool>
@@ -76,6 +84,13 @@ import ToolsSection from '@/components/ToolsSection.astro'
       <Tool title="1Password">
         The best password solution that hasn't been hacked yet.
       </Tool>
+    </ToolsSection>
+    <ToolsSection title="Instruments">
+      <img
+        src={drums.src}
+        alt="My drums"
+        class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
+      />
     </ToolsSection>
   </div>
 </Layout>
