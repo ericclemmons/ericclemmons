@@ -37,7 +37,7 @@ const posts = (await getCollection('blog')).sort(
               <Card.Eyebrow
                 as="time"
                 className="md:hidden"
-                datetime={formatDate(post.data.date)}
+                dateTime={formatDate(post.data.date)}
                 decorate
                 title={formatDate(post.data.date)}
               >
@@ -49,7 +49,7 @@ const posts = (await getCollection('blog')).sort(
             <Card.Eyebrow
               as="time"
               className="mt-1 hidden md:block"
-              datetime={formatDate(post.data.date)}
+              dateTime={formatDate(post.data.date)}
               title={formatDate(post.data.date)}
             >
               {relativeDate(post.data.date)}
