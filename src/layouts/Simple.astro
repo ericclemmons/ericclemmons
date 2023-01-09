@@ -1,9 +1,11 @@
 ---
 import Layout from '@/layouts/Spotlight.astro'
 import { Container } from '@/components/Container'
+
+const { props } = Astro
 ---
 
-<Layout>
+<Layout {...props}>
   <Container className="mt-16 sm:mt-32">
     <header class="max-w-2xl">
       <h1

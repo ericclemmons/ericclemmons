@@ -1,12 +1,18 @@
 ---
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
+const {
+  title,
+  description = "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
+} = Astro.props
 ---
 
 <html class="h-full antialiased" lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
+    <title>{[title, 'Eric Clemmons'].filter(Boolean).join(' / ')}</title>
+    <meta name="description" content={description} />
 
     <script>
       let darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')

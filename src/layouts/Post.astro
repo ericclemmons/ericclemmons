@@ -11,11 +11,12 @@ interface Props {
   post: CollectionEntry<'blog'>
 }
 
-const { post } = Astro.props
+const { props } = Astro
+const { post } = props
 const previousPathname = null
 ---
 
-<Layout>
+<Layout {...props}>
   <Container className="mt-16 lg:mt-32">
     <div class="xl:relative">
       <div class="mx-auto max-w-2xl">

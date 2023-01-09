@@ -10,14 +10,17 @@ const posts = (await getCollection('blog')).sort(
 )
 ---
 
-<Layout>
+<Layout
+  title="Blog"
+  description="Writing on software engineering, management, and working remotely."
+>
   <Fragment slot="title">
-    Writing on software design, company building, and the aerospace industry.
+    Writing on software engineering, management, and working remotely.
   </Fragment>
 
   <Fragment slot="intro">
-    All of my long-form thoughts on programming, leadership, product design, and
-    more, collected in chronological order.
+    All of my long-form thoughts in chronological order. Including the stuff I
+    don't believe anymore but I keep for historical purposes.
   </Fragment>
 
   <div
