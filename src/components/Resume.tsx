@@ -3,6 +3,7 @@ import logoStarbucks from '@/images/logos/starbucks.svg'
 import logoStripe from '@/images/logos/stripe.svg'
 import logoAWS from '@/images/logos/aws.svg'
 import logoHE from '@/images/logos/higher-education.svg'
+import logoWhiteFence from '@/images/logos/whitefence.png'
 import { BriefcaseIcon, ArrowDownIcon } from '@/components/Icons'
 
 export function Resume() {
@@ -32,8 +33,15 @@ export function Resume() {
       company: 'HigherEducation.com',
       title: 'CTO',
       logo: logoHE,
-      start: '2018',
-      end: '2019',
+      start: '2010',
+      end: '2018',
+    },
+    {
+      company: 'WhiteFence',
+      title: 'Web Application Architect',
+      logo: logoWhiteFence.src,
+      start: '2007',
+      end: '2009',
     },
   ]
 
