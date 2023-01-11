@@ -1,13 +1,22 @@
 ---
-import { CollectionEntry, getEntry } from 'astro:content'
 import * as components from '@/components/MDX'
 import Layout from '@/layouts/Post.astro'
+import { getPosts } from '@/lib/getPosts'
+import type { CollectionEntry } from 'astro:content'
 
+export async function getStaticPaths() {
+  const posts = await getPosts()
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }))
+}
 interface Props {
   post: CollectionEntry<'blog'>
 }
 
-const post = await getEntry('blog', `${Astro.params.slug}.mdx`)
+const { post } = Astro.props
 const { Content } = await post.render()
 ---
 
