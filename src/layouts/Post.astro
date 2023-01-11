@@ -1,12 +1,12 @@
 ---
 import { Container } from '@/components/Container'
 import { ArrowLeftIcon } from '@/components/Icons'
+import Prose from '@/components/Prose.astro'
 import Layout from '@/layouts/Spotlight.astro'
 import { formatDate } from '@/lib/formatDate'
+import { getPosts } from '@/lib/getPosts'
 import { relativeDate } from '@/lib/relativeDate'
 import type { CollectionEntry } from 'astro:content'
-import { Prose } from '@/components/Prose'
-import { getPosts } from '@/lib/getPosts'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -69,7 +69,7 @@ const previousPost = posts[index + 1]
           previousPost && (
             <a
               href={`/blog/${previousPost.slug}`}
-              class="group px-5 flex items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 no-underline font-normal hover:text-fuchsia-500 dark:hover:text-fuchsia-400"
+              class="group flex items-center justify-center rounded-full bg-white px-5 font-normal no-underline shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition hover:text-fuchsia-500 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:text-fuchsia-400 dark:hover:ring-white/20"
             >
               <ArrowLeftIcon className="relative -left-2 h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
               {previousPost.data.title}
@@ -81,10 +81,10 @@ const previousPost = posts[index + 1]
           nextPost && (
             <a
               href={`/blog/${nextPost.slug}`}
-              class="group px-5 flex items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 no-underline font-normal hover:text-fuchsia-500 dark:hover:text-fuchsia-400"
+              class="group flex items-center justify-center rounded-full bg-white px-5 font-normal no-underline shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition hover:text-fuchsia-500 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:text-fuchsia-400 dark:hover:ring-white/20"
             >
               {nextPost.data.title}
-              <ArrowLeftIcon className="rotate-180 relative left-2 h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
+              <ArrowLeftIcon className="relative left-2 h-4 w-4 rotate-180 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
             </a>
           )
         }
