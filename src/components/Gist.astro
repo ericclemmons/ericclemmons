@@ -1,0 +1,19 @@
+---
+const { gistLink } = Astro.props
+
+interface Props {
+  gistLink: string
+}
+---
+
+<iframe src={`https://gist.github.com/${gistLink}.pibb`}></iframe>
+
+<style>
+  iframe {
+    width: 100%;
+    height: 50vh;
+    border: 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+</style>

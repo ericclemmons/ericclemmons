@@ -1,3 +1,3 @@
-export { default as Tweet } from '@/components/Tweet.astro'
 export { default as CodeSandbox } from '@/components/CodeSandbox.astro'
-export { Gist } from 'mdx-embed/dist/components/gist'
+export { default as Gist } from '@/components/Gist.astro'
+export { default as Tweet } from '@/components/Tweet.astro'
