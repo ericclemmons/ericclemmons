@@ -1,5 +1,4 @@
 ---
-import { Image } from '@astrojs/image/components'
 import clsx from 'clsx'
 
 import authenticator from '@/images/photos/authenticator.png'
@@ -33,11 +32,10 @@ const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
             rotations[imageIndex % rotations.length]
           )}
         >
-          <Image
-            src={image}
+          <img
+            src={image.src}
             alt=""
-            width="(min-width: 640px) 18rem, 11rem"
-            className="absolute inset-0 h-full w-full object-cover"
+            class="absolute inset-0 h-full w-full object-cover"
           />
         </div>
       ))
