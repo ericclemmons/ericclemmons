@@ -1,0 +1,21 @@
+---
+const { codeSandboxId } = Astro.props
+---
+
+<style>
+  iframe {
+    width: 100%;
+    height: 500px;
+    border: 0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+</style>
+
+<iframe
+  title={`codeSandbox-${codeSandboxId}`}
+  class="codesandbox-mdx-embed"
+  allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+  src={`https://codesandbox.io/embed/${codeSandboxId}`}
+  sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+></iframe>

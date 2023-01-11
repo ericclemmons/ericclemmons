@@ -1,6 +1,6 @@
 import { Tweet } from 'mdx-embed/dist/components/twitter'
 
-export { CodeSandbox } from 'mdx-embed/dist/components/codesandbox'
+export { default as CodeSandbox } from '@/components/CodeSandbox.astro'
 export { Gist } from 'mdx-embed/dist/components/gist'
 
 export function Tweet(props) {
