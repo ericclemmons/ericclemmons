@@ -140,9 +140,9 @@ export const get: APIRoute = async ({ url, site }) => {
             right: '5%',
             color: 'transparent',
             fontSize: 24,
-            fontWeight: 200,
+            fontWeight: 400,
             letterSpacing: '0.05em',
-            // background: 'linear-gradient(to bottom right, #f472b6, #dc2626)',
+            background: 'linear-gradient(to bottom right, #f472b6, #dc2626)',
             backgroundClip: 'text',
           }}
         >

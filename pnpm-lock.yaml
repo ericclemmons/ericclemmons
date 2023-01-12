@@ -19,7 +19,7 @@ specifiers:
   prettier-plugin-tailwindcss: ^0.2.1
   react: npm:@preact/compat
   react-dom: npm:@preact/compat
-  satori: ^0.0.38
+  satori: 0.0.45
   sharp: ^0.31.3
   tailwindcss: ^3.0.24
   three: ^0.148.0
@@ -42,7 +42,7 @@ dependencies:
   preact: 10.11.3
   react: /@preact/compat/17.1.2_preact@10.11.3
   react-dom: /@preact/compat/17.1.2_preact@10.11.3
-  satori: 0.0.38
+  satori: 0.0.45
   sharp: 0.31.3
   tailwindcss: 3.2.4
   three: 0.148.0
@@ -1651,6 +1651,10 @@ packages:
     dependencies:
       '@emmetio/abbreviation': 2.2.3
       '@emmetio/css-abbreviation': 2.1.4
+    dev: false
+
+  /emoji-regex/10.2.1:
+    resolution: {integrity: sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==}
     dev: false
 
   /emoji-regex/8.0.0:
@@ -4097,14 +4101,15 @@ packages:
       suf-log: 2.5.3
     dev: false
 
-  /satori/0.0.38:
-    resolution: {integrity: sha512-o8nMTp5IiLKi3oOw80Y3LdDAReGS+UfC1StQBAwlnFNzHmY1A3JGFT+9gam6x8I6uMDFrs82FnG9R/kI9iONdg==}
+  /satori/0.0.45:
+    resolution: {integrity: sha512-jF7AAK5ddZQVE6r6gTG07YxOvhldev0wBrFqBXRNbPH/mEy15gfIqA4xjGfVHczcGYZvY/VWmKri6DzRJF8cgQ==}
     engines: {node: '>=16'}
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
       css-background-parser: 0.1.0
       css-box-shadow: 1.0.0-3
       css-to-react-native: 3.0.0
+      emoji-regex: 10.2.1
       postcss-value-parser: 4.2.0
       yoga-layout-prebuilt: 1.10.0
     dev: false
