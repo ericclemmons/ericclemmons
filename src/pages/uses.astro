@@ -1,8 +1,6 @@
 ---
 import Tool from '@/components/Tool.astro'
 import ToolsSection from '@/components/ToolsSection.astro'
-import desk from '@/images/photos/desk.jpg'
-import drums from '@/images/photos/drums.jpg'
 import Layout from '@/layouts/Simple.astro'
 import { Image } from '@astrojs/image/components'
 ---
@@ -24,7 +22,8 @@ import { Image } from '@astrojs/image/components'
         aspectRatio="16:9"
         alt="My desk"
         class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-        src={desk.src}
+        format="png"
+        src="/static/images/advent-of-js.png"
         width={1200}
       />
       <Tool title="13” MacBook Pro, Intel Core i7, 16GB RAM (2017)">
@@ -92,7 +91,8 @@ import { Image } from '@astrojs/image/components'
         aspectRatio="16:9"
         alt="My drums"
         class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-        src={drums.src}
+        format="png"
+        src="/static/images/advent-of-js.png"
         width={1200}
       />
     </ToolsSection>
