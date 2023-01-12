@@ -62,36 +62,11 @@ const html = htm.bind(h)
 export const get: APIRoute = async ({ url, site }) => {
   const title = url.searchParams.get('title') ?? 'Missing Title'
   const options = {
-    // debug: true,
+    debug: true,
     width: 1200,
     height: 630,
     fonts,
   }
-
-  // const svg = await satori(
-  //   html`
-  //     <div
-  //       style=${{
-  //         fontFamily: 'Inter',
-  //         backgroundColor: '#222',
-  //         backgroundSize: '150px 150px',
-  //         height: '100%',
-  //         width: '100%',
-  //         display: 'flex',
-  //         textAlign: 'center',
-  //         alignItems: 'center',
-  //         justifyContent: 'center',
-  //         flexDirection: 'column',
-  //         flexWrap: 'nowrap',
-  //         fontSize: 96,
-  //         color: 'white',
-  //       }}
-  //     >
-  //       ${title}
-  //     </div>
-  //   `,
-  //   options as SatoriOptions
-  // )
 
   const svg = await satori(
     html`
