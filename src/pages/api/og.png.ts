@@ -35,6 +35,32 @@ export const get: APIRoute = async ({ url, site }) => {
     (res) => res.arrayBuffer()
   )
 
+  const options = {
+    // debug: true,
+    width: 1200,
+    height: 630,
+    fonts: [
+      {
+        name: 'Inter',
+        data: inter,
+        weight: 400,
+        style: 'normal',
+      },
+      {
+        name: 'Inter',
+        data: interBold,
+        weight: 700,
+        style: 'normal',
+      },
+      {
+        name: 'Inter',
+        data: interLight,
+        weight: 300,
+        style: 'normal',
+      },
+    ],
+  }
+
   const svg = await satori(
     html`
       <div
@@ -50,88 +76,113 @@ export const get: APIRoute = async ({ url, site }) => {
           justifyContent: 'center',
           flexDirection: 'column',
           flexWrap: 'nowrap',
+          fontSize: 96,
+          color: 'white',
         }}
       >
-        <img
-          src=${`${SITE}/static/images/gradient.png`}
-          style=${{
-            position: 'absolute',
-            transform: 'skewY(-1deg)',
-          }}
-        />
-
-        <img
-          height=${100}
-          src=${`${SITE}/static/images/avatar.jpg`}
-          style=${{
-            position: 'absolute',
-            left: '5%',
-            top: '12.5%',
-            borderRadius: '100%',
-            border: '5px solid white',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-          }}
-          width=${100}
-        />
-
-        <div
-          style=${{
-            fontSize: 84,
-            letterSpacing: '-0.025em',
-            color: 'white',
-            marginTop: 30,
-            padding: '0 120px',
-            lineHeight: 1.25,
-            fontWeight: 700,
-            whiteSpace: 'pre-wrap',
-          }}
-        >
-          ${title}
-        </div>
-
-        <div
-          style=${{
-            position: 'absolute',
-            bottom: '5%',
-            right: '5%',
-            color: 'transparent',
-            fontSize: 24,
-            fontWeight: 200,
-            letterSpacing: '0.05em',
-            background: 'linear-gradient(to bottom right, #f472b6, #dc2626)',
-            backgroundClip: 'text',
-          }}
-        >
-          ericclemmons.com
-        </div>
+        ${title}
       </div>
     `,
-    {
-      // debug: true,
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: 'Inter',
-          data: inter,
-          weight: 400,
-          style: 'normal',
-        },
-        {
-          name: 'Inter',
-          data: interBold,
-          weight: 700,
-          style: 'normal',
-        },
-        {
-          name: 'Inter',
-          data: interLight,
-          weight: 300,
-          style: 'normal',
-        },
-      ],
-    }
+    options
   )
+
+  // const svg = await satori(
+  //   html`
+  //     <div
+  //       style=${{
+  //         fontFamily: 'Inter',
+  //         backgroundColor: '#222',
+  //         backgroundSize: '150px 150px',
+  //         height: '100%',
+  //         width: '100%',
+  //         display: 'flex',
+  //         textAlign: 'center',
+  //         alignItems: 'center',
+  //         justifyContent: 'center',
+  //         flexDirection: 'column',
+  //         flexWrap: 'nowrap',
+  //       }}
+  //     >
+  //       <img
+  //         src=${`${SITE}/static/images/gradient.png`}
+  //         style=${{
+  //           position: 'absolute',
+  //           transform: 'skewY(-1deg)',
+  //         }}
+  //       />
+
+  //       <img
+  //         height=${100}
+  //         src=${`${SITE}/static/images/avatar.jpg`}
+  //         style=${{
+  //           position: 'absolute',
+  //           left: '5%',
+  //           top: '12.5%',
+  //           borderRadius: '100%',
+  //           border: '5px solid white',
+  //           boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
+  //         }}
+  //         width=${100}
+  //       />
+
+  //       <div
+  //         style=${{
+  //           fontSize: 84,
+  //           letterSpacing: '-0.025em',
+  //           color: 'white',
+  //           marginTop: 30,
+  //           padding: '0 120px',
+  //           lineHeight: 1.25,
+  //           fontWeight: 700,
+  //           whiteSpace: 'pre-wrap',
+  //         }}
+  //       >
+  //         ${title}
+  //       </div>
+
+  //       <div
+  //         style=${{
+  //           position: 'absolute',
+  //           bottom: '5%',
+  //           right: '5%',
+  //           color: 'transparent',
+  //           fontSize: 24,
+  //           fontWeight: 200,
+  //           letterSpacing: '0.05em',
+  //           background: 'linear-gradient(to bottom right, #f472b6, #dc2626)',
+  //           backgroundClip: 'text',
+  //         }}
+  //       >
+  //         ericclemmons.com
+  //       </div>
+  //     </div>
+  //   `,
+  //   {
+  //     // debug: true,
+  //     width: 1200,
+  //     height: 630,
+  //     fonts: [
+  //       {
+  //         name: 'Inter',
+  //         data: inter,
+  //         weight: 400,
+  //         style: 'normal',
+  //       },
+  //       {
+  //         name: 'Inter',
+  //         data: interBold,
+  //         weight: 700,
+  //         style: 'normal',
+  //       },
+  //       {
+  //         name: 'Inter',
+  //         data: interLight,
+  //         weight: 300,
+  //         style: 'normal',
+  //       },
+  //     ],
+  //   }
+  // )
 
   return new Response(await sharp(Buffer.from(svg)).png().toBuffer(), {
     status: 200,
