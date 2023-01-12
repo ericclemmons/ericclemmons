@@ -1,5 +1,5 @@
 <div id="shuffle">
-  <script src="https://d3js.org/d3.v2.min.js"></script>
+  <script src="https://d3js.org/d3.v2.min.js" is:inline></script>
   <style>
     line {
       stroke: #000;
@@ -26,7 +26,7 @@
       cursor: pointer;
     }
   </style>
-  <script>
+  <script is:inline>
     var margin = { top: 0, right: 24, bottom: 0, left: 24 },
       width = 480,
       height = 80 - margin.top - margin.bottom,
@@ -81,7 +81,11 @@
           'translate(' + width / 2 + ',' + height / 2 + ')scale(.6)'
         )
 
-      play.append('rect').attr('width', width).attr('height', height)
+      play
+        .append('rect')
+        .attr('width', width)
+        .attr('height', height)
+        .style('fill', 'transparent')
 
       function start() {
         play.style('display', 'none')
