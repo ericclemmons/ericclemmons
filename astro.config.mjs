@@ -22,7 +22,7 @@ const hexLoader = {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ericclemmons.com',
+  site: 'https://ericclemmons.com/',
   experimental: {
     contentCollections: true,
   },
