@@ -193,12 +193,12 @@ export const get: APIRoute = async ({ url, site }) => {
   //   }
   // )
 
-  return new Response(svg, {
-    status: 200,
-    headers: {
-      'Content-Type': 'image/svg+xml',
-    },
-  })
+  // return new Response(svg, {
+  //   status: 200,
+  //   headers: {
+  //     'Content-Type': 'image/svg+xml',
+  //   },
+  // })
 
   return new Response(await sharp(Buffer.from(svg)).png().toBuffer(), {
     status: 200,
