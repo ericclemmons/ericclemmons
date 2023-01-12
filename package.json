@@ -2,6 +2,7 @@
   "name": "@example/basics",
   "version": "0.0.1",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -27,7 +28,7 @@
     "preact": "^10.6.5",
     "react": "npm:@preact/compat",
     "react-dom": "npm:@preact/compat",
-    "satori": "^0.1.0",
+    "satori": "^0.0.38",
     "sharp": "^0.31.3",
     "tailwindcss": "^3.0.24",
     "three": "^0.148.0",

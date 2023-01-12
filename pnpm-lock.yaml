@@ -19,7 +19,7 @@ specifiers:
   prettier-plugin-tailwindcss: ^0.2.1
   react: npm:@preact/compat
   react-dom: npm:@preact/compat
-  satori: ^0.1.0
+  satori: ^0.0.38
   sharp: ^0.31.3
   tailwindcss: ^3.0.24
   three: ^0.148.0
@@ -43,7 +43,7 @@ dependencies:
   preact: 10.11.3
   react: /@preact/compat/17.1.2_preact@10.11.3
   react-dom: /@preact/compat/17.1.2_preact@10.11.3
-  satori: 0.1.0
+  satori: 0.0.38
   sharp: 0.31.3
   tailwindcss: 3.2.4
   three: 0.148.0
@@ -1044,6 +1044,10 @@ packages:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
     dev: false
 
+  /@types/yoga-layout/1.9.2:
+    resolution: {integrity: sha512-S9q47ByT2pPvD65IvrWp7qppVMpk9WGMbVq9wbWZOHg6tnXSD4vyhao6nOSBwwfDdV2p3Kx9evA9vI+XWTfDvw==}
+    dev: false
+
   /@vercel/nft/0.22.6:
     resolution: {integrity: sha512-gTsFnnT4mGxodr4AUlW3/urY+8JKKB452LwF3m477RFUJTAaDmcz2JqFuInzvdybYIeyIv1sSONEJxsxnbQ5JQ==}
     engines: {node: '>=14'}
@@ -1768,10 +1772,6 @@ packages:
     dependencies:
       '@emmetio/abbreviation': 2.2.3
       '@emmetio/css-abbreviation': 2.1.4
-    dev: false
-
-  /emoji-regex/10.2.1:
-    resolution: {integrity: sha512-97g6QgOk8zlDRdgq1WxwgTMgEWGVAQvB5Fdpgc1MkNy56la5SKP9GsMXKDOdqwn90/41a8yPwIGk1Y6WVbeMQA==}
     dev: false
 
   /emoji-regex/8.0.0:
@@ -4218,17 +4218,16 @@ packages:
       suf-log: 2.5.3
     dev: false
 
-  /satori/0.1.0:
-    resolution: {integrity: sha512-U079oj1Tb8RYlo3E/eKptWZBjUxiq43Ng3IxAgUqw5wfUfNItVIAR53RRKTzjHDV9sLu0JeNifbupzxZAgp4FQ==}
+  /satori/0.0.38:
+    resolution: {integrity: sha512-o8nMTp5IiLKi3oOw80Y3LdDAReGS+UfC1StQBAwlnFNzHmY1A3JGFT+9gam6x8I6uMDFrs82FnG9R/kI9iONdg==}
     engines: {node: '>=16'}
     dependencies:
       '@shuding/opentype.js': 1.4.0-beta.0
       css-background-parser: 0.1.0
       css-box-shadow: 1.0.0-3
       css-to-react-native: 3.0.0
-      emoji-regex: 10.2.1
       postcss-value-parser: 4.2.0
-      yoga-wasm-web: 0.3.0
+      yoga-layout-prebuilt: 1.10.0
     dev: false
 
   /sax/1.2.4:
@@ -5007,6 +5006,13 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: false
+
+  /yoga-layout-prebuilt/1.10.0:
+    resolution: {integrity: sha512-YnOmtSbv4MTf7RGJMK0FvZ+KD8OEe/J5BNnR0GHhD8J/XcG/Qvxgszm0Un6FTHWW4uHlTgP0IztiXQnGyIR45g==}
+    engines: {node: '>=8'}
+    dependencies:
+      '@types/yoga-layout': 1.9.2
     dev: false
 
   /yoga-wasm-web/0.3.0:
