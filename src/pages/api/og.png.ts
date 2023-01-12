@@ -3,6 +3,10 @@ import htm from 'htm'
 import satori, { init } from 'satori/wasm'
 import sharp from 'sharp'
 import initYoga from 'yoga-wasm-web/asm'
+import ttf from '../../../public/Inter/static/Inter-Regular.ttf?raw-hex'
+
+const fromHexString = (hexString) =>
+  Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
 
 function h(type: string, props: Record<string, any>, ...children: any) {
   return {
@@ -24,16 +28,21 @@ const SITE = import.meta.env.DEV
 init(yoga)
 
 export const get: APIRoute = async ({ url, site }) => {
+  const inter = fromHexString(ttf)
+
   const title = url.searchParams.get('title') ?? 'Missing Title'
-  const inter = await fetch(`${SITE}/Inter/static/Inter-Regular.ttf`).then(
-    (res) => res.arrayBuffer()
-  )
-  const interLight = await fetch(`${SITE}/Inter/static/Inter-Light.ttf`).then(
-    (res) => res.arrayBuffer()
-  )
-  const interBold = await fetch(`${SITE}/Inter/static/Inter-Bold.ttf`).then(
-    (res) => res.arrayBuffer()
-  )
+  // const buffer = Buffer.from(ttf, 'utf8')
+  // const inter = new Uint8Array(buffer).buffer
+
+  // const inter = await fetch(
+  //   `../../../public/Inter/static/Inter-Regular.ttf`
+  // ).then((res) => res.arrayBuffer())
+  // const interLight = await fetch(
+  //   `../../public/Inter/static/Inter-Light.ttf`
+  // ).then((res) => res.arrayBuffer())
+  // const interBold = await fetch(
+  //   `../../public/Inter/static/Inter-Bold.ttf`
+  // ).then((res) => res.arrayBuffer())
 
   const options = {
     // debug: true,
@@ -48,13 +57,13 @@ export const get: APIRoute = async ({ url, site }) => {
       },
       {
         name: 'Inter',
-        data: interBold,
+        data: inter, //Bold,
         weight: 700,
         style: 'normal',
       },
       {
         name: 'Inter',
-        data: interLight,
+        data: inter, //Light,
         weight: 300,
         style: 'normal',
       },
