@@ -6,15 +6,13 @@ const {
   description = "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
 } = Astro.props
 
-const SITE = import.meta.env.PROD
-  ? import.meta.env.SITE
-  : 'http://localhost:3000'
+const { origin } = Astro.url
 ---
 
 <html class="h-full antialiased" lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta property="og:image" content={`${SITE}/api/og.png?title=${title}`} />
+    <meta property="og:image" content={`${origin}/api/og.png?title=${title}`} />
     <meta name="viewport" content="width=device-width" />
     <title>{[title, 'Eric Clemmons'].filter(Boolean).join(' / ')}</title>
     <meta name="description" content={description} />
