@@ -37,7 +37,18 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: vercel({
-    includeFiles: ['./src/fonts'],
+    includeFiles: [
+      './public/static/images/avatar.jpg',
+      './public/static/images/gradient.png',
+      './src/fonts/Inter-Bold.ttf?raw-hex',
+      './src/fonts/Inter-ExtraBold.ttf?raw-hex',
+      './src/fonts/Inter-ExtraLight.ttf?raw-hex',
+      './src/fonts/Inter-Light.ttf?raw-hex',
+      './src/fonts/Inter-Medium.ttf?raw-hex',
+      './src/fonts/Inter-Regular.ttf?raw-hex',
+      './src/fonts/Inter-SemiBold.ttf?raw-hex',
+      './src/fonts/Inter-Thin.ttf?raw-hex',
+    ],
   }),
   vite: {
     plugins: [hexLoader],
