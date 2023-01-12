@@ -3,12 +3,12 @@ import mdx from '@astrojs/mdx'
 import preact from '@astrojs/preact'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
-import vercel from '@astrojs/vercel/static'
+import vercel from '@astrojs/vercel/serverless'
 import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ericclemmons.com/',
+  site: 'https://ericclemmons.com',
   experimental: {
     contentCollections: true,
   },
@@ -21,6 +21,6 @@ export default defineConfig({
     }),
     preact({ compat: true }),
   ],
-  output: 'static',
+  output: 'server',
   adapter: vercel(),
 })

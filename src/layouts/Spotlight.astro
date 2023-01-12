@@ -2,7 +2,7 @@
 import Footer from '@/components/Footer.astro'
 import { Header } from '@/components/Header'
 const {
-  title,
+  title = 'Home',
   description = "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
 } = Astro.props
 ---
@@ -10,6 +10,10 @@ const {
 <html class="h-full antialiased" lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta
+      property="og:image"
+      content={`http://localhost:3000/api/og.png?title=${title}`}
+    />
     <meta name="viewport" content="width=device-width" />
     <title>{[title, 'Eric Clemmons'].filter(Boolean).join(' / ')}</title>
     <meta name="description" content={description} />
