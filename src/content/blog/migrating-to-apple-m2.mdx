@@ -1,0 +1,111 @@
+---
+date: 2023-01-11
+title: Migrating to the Apple MacBook Air M2
+summary: Note to self on how to seamless go from an Intel-based Mac to the new M2.
+---
+
+import m2 from '@/images/photos/m2.png'
+import rosetta from '@/images/photos/rosetta.png'
+
+My _13” MacBook Pro, Intel Core i7, 16GB RAM (2017)_ was lasting ~2 hours
+at the coffeeshop, so decided to ugprade to the [MacBook Air M2](https://www.apple.com/macbook-air-m2/).
+
+<img src={m2.src} />
+
+## Friction Log
+
+1. Migrating from Previous Mac
+
+   Migration Assistant actually did an _excellent_ job of bringing over apps & settings: [Move content to a new Mac](https://support.apple.com/en-us/HT204350).
+
+   What's most impressive is that it has a _Peer-to-Peer_ connection option that's faster than Wi-Fi.
+
+   <img src={rosetta.src} />
+
+   However, **anytime you get a warning about Rosetta to open an app, that's a sign you should reinstall it.**
+
+2. Git
+
+   When running `git`, I would get this error:
+
+   > xcrun: error: invalid active developer path (/Library/Developer/CommandLineTools), missing xcrun at: /Library/Developer/CommandLineTools/usr/bin/xcrun.
+   > – [StackOverflow](https://apple.stackexchange.com/questions/254380/why-am-i-getting-an-invalid-active-developer-path-when-attempting-to-use-git-a)
+
+   Solving this was easy as running:
+
+   ```shell
+   xcode-select --install
+   ```
+
+3. [Homebrew](https://brew.sh/)
+
+   Installing `brew` is the foundation of all other macOS software.
+
+   ```shell
+   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+   ```
+
+4. Clipboard Manager
+
+   [Jumpcut](https://snark.github.io/jumpcut/) has been with me for years as my favorite, minimal clipboard manager:
+
+   ```shell
+   brew install --cask jumpcut
+   ```
+
+   Plus, it's a stack for my memory when writing posts like this 😅
+
+5. [pnpm](https://pnpm.io/)
+
+   ```shell
+   curl -fsSL https://get.pnpm.io/install.sh | sh -
+   ```
+
+6. Node
+
+   By default, `node` didn't exist on this machine.
+
+   Traditionally, I would manage Node with [nvm](https://github.com/nvm-sh/nvm), [fnm](https://github.com/Schniz/fnm), or [volta](https://volta.sh/).
+
+   But now that I exclusively use [pnpm](https://pnpm.io/), **`pnpm` can manage `node` versions for me instead!**
+
+   ```shell
+   pnpm env use --global lts
+   ```
+
+   Then, you can tell `pnpm` to automatically install & respect this version when running `pnpm` commands in a project with [use-node-version](https://pnpm.io/npmrc#use-node-version)
+
+   ```shell
+   node --version > .npmrc
+   ```
+
+   <Tweet tweetLink="jaredpalmer/status/1506634644992794633" />
+
+7. [pure](https://github.com/sindresorhus/pure) prompt
+
+   ```shell
+   pnpm install --global pure-prompt
+   ```
+
+   Then, update [zsh](https://ohmyz.sh/) to use it:
+
+   ```shell
+   # .zshrc
+   autoload -U promptinit; promptinit
+   prompt pure
+   ```
+
+8. VS Code
+
+   Thanks to [Settings Sync](https://code.visualstudio.com/docs/editor/settings-sync), all of my
+   settings were already saved & synced between machines.
+
+## Conclusion
+
+All-in-all, it took about an hour to get productive again (not including transferring files from Migration Assistant).
+
+I used to think [dotfiles](https://dotfiles.github.io/) were the solution to this!
+
+But my [dotfiles from 10 years ago](https://github.com/ericclemmons/dotfiles) were stale & irrelevant within _a year_. The ROI just didn't exist.
+
+[![Is It Worth the Time?](https://imgs.xkcd.com/comics/is_it_worth_the_time.png)](https://xkcd.com/1205)

@@ -204,6 +204,13 @@ declare module 'astro:content' {
   collection: "blog",
   data: InferEntrySchema<"blog">
 },
+"migrating-to-apple-m2.mdx": {
+  id: "migrating-to-apple-m2.mdx",
+  slug: "migrating-to-apple-m2",
+  body: string,
+  collection: "blog",
+  data: InferEntrySchema<"blog">
+},
 "react-event-preventdefault.mdx": {
   id: "react-event-preventdefault.mdx",
   slug: "react-event-preventdefault",
