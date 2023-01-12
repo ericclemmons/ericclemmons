@@ -1,6 +1,4 @@
 ---
-import clsx from 'clsx'
-
 import authenticator from '@/images/photos/authenticator.png'
 import changebot from '@/images/photos/changebot.png'
 import cjs from '@/images/photos/cjs.jpg'
@@ -9,6 +7,7 @@ import design from '@/images/photos/design.jpg'
 import formdata from '@/images/photos/formdata.jpg'
 import list from '@/images/photos/list.jpg'
 import workflow from '@/images/photos/workflow.jpg'
+import { Picture } from '@astrojs/image/components'
 
 const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
 ---
@@ -29,15 +28,18 @@ const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
         workflow,
       ].map((image, imageIndex) => (
         <div
-          class={clsx(
+          class:list={[
             'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 shadow-2xl dark:bg-zinc-800 sm:w-72 sm:rounded-2xl',
-            rotations[imageIndex % rotations.length]
-          )}
+            rotations[imageIndex % rotations.length],
+          ]}
         >
-          <img
-            src={image.src}
+          <Picture
             alt=""
+            aspectRatio="9:10"
             class="absolute inset-0 h-full w-full object-cover"
+            sizes="(min-width: 640px) 18rem, 11rem"
+            src={image.src}
+            widths={[576, 352]}
           />
         </div>
       ))

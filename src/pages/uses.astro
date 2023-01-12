@@ -1,10 +1,8 @@
 ---
-import Layout from '@/layouts/Simple.astro'
 import Tool from '@/components/Tool.astro'
 import ToolsSection from '@/components/ToolsSection.astro'
-
-import desk from '@/images/photos/desk.jpg'
-import drums from '@/images/photos/drums.jpg'
+import Layout from '@/layouts/Simple.astro'
+import { Image } from '@astrojs/image/components'
 ---
 
 <Layout
@@ -20,10 +18,12 @@ import drums from '@/images/photos/drums.jpg'
 
   <div class="space-y-20">
     <ToolsSection title="Workstation">
-      <img
-        src={desk.src}
+      <Image
         alt="My desk"
+        aspectRatio="16:9"
         class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
+        src={import('@/images/photos/desk.jpg')}
+        width={1200}
       />
       <Tool title="13” MacBook Pro, Intel Core i7, 16GB RAM (2017)">
         Looking forward to upgrading to an M1 or M2. But not today :)
@@ -86,10 +86,12 @@ import drums from '@/images/photos/drums.jpg'
       </Tool>
     </ToolsSection>
     <ToolsSection title="Instruments">
-      <img
-        src={drums.src}
+      <Image
         alt="My drums"
+        aspectRatio="16:9"
         class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
+        src={import('@/images/photos/drums.jpg')}
+        width={1200}
       />
     </ToolsSection>
   </div>
