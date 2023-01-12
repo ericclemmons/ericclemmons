@@ -62,7 +62,7 @@ const html = htm.bind(h)
 export const get: APIRoute = async ({ url, site }) => {
   const title = url.searchParams.get('title') ?? 'Missing Title'
   const options = {
-    debug: true,
+    // debug: true,
     width: 1200,
     height: 630,
     fonts,
