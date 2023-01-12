@@ -1,9 +1,18 @@
-import type { APIRoute } from 'astro'
+import type { APIRoute } from 'astro/dist/index.cjs'
 import htm from 'htm'
 import satori, { init } from 'satori/wasm'
 import sharp from 'sharp'
 import initYoga from 'yoga-wasm-web/asm'
-import ttf from '../../../public/Inter/static/Inter-Regular.ttf?raw-hex'
+import inter700 from '../../fonts/Inter-Bold.ttf?raw-hex'
+import inter800 from '../../fonts/Inter-ExtraBold.ttf?raw-hex'
+import inter200 from '../../fonts/Inter-ExtraLight.ttf?raw-hex'
+import inter300 from '../../fonts/Inter-Light.ttf?raw-hex'
+import inter500 from '../../fonts/Inter-Medium.ttf?raw-hex'
+import inter400 from '../../fonts/Inter-Regular.ttf?raw-hex'
+import inter600 from '../../fonts/Inter-SemiBold.ttf?raw-hex'
+import inter100 from '../../fonts/Inter-Thin.ttf?raw-hex'
+
+init(initYoga())
 
 const fromHexString = (hexString) =>
   Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
@@ -19,55 +28,32 @@ function h(type: string, props: Record<string, any>, ...children: any) {
   }
 }
 
-const html = htm.bind(h)
-const yoga = initYoga()
-const SITE = import.meta.env.DEV
-  ? 'http://localhost:3000'
-  : import.meta.env.SITE
+const fonts = [
+  inter100,
+  inter200,
+  inter300,
+  inter400,
+  inter500,
+  inter600,
+  inter700,
+  inter800,
+].map((hex, i) => ({
+  name: 'Inter',
+  data: fromHexString(hex),
+  weight: `${i + 1}00`,
+  style: 'normal',
+}))
 
-init(yoga)
+const html = htm.bind(h)
 
 export const get: APIRoute = async ({ url, site }) => {
-  const inter = fromHexString(ttf)
-
   const title = url.searchParams.get('title') ?? 'Missing Title'
-  // const buffer = Buffer.from(ttf, 'utf8')
-  // const inter = new Uint8Array(buffer).buffer
-
-  // const inter = await fetch(
-  //   `../../../public/Inter/static/Inter-Regular.ttf`
-  // ).then((res) => res.arrayBuffer())
-  // const interLight = await fetch(
-  //   `../../public/Inter/static/Inter-Light.ttf`
-  // ).then((res) => res.arrayBuffer())
-  // const interBold = await fetch(
-  //   `../../public/Inter/static/Inter-Bold.ttf`
-  // ).then((res) => res.arrayBuffer())
 
   const options = {
     // debug: true,
     width: 1200,
     height: 630,
-    fonts: [
-      {
-        name: 'Inter',
-        data: inter,
-        weight: 400,
-        style: 'normal',
-      },
-      {
-        name: 'Inter',
-        data: inter, //Bold,
-        weight: 700,
-        style: 'normal',
-      },
-      {
-        name: 'Inter',
-        data: inter, //Light,
-        weight: 300,
-        style: 'normal',
-      },
-    ],
+    fonts,
   }
 
   const svg = await satori(
@@ -192,6 +178,13 @@ export const get: APIRoute = async ({ url, site }) => {
   //     ],
   //   }
   // )
+
+  return new Response(svg, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/svg+xml',
+    },
+  })
 
   return new Response(await sharp(Buffer.from(svg)).png().toBuffer(), {
     status: 200,

@@ -37,7 +37,7 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: vercel({
-    includeFiles: ['./public/Inter/static/Inter-Regular.ttf'],
+    includeFiles: ['./src/fonts'],
   }),
   vite: {
     plugins: [hexLoader],
