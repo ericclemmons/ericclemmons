@@ -2,7 +2,8 @@
 import Tool from '@/components/Tool.astro'
 import ToolsSection from '@/components/ToolsSection.astro'
 import Layout from '@/layouts/Simple.astro'
-import { Image } from '@astrojs/image/components'
+import desk from '@/images/photos/desk.jpg'
+import drums from '@/images/photos/drums.jpg'
 ---
 
 <Layout
@@ -18,11 +19,10 @@ import { Image } from '@astrojs/image/components'
 
   <div class="space-y-20">
     <ToolsSection title="Workstation">
-      <Image
+      <img
         alt="My desk"
-        aspectRatio="16:9"
-        class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
-        src={import('@/images/photos/desk.jpg')}
+        class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
+        src={desk.src}
         width={1200}
       />
       <Tool title="13” MacBook Pro, Intel Core i7, 16GB RAM (2017)">
@@ -86,11 +86,10 @@ import { Image } from '@astrojs/image/components'
       </Tool>
     </ToolsSection>
     <ToolsSection title="Instruments">
-      <Image
+      <img
         alt="My drums"
-        aspectRatio="16:9"
-        class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
-        src={import('@/images/photos/drums.jpg')}
+        class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
+        src={drums.src}
         width={1200}
       />
     </ToolsSection>
