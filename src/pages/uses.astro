@@ -1,9 +1,10 @@
 ---
 import Tool from '@/components/Tool.astro'
 import ToolsSection from '@/components/ToolsSection.astro'
-import Layout from '@/layouts/Simple.astro'
 import desk from '@/images/photos/desk.jpg'
 import drums from '@/images/photos/drums.jpg'
+import Layout from '@/layouts/Simple.astro'
+import { Image } from '@astrojs/image/components'
 ---
 
 <Layout
@@ -19,7 +20,8 @@ import drums from '@/images/photos/drums.jpg'
 
   <div class="space-y-20">
     <ToolsSection title="Workstation">
-      <img
+      <Image
+        aspectRatio="16:9"
         alt="My desk"
         class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
         src={desk.src}
@@ -86,7 +88,8 @@ import drums from '@/images/photos/drums.jpg'
       </Tool>
     </ToolsSection>
     <ToolsSection title="Instruments">
-      <img
+      <Image
+        aspectRatio="16:9"
         alt="My drums"
         class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
         src={drums.src}
