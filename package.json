@@ -35,6 +35,7 @@
     "yoga-wasm-web": "^0.3.0"
   },
   "devDependencies": {
+    "@types/sharp": "^0.31.1",
     "prettier-plugin-tailwindcss": "^0.2.1"
   }
 }
