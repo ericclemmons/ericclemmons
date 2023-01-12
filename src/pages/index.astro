@@ -22,7 +22,7 @@ const posts = (await getCollection('blog'))
       clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
     }}
   >
-    <Canvas client:only />
+    <Canvas client:only="preact" />
   </div>
   <Container className="mt-9">
     <div class="max-w-2xl">

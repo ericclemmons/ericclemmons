@@ -1,6 +1,6 @@
 import image from '@astrojs/image'
 import mdx from '@astrojs/mdx'
-import react from '@astrojs/react'
+import preact from '@astrojs/preact'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
 import vercel from '@astrojs/vercel/static'
@@ -14,12 +14,12 @@ export default defineConfig({
   },
   integrations: [
     tailwind(),
-    react(),
     sitemap(),
     mdx(),
     image({
       serviceEntryPoint: '@astrojs/image/sharp',
     }),
+    preact({ compat: true }),
   ],
   output: 'static',
   adapter: vercel(),
