@@ -6,6 +6,15 @@ import tailwind from '@astrojs/tailwind'
 import vercel from '@astrojs/vercel/serverless'
 import { defineConfig } from 'astro/config'
 
+const site = import.meta.env.PROD
+  ? 'https://ericclemmons.com'
+  : 'http://localhost:3000'
+const paths = import.meta.glob('./src/content/**/*.mdx')
+const slugs = Object.keys(paths).map((file) =>
+  file.split('./src/content/').pop().split('.mdx').shift()
+)
+const customPages = slugs.map((slug) => `${site}/${slug}`)
+
 /** @type {import('vite').Plugin} */
 const hexLoader = {
   name: 'hex-loader',
@@ -22,13 +31,15 @@ const hexLoader = {
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ericclemmons.com',
+  site,
   experimental: {
     contentCollections: true,
   },
   integrations: [
     tailwind(),
-    sitemap(),
+    sitemap({
+      customPages,
+    }),
     mdx(),
     image({
       serviceEntryPoint: '@astrojs/image/sharp',

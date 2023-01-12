@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ericclemmons.com/sitemap-index.xml
+Sitemap: /sitemap-index.xml
