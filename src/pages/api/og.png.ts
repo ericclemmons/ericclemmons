@@ -1,8 +1,9 @@
 import type { APIRoute } from 'astro/dist/index.cjs'
 import htm from 'htm'
+import wasm from 'node_modules/yoga-wasm-web/dist/yoga.wasm?raw-hex'
 import satori, { init } from 'satori/wasm'
 import sharp from 'sharp'
-import initYoga from 'yoga-wasm-web/asm'
+import initYoga from 'yoga-wasm-web'
 import inter700 from '../../fonts/Inter-Bold.ttf?raw-hex'
 import inter800 from '../../fonts/Inter-ExtraBold.ttf?raw-hex'
 import inter200 from '../../fonts/Inter-ExtraLight.ttf?raw-hex'
@@ -12,18 +13,31 @@ import inter400 from '../../fonts/Inter-Regular.ttf?raw-hex'
 import inter600 from '../../fonts/Inter-SemiBold.ttf?raw-hex'
 import inter100 from '../../fonts/Inter-Thin.ttf?raw-hex'
 
-init(initYoga())
-
 const fromHexString = (hexString) =>
   Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
 
-function h(type: string, props: Record<string, any>, ...children: any) {
+const yoga = await initYoga(fromHexString(wasm))
+init(yoga)
+
+function h(
+  type: string | Function,
+  props: Record<string, any>,
+  ...children: any
+) {
+  if (typeof type === 'function') {
+    return type({ ...props, children })
+  }
+
+  if (type === 'Fragment') {
+    return children
+  }
+
   return {
     type,
     props: {
       ...props,
-      // Satori crashes on single-element arrays
-      children: children.length > 1 ? children : children[0],
+      // Satori crashes on emtpy
+      children: children.length > 0 ? children : undefined,
     },
   }
 }
