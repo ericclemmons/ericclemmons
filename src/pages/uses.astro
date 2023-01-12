@@ -19,12 +19,11 @@ import { Image } from '@astrojs/image/components'
   <div class="space-y-20">
     <ToolsSection title="Workstation">
       <Image
-        aspectRatio="16:9"
         alt="My desk"
-        class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-        format="png"
-        src="/static/images/advent-of-js.png"
-        width={1200}
+        aspectRatio="16:9"
+        class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
+        src={import('@/images/photos/desk.jpg')}
+        width="1200"
       />
       <Tool title="13” MacBook Pro, Intel Core i7, 16GB RAM (2017)">
         Looking forward to upgrading to an M1 or M2. But not today :)
@@ -88,12 +87,11 @@ import { Image } from '@astrojs/image/components'
     </ToolsSection>
     <ToolsSection title="Instruments">
       <Image
-        aspectRatio="16:9"
         alt="My drums"
-        class="aspect-video rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800"
-        format="png"
-        src="/static/images/advent-of-js.png"
-        width={1200}
+        aspectRatio="16:9"
+        class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
+        src={import('@/images/photos/drums.jpg')}
+        width="1200"
       />
     </ToolsSection>
   </div>
