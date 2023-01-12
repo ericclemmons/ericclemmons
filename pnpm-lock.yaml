@@ -23,7 +23,6 @@ specifiers:
   sharp: ^0.31.3
   tailwindcss: ^3.0.24
   three: ^0.148.0
-  yoga-wasm-web: ^0.3.0
 
 dependencies:
   '@astrojs/image': 0.12.1_sharp@0.31.3
@@ -34,8 +33,6 @@ dependencies:
   '@astrojs/vercel': 2.4.0
   '@headlessui/react': 1.7.7_ive3jjn476xyi3ikfsqwmh5x74
   '@tailwindcss/typography': 0.5.8_tailwindcss@3.2.4
-  '@types/react': 18.0.26
-  '@types/react-dom': 18.0.10
   astro: 1.7.2
   clsx: 1.2.1
   htm: 3.1.1
@@ -46,9 +43,10 @@ dependencies:
   sharp: 0.31.3
   tailwindcss: 3.2.4
   three: 0.148.0
-  yoga-wasm-web: 0.3.0
 
 devDependencies:
+  '@types/react': 18.0.26
+  '@types/react-dom': 18.0.10
   '@types/sharp': 0.31.1
   prettier-plugin-tailwindcss: 0.2.1
 
@@ -879,13 +877,13 @@ packages:
 
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
-    dev: false
+    dev: true
 
   /@types/react-dom/18.0.10:
     resolution: {integrity: sha512-E42GW/JA4Qv15wQdqJq8DL4JhNpB3prJgjgapN3qJT9K2zO5IIAQh4VXvCEDupoqAwnz0cY4RlXeC/ajX5SFHg==}
     dependencies:
       '@types/react': 18.0.26
-    dev: false
+    dev: true
 
   /@types/react/18.0.26:
     resolution: {integrity: sha512-hCR3PJQsAIXyxhTNSiDFY//LhnMZWpNNr5etoCqx/iUfGc5gXWtQR2Phl908jVR6uPXacojQWTg4qRpkxTuGug==}
@@ -893,7 +891,7 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
-    dev: false
+    dev: true
 
   /@types/resolve/1.20.2:
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -907,7 +905,7 @@ packages:
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}
-    dev: false
+    dev: true
 
   /@types/sharp/0.31.1:
     resolution: {integrity: sha512-5nWwamN9ZFHXaYEincMSuza8nNfOof8nmO+mcI+Agx1uMUk4/pQnNIcix+9rLPXzKrm1pS34+6WRDbDV0Jn7ag==}
@@ -1518,7 +1516,7 @@ packages:
 
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
-    dev: false
+    dev: true
 
   /data-uri-to-buffer/4.0.0:
     resolution: {integrity: sha512-Vr3mLBA8qWmcuschSLAOogKgQ/Jwxulv3RNE4FXnYWRGujzrRWQI4m12fQqRkwX06C0KanhLr4hK+GydchZsaA==}
@@ -4897,10 +4895,6 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       '@types/yoga-layout': 1.9.2
-    dev: false
-
-  /yoga-wasm-web/0.3.0:
-    resolution: {integrity: sha512-rD3L4jyMlO1m+RWU60lNwZQK5zmzglCV5fI1gTRikmpv3YzmNIZQbjyfE6cMNb9Xaly/C1SwemYGbsiOekMvnQ==}
     dev: false
 
   /zod/3.20.2:
