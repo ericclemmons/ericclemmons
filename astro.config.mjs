@@ -31,7 +31,7 @@ export default defineConfig({
     sitemap(),
     mdx(),
     image({
-      serviceEntryPoint: '@astrojs/image/sharp',
+      // serviceEntryPoint: '@astrojs/image/sharp',
     }),
     preact({ compat: true }),
   ],
