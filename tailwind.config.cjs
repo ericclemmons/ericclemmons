@@ -129,7 +129,10 @@ module.exports = {
 
           // Images
           img: {
-            borderRadius: theme('borderRadius.3xl'),
+            borderRadius: theme('borderRadius.lg'),
+            border: '1px solid',
+            borderColor: 'var(--tw-prose-pre-border)',
+            boxShadow: 'var(--tw-shadow-inner)',
           },
 
           // Inline elements
@@ -231,6 +234,7 @@ module.exports = {
             overflowX: 'auto',
             border: '1px solid',
             borderColor: 'var(--tw-prose-pre-border)',
+            boxShadow: 'var(--tw-shadow-inner)',
           },
           'pre code': {
             display: 'inline',
