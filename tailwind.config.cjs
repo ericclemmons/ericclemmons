@@ -130,9 +130,7 @@ module.exports = {
           // Images
           img: {
             borderRadius: theme('borderRadius.lg'),
-            border: '1px solid',
-            borderColor: 'var(--tw-prose-pre-border)',
-            boxShadow: 'var(--tw-shadow-inner)',
+            filter: 'drop-shadow(0 0.5rem 1.5rem rgba(0,0,0,0.25))',
           },
 
           // Inline elements

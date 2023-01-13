@@ -99,12 +99,46 @@ const { href, origin } = Astro.url
         }
       }
 
+      @keyframes burns {
+        0% {
+          opacity: 0;
+          clip-path: inset(5%);
+          filter: brightness(2);
+          transform: scale(111.11%);
+        }
+        100% {
+          opacity: 1;
+          filter: brightness(1);
+          clip-path: inset(0);
+          transform: scale(1);
+        }
+      }
+
+      @keyframes bloom {
+        0% {
+          opacity: 0;
+          filter: brightness(1) blur(20px);
+        }
+        10% {
+          opacity: 1;
+          filter: brightness(2) blur(10px);
+        }
+        100% {
+          opacity: 1;
+          filter: brightness(1) blur(0);
+        }
+      }
+
       [data-appear],
       [astro-island] > * {
         animation-name: appear;
         animation-duration: 1s;
         animation-fill-mode: backwards;
         animation-delay: calc(var(--animation-index) * 0.1s);
+      }
+
+      img[data-appear] {
+        animation-name: burns;
       }
     </style>
   </head>
