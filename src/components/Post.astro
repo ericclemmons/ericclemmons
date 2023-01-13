@@ -1,8 +1,8 @@
 ---
 import { Card } from '@/components/Card'
 import { formatDate } from '@/lib/formatDate'
-import { relativeDate } from '@/lib/relativeDate'
 import type { CollectionEntry } from 'astro:content'
+import * as timeago from 'timeago.js'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -19,8 +19,7 @@ const { post } = Astro.props
     title={formatDate(post.data.date)}
     decorate
   >
-    {formatDate(post.data.date)} ({relativeDate(post.data.date)})
+    {formatDate(post.data.date)} ({timeago.format(post.data.date)})
   </Card.Eyebrow>
   <Card.Description>{post.data.summary}</Card.Description>
-  <Card.Cta>Read post</Card.Cta>
 </Card>

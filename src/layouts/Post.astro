@@ -5,8 +5,8 @@ import Prose from '@/components/Prose.astro'
 import Layout from '@/layouts/Spotlight.astro'
 import { formatDate } from '@/lib/formatDate'
 import { getPosts } from '@/lib/getPosts'
-import { relativeDate } from '@/lib/relativeDate'
 import type { CollectionEntry } from 'astro:content'
+import * as timeago from 'timeago.js'
 
 interface Props {
   post: CollectionEntry<'blog'>
@@ -51,7 +51,7 @@ const previousPost = posts[index + 1]
               ></span>
               <span class="ml-3"
                 >{formatDate(post.data.date)} ({
-                  relativeDate(post.data.date)
+                  timeago.format(post.data.date)
                 })</span
               >
             </time>

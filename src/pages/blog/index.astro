@@ -2,8 +2,8 @@
 import { Card } from '@/components/Card'
 import Layout from '@/layouts/Simple.astro'
 import { formatDate } from '@/lib/formatDate'
-import { relativeDate } from '@/lib/relativeDate'
 import { getPosts } from '@/lib/getPosts'
+import * as timeago from 'timeago.js'
 
 const posts = await getPosts()
 ---
@@ -39,7 +39,7 @@ const posts = await getPosts()
                 decorate
                 title={formatDate(post.data.date)}
               >
-                {relativeDate(post.data.date)}
+                {timeago.format(post.data.date)}
               </Card.Eyebrow>
               <Card.Description>{post.data.summary}</Card.Description>
               <Card.Cta>Read article</Card.Cta>
@@ -50,7 +50,7 @@ const posts = await getPosts()
               dateTime={formatDate(post.data.date)}
               title={formatDate(post.data.date)}
             >
-              {relativeDate(post.data.date)}
+              {timeago.format(post.data.date)}
             </Card.Eyebrow>
           </article>
         ))

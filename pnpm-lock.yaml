@@ -23,6 +23,7 @@ specifiers:
   sharp: ^0.31.3
   tailwindcss: ^3.2.4
   three: ^0.148.0
+  timeago.js: ^4.0.2
 
 dependencies:
   '@astrojs/image': 0.12.1_sharp@0.31.3
@@ -43,6 +44,7 @@ dependencies:
   sharp: 0.31.3
   tailwindcss: 3.2.4
   three: 0.148.0
+  timeago.js: 4.0.2
 
 devDependencies:
   '@types/react': 18.0.26
@@ -4435,6 +4437,10 @@ packages:
 
   /three/0.148.0:
     resolution: {integrity: sha512-8uzVV+qhTPi0bOFs/3te3RW6hb3urL8jYEl6irjCWo/l6sr8MPNMcClFev/MMYeIxr0gmDcoXTy/8LXh/LXkfw==}
+    dev: false
+
+  /timeago.js/4.0.2:
+    resolution: {integrity: sha512-a7wPxPdVlQL7lqvitHGGRsofhdwtkoSXPGATFuSOA2i1ZNQEPLrGnj68vOp2sOJTCFAQVXPeNMX/GctBaO9L2w==}
     dev: false
 
   /tiny-glob/0.2.9:
