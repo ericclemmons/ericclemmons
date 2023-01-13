@@ -1,0 +1,26 @@
+---
+import { Card } from '@/components/Card'
+import { formatDate } from '@/lib/formatDate'
+import { relativeDate } from '@/lib/relativeDate'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  post: CollectionEntry<'blog'>
+}
+
+const { post } = Astro.props
+---
+
+<Card as="article">
+  <Card.Title href={`/blog/${post.slug}`}>{post.data.title}</Card.Title>
+  <Card.Eyebrow
+    as="time"
+    dateTime={formatDate(post.data.date)}
+    title={formatDate(post.data.date)}
+    decorate
+  >
+    {formatDate(post.data.date)} ({relativeDate(post.data.date)})
+  </Card.Eyebrow>
+  <Card.Description>{post.data.summary}</Card.Description>
+  <Card.Cta>Read post</Card.Cta>
+</Card>

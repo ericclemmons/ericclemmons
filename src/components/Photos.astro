@@ -1,0 +1,48 @@
+---
+import authenticator from '@/images/photos/authenticator.png'
+import changebot from '@/images/photos/changebot.png'
+import cjs from '@/images/photos/cjs.jpg'
+import dateformat from '@/images/photos/dateformat.png'
+import design from '@/images/photos/design.jpg'
+import formdata from '@/images/photos/formdata.jpg'
+import list from '@/images/photos/list.jpg'
+import workflow from '@/images/photos/workflow.jpg'
+import { Picture } from '@astrojs/image/components'
+
+const rotations = ['rotate-2', '-rotate-2', 'rotate-2', 'rotate-2', '-rotate-2']
+---
+
+<div class="mt-16 sm:mt-20">
+  <div
+    class="-my-4 flex justify-center gap-5 overflow-x-clip overflow-y-visible py-4 sm:gap-8"
+  >
+    {
+      [
+        cjs,
+        dateformat,
+        list,
+        authenticator,
+        design,
+        changebot,
+        formdata,
+        workflow,
+      ].map((image, imageIndex) => (
+        <div
+          class:list={[
+            'relative aspect-[9/10] w-44 flex-none overflow-hidden rounded-xl bg-zinc-100 shadow-2xl dark:bg-zinc-800 sm:w-72 sm:rounded-2xl',
+            rotations[imageIndex % rotations.length],
+          ]}
+        >
+          <Picture
+            alt=""
+            aspectRatio="9:10"
+            class="absolute inset-0 h-full w-full object-cover"
+            sizes="(min-width: 640px) 18rem, 11rem"
+            src={image.src}
+            widths={[576, 352]}
+          />
+        </div>
+      ))
+    }
+  </div>
+</div>

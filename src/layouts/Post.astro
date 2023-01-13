@@ -1,0 +1,94 @@
+---
+import { Container } from '@/components/Container'
+import { ArrowLeftIcon } from '@/components/Icons'
+import Prose from '@/components/Prose.astro'
+import Layout from '@/layouts/Spotlight.astro'
+import { formatDate } from '@/lib/formatDate'
+import { getPosts } from '@/lib/getPosts'
+import { relativeDate } from '@/lib/relativeDate'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  post: CollectionEntry<'blog'>
+}
+
+const { props } = Astro
+const { post } = props
+const posts = await getPosts()
+
+const index = posts.findIndex(({ id }) => id === post.id)
+const nextPost = posts[index - 1]
+const previousPost = posts[index + 1]
+---
+
+<Layout title={post.data.title}>
+  <Container className="mt-16 lg:mt-32">
+    <div class="xl:relative">
+      <div class="mx-auto max-w-2xl">
+        <button
+          type="button"
+          onclick="window.history.back()"
+          aria-label="Go back to blog"
+          class="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:ring-white/20 lg:absolute lg:-left-5 lg:mb-0 lg:-mt-2 xl:-top-1.5 xl:left-0 xl:mt-0"
+        >
+          <ArrowLeftIcon
+            className="h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400"
+          />
+        </button>
+
+        <article>
+          <header class="flex flex-col">
+            <h1
+              class="md:leading-14 bg-gradient-to-br from-pink-400 to-red-600 bg-clip-text text-3xl font-extrabold leading-9 tracking-tight text-transparent sm:text-4xl sm:leading-10 md:text-5xl"
+            >
+              {post.data.title}
+            </h1>
+            <time
+              datetime={formatDate(post.data.date)}
+              class="order-first flex items-center text-base text-zinc-400 dark:text-zinc-500"
+            >
+              <span class="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500"
+              ></span>
+              <span class="ml-3"
+                >{formatDate(post.data.date)} ({
+                  relativeDate(post.data.date)
+                })</span
+              >
+            </time>
+          </header>
+          <Prose className="mt-8">
+            <slot />
+          </Prose>
+        </article>
+      </div>
+
+      <nav
+        class="flex place-content-between text-base text-zinc-800 dark:divide-zinc-100/5 dark:text-zinc-300"
+      >
+        {
+          previousPost && (
+            <a
+              href={`/blog/${previousPost.slug}`}
+              class="group flex items-center justify-center rounded-full bg-white px-5 font-normal no-underline shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition hover:text-fuchsia-500 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:text-fuchsia-400 dark:hover:ring-white/20"
+            >
+              <ArrowLeftIcon className="relative -left-2 h-4 w-4 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
+              {previousPost.data.title}
+            </a>
+          )
+        }
+
+        {
+          nextPost && (
+            <a
+              href={`/blog/${nextPost.slug}`}
+              class="group flex items-center justify-center rounded-full bg-white px-5 font-normal no-underline shadow-md shadow-zinc-800/5 ring-1 ring-zinc-900/5 transition hover:text-fuchsia-500 dark:border dark:border-zinc-700/50 dark:bg-zinc-800 dark:ring-0 dark:ring-white/10 dark:hover:border-zinc-700 dark:hover:text-fuchsia-400 dark:hover:ring-white/20"
+            >
+              {nextPost.data.title}
+              <ArrowLeftIcon className="relative left-2 h-4 w-4 rotate-180 stroke-zinc-500 transition group-hover:stroke-zinc-700 dark:stroke-zinc-500 dark:group-hover:stroke-zinc-400" />
+            </a>
+          )
+        }
+      </nav>
+    </div>
+  </Container>
+</Layout>

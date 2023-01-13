@@ -1,0 +1,19 @@
+---
+const { tweetLink } = Astro.props
+
+interface Props {
+  tweetLink: string
+}
+---
+
+<blockquote
+  class="twitter-tweet"
+  data-dnt="true"
+  data-theme="dark"
+  data-align="center"
+  data-conversation="none"
+>
+  <a href={`https://twitter.com/${tweetLink}`}>Loading tweet&hellip;</a>
+</blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"
+></script>

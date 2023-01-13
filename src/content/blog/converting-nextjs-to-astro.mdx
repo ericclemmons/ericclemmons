@@ -1,0 +1,607 @@
+---
+title: Converting Next.js to Astro
+category: 'astro'
+summary: Friction log & impressions migrating from Next.js to Astro
+date: 2023-01-02
+---
+
+After first [Converting Next.js to Qwik](./convering-nextjs-to-qwik) then cutting short my attempt at _Converting Next.js to Remix_, I decided to give [Astro](https://astro.build/) another shot, now that it's [1.0](https://astro.build/blog/astro-1/).
+
+## Requirements
+
+- [Spotlight](https://tailwindui.com/templates/spotlight) TailwindCSS Theme
+- [TailwindCSS Support](https://docs.astro.build/en/guides/integrations-guide/tailwind/)
+- [MDX Support](https://docs.astro.build/en/guides/markdown-content/)
+- [Image Resizing](https://docs.astro.build/en/guides/images/#astros-image-integration)
+- [Content Collections](https://docs.astro.build/en/guides/content-collections/#the-content-directory)
+
+## Friction Log
+
+### [Official Integrations](https://docs.astro.build/en/guides/integrations-guide/)
+
+These were the first thing I consulted to make sure migrating a "brownfield" project would have reduced friction.
+
+Eventually I settled on installing the following with 1 command:
+
+- [React](https://docs.astro.build/en/guides/integrations-guide/react/)
+- [Vercel](https://docs.astro.build/en/guides/integrations-guide/vercel/)
+- [Sitemap](https://docs.astro.build/en/guides/integrations-guide/sitemap/)
+- [MDX](https://docs.astro.build/en/guides/integrations-guide/mdx/)
+- [Tailwind](https://docs.astro.build/en/guides/integrations-guide/tailwind/)
+- [image](https://docs.astro.build/en/guides/integrations-guide/image/)
+
+```shell
+pnpm astro add react vercel sitemap mdx tailwind image
+```
+
+The fact that Astro **shows you what changed** is a great DX. Most CLIs will modify `package.json` & configs, but it's up to you to recognize the changes the next time you run `git add -p`.
+
+### `<script>`
+
+I admit, I'm tired of `<script dangerouslySetInnerHtml>` in React & Next.js, in particular.
+
+Attempting to set content creates hydration issues between the server & client (usually due to an HTML entity encoding issue), loss of syntax highlighting, and other friction.
+
+Astro, instead, **[treats script tags the way you'd want](https://docs.astro.build/en/guides/client-side-scripts/#using-script-in-astro)**.
+This _just works_:
+
+```html
+<script>
+  console.log('Welcome, browser console!')
+</script>
+```
+
+- Astro process the `<script>`, so imports and dependencies are bundled
+- `<script is:inline>` skips the processing
+
+### Prettier
+
+With the [VS Code](https://docs.astro.build/en/editor-setup/#vs-code) extension installed, I expected my usual format-on-save to work, but it didn't. I forgot I had to create `prettier.config.js`:
+
+```js
+module.exports = {
+  singleQuote: true,
+  semi: false,
+  plugins: [require('prettier-plugin-tailwindcss')],
+}
+```
+
+### `node_modules`
+
+When I'm missing a dependency, such as [clsx](https://github.com/lukeed/clsx), the build predicatably fails. **But**, if I install it in another terminal window, Astro _rebuilds_ the page without anything else from me!
+
+### `<Image />` doesn't work within React components, only `.astro` components
+
+[Improve error handling for @astro/image within react components](https://github.com/withastro/astro/issues/5673#top)
+
+### `rss.xml`
+
+[Install Astro’s RSS package](https://docs.astro.build/en/tutorial/5-astro-api/4/#install-astros-rss-package), and this is pretty much ready to go!
+
+### [class:list](https://docs.astro.build/en/reference/directives-reference/#classlist) instead of [clsx](https://github.com/lukeed/clsx)
+
+When setting `className` conditionally, `clsx` is a common approach and is used by Tailwind UI.
+
+Personally, I prefer doing the following:
+
+```js
+<button
+  className={[
+    'bg-blue-700',
+    'text-white',
+    disabled ? 'opacity-50' : false,
+  ].filter(Boolean)}
+  disabled={disabled}
+>
+```
+
+### Content Collections
+
+Where I struggled with Qwik was getting a list of all the content on the filesystem.
+
+Astro has a guide on [Importing Markdown](https://docs.astro.build/en/guides/markdown-content/#importing-markdown) that amounts to `import`ing a file specifically or `Astro.glob('*.md')` (my preference).
+
+However, I'm interested in trying Astro's [Content Collections (Experimental)](https://docs.astro.build/en/guides/content-collections/) so that frontmatter is strictly enforced, there can be different sub-sections of content, and content is separate from the theme.
+
+A couple things immediately impressed me!
+
+First, it's a cinch to fetch & render data automatically:
+
+```astro
+---
+import { getCollection, getEntry } from "astro:content"
+import Post from "@/components/Post.astro"
+
+const posts = await getCollection('blog')
+const post = await getEntry('blog', 'javascript-fatigue.mdx')
+const { Content } = post.render();
+---
+
+posts.map(post => <Post post={post} />)
+
+<Content />
+```
+
+Second, `getCollection` is _automatically typed_ with the **actual data**. This means that TypeScript knows what posts exist, what their slugs are, and all of their meta data.
+
+This caught errors in my frontmatter where I was incorrectly specifying dates!
+
+```js
+import { z, defineCollection } from 'astro:content'
+
+const blog = defineCollection({
+  schema: {
+    date: z.date(),
+    summary: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    title: z.string(),
+  },
+})
+
+export const collections = { blog }
+```
+
+After much usage, my biggest complaint is that `getEntry` isn't equivalent to a faster, single function for `getCollection('blog').find(({ slug }) => Astro.params.slug )`.
+
+You have to know the extension the file, which can be `.md` or `.mdx`.
+
+I'm using `.mdx` everywhere, so `getEntry('blog', 'javascript-fatigue.mdx')` isn't much a problem, but it feels like there should be a direct equivalent between URL's `slug` & the equivalent on the filesystem without having TypeScript errors:
+
+> Argument of type '`${string}.mdx`' is not assignable to parameter of type '"3-ways-to-define-webpack-loaders.mdx" | "advent-of-javascript/day-1.mdx" | "advent-of-javascript/day-10.mdx" | "advent-of-javascript/day-17.mdx" | "advent-of-javascript/day-2.mdx" | ... 29 more ... | "writing-paralysis.mdx"'.
+
+A "gotcha" is that [Custom components with imported MDX](https://docs.astro.build/en/guides/markdown-content/#custom-components-with-imported-mdx) **only work with `.mdx` content, not `.md`**.
+
+I expected that at least `h1`, `h2`, `p`, etc. would work (not actualy _components_) with `<Content components={...} />`, but no.
+
+### Converting from React to `.astro`
+
+What I've found is that presentational (read: logicless) components are pretty straightforward to convert.
+
+For example, here's a simple React component:
+
+```tsx
+import { Card } from '@/components/Card'
+
+function Appearance({ title, description, event, cta, href }) {
+  return (
+    <Card as="article">
+      <Card.Title as="h3" href={href}>
+        {title}
+      </Card.Title>
+      <Card.Eyebrow decorate>{event}</Card.Eyebrow>
+      <Card.Description>{description}</Card.Description>
+      <Card.Cta>{cta}</Card.Cta>
+    </Card>
+  )
+}
+```
+
+Generally, the steps are:
+
+1. Separate the code from the template with `---`
+2. Remove `return (...)`
+3. Pull destructured `props` from `Astro.props`
+4. Replace `{children}` with `<slot />`
+5. Rename `className` to `class` on HTML elements (but not Components!)
+
+```astro
+---
+import { Card } from '@/components/Card'
+const { title, description, event, cta, href } = Astro.props
+---
+<Card as="article">
+  <Card.Title as="h3" href={href}>
+    {title}
+  </Card.Title>
+  <Card.Eyebrow decorate>{event}</Card.Eyebrow>
+  <Card.Description>{description}</Card.Description>
+  <Card.Cta>{cta}</Card.Cta>
+</Card>
+```
+
+For stateful components, I either opt to leave them as React components (because mutations and re-rendering can get complicated!) or moving side-effects to a separate [Client-Side Scripts](https://docs.astro.build/en/core-concepts/astro-components/#client-side-scripts).
+
+### `<head />`
+
+I do prefer [next/head](https://nextjs.org/docs/api-reference/next/head) for composing `<title>` and `<meta>` tags within the page itself.
+
+For example, a title like _"23 Results Found"_ would come from `search.astro`.
+
+Astro's solution is to pass `props` to a [Layout](https://docs.astro.build/en/core-concepts/layouts/#sample-layout):
+
+```jsx
+<Layout title={`${results.length}` Results Found`}>
+  <h1>Search results<h1>
+  ...
+```
+
+I originally tried to use [Named Slots](https://docs.astro.build/en/core-concepts/astro-components/#named-slots) for this, but it didn't work:
+
+```html
+<!-- layout.astro -->
+<head>
+  <slot name="title" />
+</head>
+```
+
+```html
+<!-- page.astro -->
+<title slot="title">My title</title>
+```
+
+This would just render `<title>` where it existed in the page rather than in the layout.
+
+### Script Loading
+
+When using [Content Collections](https://docs.astro.build/en/guides/content-collections/), [Script loading](https://docs.astro.build/en/guides/client-side-scripts/#script-loading) doesn't work the same as with `.astro` files. This is called out in the docs, but mentally it's easy to forget what constraints your MDX writing.
+
+Especially when writing content with live, component examples.
+
+The solution is to move components & scripts into a `.astro` file, then `import` it at the top of the MDX file.
+
+### Vercel Framework
+
+Because `main` was currently a Next.js project, all of my preview builds were failing because `next` couldn't be found.
+
+To fix this, I explicitly set the [framework](https://vercel.com/docs/project-configuration#project-configuration/framework) to `astro` in `vercel.json`:
+
+```json
+{
+  "framework": "astro"
+}
+```
+
+I wish Vercel would auto-detect the framework from the `package.json` rather than having it explicitly set in the GUI's "Project Settings".
+
+**The documentation should add this to the Troubleshooting section rather than rely on Vercel's inference, which only works for greenfield projects.**
+
+### Periodic Crashes
+
+When intermixing React JSX + Astro, periodically I would get errors like these:
+
+```
+/src/components/Button.astro:8
+  const Astro2 = $$result.createAstro($$Astro, $$props, $$slots);
+                          ^
+
+TypeError: $$result.createAstro is not a function
+    at eval (/src/components/Button.astro:8:27)
+```
+
+The dev server would hard-crash with this error & I'd have to restart. It takes mostly trial & error to resolve it since the error message contains `eval`'d code, not actual source :(
+
+I've found that having Astro components render React that also try to re-use Astro components is often the problem. In these cases, converting all leaf nodes to Astro components and working up to the top-level React components resolves the errors.
+
+**Still, I'd rather there be a `500` screen from Astro and not have to restart the dev-server.**
+
+### `React.useId()`
+
+In isomorphic React applications, there's a need to have dynamic, yet consistent, IDs between the server & client for hydration:
+
+> `useId` is a React Hook for generating unique IDs that can be passed to accessibility attributes.
+> – [https://beta.reactjs.org/reference/react/useId](https://beta.reactjs.org/reference/react/useId)
+
+I was naively looking for the equivalent from Astro until I remembered that \*\*Astro components are static & rendered by the server and not hydrated:
+
+> [Can I Hydrate Astro Components?](https://docs.astro.build/en/core-concepts/framework-components/#can-i-hydrate-astro-components)
+
+Instead I can generate a unique `id` simply with:
+
+```js
+const id = `section-${Math.random().toString(16)}`
+```
+
+### [Preact](https://preactjs.com/)
+
+Once I get my apps working, I migrate to [Preact](https://preactjs.com/) to save bundle sizes. Because this was a migration, it makes sense to migrate _later_ than in the beginning and potentially break existing functionality.
+
+[Integrating Preact](https://docs.astro.build/en/guides/integrations-guide/preact/) automatically took care of most of the changes:
+
+```diff
+diff --git a/astro.config.mjs b/astro.config.mjs
+index 0c8e9c8..7f8abac 100644
+--- a/astro.config.mjs
++++ b/astro.config.mjs
+@@ -1,6 +1,6 @@
+ import image from '@astrojs/image'
+ import mdx from '@astrojs/mdx'
+-import react from '@astrojs/react'
++import preact from '@astrojs/preact'
+ import sitemap from '@astrojs/sitemap'
+ import tailwind from '@astrojs/tailwind'
+ import vercel from '@astrojs/vercel/static'
+@@ -14,12 +14,12 @@ export default defineConfig({
+   },
+   integrations: [
+     tailwind(),
+-    react(),
+     sitemap(),
+     mdx(),
+     image({
+       serviceEntryPoint: '@astrojs/image/sharp',
+     }),
++    preact({ compat: true }),
+   ],
+   output: 'static',
+   adapter: vercel(),
+```
+
+```diff
+diff --git a/tsconfig.json b/tsconfig.json
+index 46ec881..39e7273 100644
+--- a/tsconfig.json
++++ b/tsconfig.json
+@@ -3,7 +3,7 @@
+   "compilerOptions": {
+     "baseUrl": ".",
+     "jsx": "react-jsx",
+-    "jsxImportSource": "react",
++    "jsxImportSource": "preact",
+     "paths": {
+       "@/*": ["src/*"]
+     }
+```
+
+But I found it went smoothest by aliasing `react` & `react-dom` to `@preact/compat` rather than relying on [pnpm.overrides](https://pnpm.io/package_json#pnpmoverrides) (which didn't work for me).
+
+```diff
+diff --git a/package.json b/package.json
+index 25c4e48..93bdc6d 100644
+--- a/package.json
++++ b/package.json
+@@ -12,7 +12,7 @@
+   "dependencies": {
+     "@astrojs/image": "^0.12.1",
+     "@astrojs/mdx": "^0.14.0",
+-    "@astrojs/react": "^1.2.2",
++    "@astrojs/preact": "^1.2.0",
+     "@astrojs/sitemap": "^1.0.0",
+     "@astrojs/tailwind": "^2.1.3",
+     "@astrojs/vercel": "^2.4.0",
+@@ -22,8 +22,9 @@
+     "@types/react-dom": "^18.0.6",
+     "astro": "^1.7.2",
+     "clsx": "^1.2.1",
+-    "react": "^18.0.0",
+-    "react-dom": "^18.0.0",
++    "preact": "^10.6.5",
++    "react": "npm:@preact/compat",
++    "react-dom": "npm:@preact/compat",
+     "sharp": "^0.31.3",
+     "tailwindcss": "^3.0.24",
+     "three": "^0.148.0"
+```
+
+Interestingly, Astro began to warn that [client:only](https://docs.astro.build/en/reference/directives-reference/#clientonly) **must pass the component's correct framework**. Oddly enough this, this worked before migrating to Preact?
+
+```diff
+diff --git a/src/pages/index.astro b/src/pages/index.astro
+index 13b97ea..75a8a9b 100644
+--- a/src/pages/index.astro
++++ b/src/pages/index.astro
+@@ -22,7 +22,7 @@ const posts = (await getCollection('blog'))
+       clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
+     }}
+   >
+-    <Canvas client:only />
++    <Canvas client:only="preact" />
+   </div>
+   <Container className="mt-9">
+     <div class="max-w-2xl">
+```
+
+### It's FAST
+
+Subsequent builds take **~5s**.
+
+### Image & Picture
+
+[@astrojs/image](https://docs.astro.build/en/guides/integrations-guide/image/#installation) provides 2 dynamic components:
+
+- [`<Image />`](https://docs.astro.build/en/guides/integrations-guide/image/#image-)
+- [`<Picture />`](https://docs.astro.build/en/guides/integrations-guide/image/#picture-)
+
+In practice, `<Picture>` is most analagous to [next/image](https://nextjs.org/docs/api-reference/next/image) for **responsive images** because it also supports the [sizes](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/sizes) attribute.
+
+The only difficult is also providing [widths](https://docs.astro.build/en/guides/integrations-guide/image/#widths) in pixels when Tailwind's units are amibiguous – `w-72` might mean `18rem`, or `288px` ¯\_(ツ)\_/¯
+
+For non-responsive images, `<Image>` is pretty much like `<img>`, except that `width` **or** `height` need to be provided alongside `aspectRatio`.
+
+I typically set a maximum `width` of `1024` and an `aspectRatio` of `16:9`.
+
+But what makes these so handy is that I can use an `import` statement for the `src`!
+
+```jsx
+<Image
+  alt="My desk"
+  aspectRatio="16:9"
+  src={import('@/images/photos/desk.jpg')}
+  width={1200}
+/>
+```
+
+For SVGs, in the future I'll look into [astro-icon](https://github.com/natemoo-re/astro-icon).
+
+### Social Images
+
+Unfortunately, to use [@vercel/og](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation) **requires [Edge Runtime](https://vercel.com/docs/concepts/functions/edge-functions/edge-functions-api)** ([Limits](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation#limits))
+
+I... didn't see this until late at night after experimenting for several hours 😳
+
+But, [@astrojs/image **does not** support the Edge Runtime](https://docs.astro.build/en/guides/integrations-guide/image/#installation)!
+
+I was able to get [social images running locally, but failing on Vercel](https://github.com/ericclemmons/ericclemmons/pull/3/commits/e50d741779502abd69aeab838f26f10c0cd0f776), likely due to `yoga-wasm-web/asm`, `satori/wasm`, and `sharp` for rendering.
+
+With a clear head today, I'm going to try out [resvg-js](https://github.com/yisibl/resvg-js) for rendering & see if that makes the difference.
+
+I did learn something new about **importing `?raw` files in Astro/Vite**, though! Binary doesn't cleanly get imported for use by `satori`.
+
+So instead, I modified my `astro.config.mjs` with a custom [`hexLoader`](https://stackoverflow.com/questions/73847316/import-raw-image-data-into-a-script-with-vite)
+
+```js
+/** @type {import('vite').Plugin} */
+const hexLoader = {
+  name: 'hex-loader',
+  transform(code, id) {
+    const [path, query] = id.split('?')
+    if (query != 'raw-hex') return null
+
+    const data = fs.readFileSync(path)
+    const hex = data.toString('hex')
+
+    return `export default '${hex}';`
+  },
+}
+
+export default defineConfig({
+  ...
+  vite: {
+    plugins: [hexLoader],
+  },
+})
+```
+
+Then, I could import the fonts via `?raw-hex`:
+
+```js
+import ttf from '../../../public/Inter/static/Inter-Regular.ttf?raw-hex'
+```
+
+And finally create an [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) by:
+
+```js
+const fromHexString = (hexString) =>
+  Uint8Array.from(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)))
+
+const inter = fromHexToString(ttf)
+```
+
+😰
+
+Even worse, just trying to use `satori@^1.0.0` has tons of ESM/CJS issues, even when using [`ssr.noExternal`](https://github.com/withastro/astro/issues/3174#issuecomment-1138958697):
+
+```
+require() of ES Module ./node_modules/.pnpm/yoga-wasm-web@0.3.0/node_modules/yoga-wasm-web/dist/asm.js from ./node_modules/.pnpm/satori@0.1.0/node_modules/satori/dist/index.cjs not supported.
+  Instead change the require of asm.js in ./node_modules/.pnpm/satori@0.1.0/node_modules/satori/dist/index.cjs to a dynamic import() which is available in all CommonJS modules.
+```
+
+Based on [some other examples I found](https://github.com/zernonia/keypress/blob/main/server/routes/og/%5Bslug%5D.ts), `satori` works with `v0.0.45`, so this is clearly a bug with Satori.
+
+But the probem is, even when I get this working locally, is that Vercel has cryptic errors that I have no way of diagnosing:
+
+```
+Function Status:None
+
+Edge Status:500
+
+Duration:25.66 ms
+
+Init Duration:N/A
+
+Memory Used:267 MB
+
+ID:cle1::2nhsf-1673560667532-a8a5dc388c69
+
+User Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36
+
+2023-01-12T21:57:47.502Z	9f0bc511-56f8-4b17-ad95-a4581c3f4528	ERROR	Invoke Error 	{"errorType":"Error","errorMessage":"socket hang up","code":"ECONNRESET","stack":["Error: socket hang up","    at connResetException (node:internal/errors:711:14)","    at Socket.socketOnEnd (node:_http_client:518:23)","    at Socket.emit (node:events:525:35)","    at Socket.emit (node:domain:489:12)","    at endReadableNT (node:internal/streams/readable:1359:12)","    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)"]}
+```
+
+On a hunch, I went to a preview build for `/api/og.png` and [it worked](https://ericclemmons-f2ooeiz43-ericclemmons.vercel.app/api/og.png?title=Migrating%20to%20the%20Apple%20MacBook%20Air%20M2)!
+
+So it looks like serving _normal content_ is failing on Vercel with `output: server` with [this change](https://github.com/ericclemmons/ericclemmons/compare/1b122d5e41ff5b2febf8315640a49a0e45e0b637..cb47aa9d5e4fc671fc7e1f7b2813a092df6552c8) 🤔
+
+**Resolved – It was a bug in Astro `<Image>` component that's [since been fixed](https://github.com/ericclemmons/ericclemmons/compare/c25849980cfc5824eaec53846a6a1a337eec6d25..381971b5d4734f6a50cd31edbeac2743fb796e21)**. 🤦‍♂️
+
+### Preview Builds & [import.meta.env](https://docs.astro.build/en/guides/environment-variables/#default-environment-variables)
+
+I found that I was always getting `import.meta.env.DEV === true` in my preview builds.
+
+So instead, I used `Astro.url.origin` to be consistent across environments:
+
+```diff
+-const SITE = import.meta.env.PROD
+-  ? import.meta.env.SITE
+-  : 'http://localhost:3000'
++const { origin } = Astro.url
+```
+
+### Sitemap & SSR
+
+When running `pnpm build` with an SSR site, you'll get this warning:
+
+```shell
+@astrojs/sitemap: Skipped!
+No pages found! We can only detect sitemap routes for "static" builds. Since you are using an SSR adapter, we recommend manually listing your sitemap routes using the "customPages" integration option.
+
+Example: `sitemap({ customPages: ['https://example.com/route'] })`
+```
+
+What sucks is that this config can't use `import { getCollection } from 'astro:content'`, utilities in `src/lib/getPosts.ts`, `Astro.glob`, or really anything you're used to.
+
+The only thing available is `import.meta.glob('./src/content/**/*.mdx')`.
+
+Using this, I basically reproduced what `getCollection('blog')` does:
+
+```js
+const site = import.meta.env.PROD
+  ? 'https://ericclemmons.com'
+  : 'http://localhost:3000'
+const paths = import.meta.glob('./src/content/**/*.mdx')
+const slugs = Object.keys(paths).map((file) =>
+  file.split('./src/content/').pop().split('.mdx').shift()
+)
+const customPages = slugs.map((slug) => `${site}/${slug}`)
+
+...
+
+export default defineConfig({
+  site,
+  integrations: [
+    sitemap({ customPages })
+  ]
+});
+```
+
+Unfortunately, the same issues with `import.meta.env.PROD === false` are true in preview branches for `astro.config.mjs`.
+
+To fix this, I exposed [System Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables#system-environment-variables) to the build and conditionally use `process.env.PUBLIC_VERCEL_URL`:
+
+![](/static/images/env.png)
+
+```js
+const site = process.env.PUBLIC_VERCEL_URL
+  ? `https://${process.env.PUBLIC_VERCEL_URL}`
+  : 'http://localhost:3000'
+```
+
+But now that `customPages` are working, my [sitemap is missing all `src/pages/*`](https://ericclemmons-qw4sm8v8m-ericclemmons.vercel.app/sitemap-0.xml)!
+
+My final `customPages` is now computed via:
+
+```js
+const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
+  (file) => file.split('./src/content/').pop().split('.mdx').shift()
+)
+const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro')).map(
+  (file) => file.split('./src/pages/').pop().split('.astro').shift()
+)
+const customPages = [...pages, ...content].map((slug) => `${site}/${slug}`)
+```
+
+## Conclusion
+
+With the [majority of the work done](https://github.com/ericclemmons/ericclemmons/pull/3) to convert my blog, I'm left with the following impressions:
+
+1. Astro **feels like the old days of the web.**
+   This is a good thing. HTML is HTML, `<script>` and `<style>` tags are copy/paste-able, and modern libraries like Svelte, Vue, & React are an extension away.
+
+   It feels like I start with _form_, then get to choose how to progressively add _function_. [Remix](https://remix.run/) may say the same, as it centralizes on primatives like Request & Response. But being React-first rather than _HTML_-first means abstractions for `link`/`style`/`script` are essential.
+
+2. Astro's growth and positive impressions are warranted, & will only improve:
+   ![StateOfJS](https://assets.devographics.com/captures/js2022/en-US/astro.png)
+
+3. With this growth, bugs are shallower but **getting _fixed pretty fast_**.
+4. There are still rough edges with boilerplate around dynamic content, sitemaps, dynamic `<head>` tags, & image optimization. But, it's clear that the team is **optimizing for these common use-cases and rapidly experimenting**.
+
+Astro will likely become my default framework for new projects and multi-framework apps (such as documentation sites & component libraries) 🎉

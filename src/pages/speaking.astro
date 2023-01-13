@@ -1,0 +1,44 @@
+---
+import Layout from '@/layouts/Simple.astro'
+import Appearance from '@/components/Appearance.astro'
+import SpeakingSection from '@/components/SpeakingSection.astro'
+---
+
+<Layout
+  title="Speaking"
+  description="I don't often attend or speak at conferences, but there are a few exceptions."
+>
+  <Fragment slot="title">Teaching in public.</Fragment>
+  <Fragment slot="intro">
+    I don't often attend or speak at conferences, but there are a few
+    exceptions.
+  </Fragment>
+
+  <div class="space-y-20">
+    <SpeakingSection title="Conferences">
+      <Appearance
+        href="https://github.com/ericclemmons/next.js-conf-2020"
+        title="From Front-end to Full Stack with Amplify Framework"
+        description="This project demonstrates the architecture changes Amplify JS needed to support Next.js, authentication & data-access in a client-side application, and how to move logic to the server for better performance."
+        event="Next.js Conf 2020"
+        cta="View Project"
+      />
+      <Appearance
+        href="https://github.com/ericclemmons/mvc-to-react"
+        title="Moving from MVC to React"
+        description="How we dismantled our PHP monolith into React components for profit"
+        event="Space City JS 2015"
+        cta="View Project"
+      />
+    </SpeakingSection>
+    <SpeakingSection title="Meetups">
+      <Appearance
+        href="https://github.com/ericclemmons/performant-3rd-party-widgets"
+        title="Shipping Performant 3rd Party UI Widgets"
+        description="Come and learn tips, tricks, and pitfalls of using community JavaScript libraries, how to decrease build sizes, and that there are more important metrics than GitHub stars."
+        event="Houston.js, May 2017"
+        cta="View Project"
+      />
+    </SpeakingSection>
+  </div>
+</Layout>

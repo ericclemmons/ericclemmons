@@ -1,0 +1,23 @@
+---
+import * as components from '@/components/MDX'
+import Layout from '@/layouts/Post.astro'
+import type { CollectionEntry } from 'astro:content'
+import { getEntry } from 'astro:content'
+
+interface Props {
+  post: CollectionEntry<'blog'>
+}
+
+const { slug } = Astro.params
+
+// Prefer .md before .mdx
+const post = await getEntry('blog', `${slug}.md`).catch(() =>
+  getEntry('blog', `${slug}.mdx`)
+)
+
+const { Content } = await post.render()
+---
+
+<Layout post={post}>
+  <Content components={components} />
+</Layout>
