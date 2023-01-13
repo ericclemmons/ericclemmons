@@ -6,17 +6,35 @@ const {
   title = 'Home',
   description = "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
 } = Astro.props
-
-const { origin } = Astro.url
+const { href, origin } = Astro.url
 ---
 
 <html class="h-full antialiased" lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta property="og:image" content={`${origin}/api/og.png?title=${title}`} />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+
     <title>{[title, 'Eric Clemmons'].filter(Boolean).join(' / ')}</title>
     <meta name="description" content={description} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={href} />
+    <meta
+      property="og:title"
+      content="Converting Next.js to Astro / Eric Clemmons"
+    />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${origin}/api/og.png?title=${title}`} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={href} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta
+      property="twitter:image"
+      content={`${origin}/api/og.png?title=${title}`}
+    />
 
     <script>
       let darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
