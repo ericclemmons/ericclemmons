@@ -10,11 +10,13 @@ const site = process.env.PUBLIC_VERCEL_URL
   ? `https://${process.env.PUBLIC_VERCEL_URL}`
   : 'http://localhost:3000'
 
-const paths = import.meta.glob('./src/content/**/*.mdx')
-const slugs = Object.keys(paths).map((file) =>
-  file.split('./src/content/').pop().split('.mdx').shift()
+const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
+  (file) => file.split('./src/content/').pop().split('.mdx').shift()
 )
-const customPages = slugs.map((slug) => `${site}/${slug}`)
+const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro')).map(
+  (file) => file.split('./src/pages/').pop().split('.astro').shift()
+)
+const customPages = [...pages, ...content].map((slug) => `${site}/${slug}`)
 
 /** @type {import('vite').Plugin} */
 const hexLoader = {
