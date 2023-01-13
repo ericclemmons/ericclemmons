@@ -1,0 +1,237 @@
+---
+title: Converting Next.js to Qwik
+summary: Friction log & impressions migrating from Next.js to Qwik
+date: 2022-12-18
+---
+
+During the holiday break, I decided to convert my site to [Spotlight](https://tailwindui.com/templates/spotlight). The main reason was so I could remove blog pagination, group related content (e.g. last year's _Advent of JS_ section), and add a CV.
+
+Being a long-time user of Next.js & many Vercel projects, I attempted to migrate `/pages` to `/app` via this guide: [Migrating from `pages` to `app`](https://beta.nextjs.org/docs/upgrade-guide#migrating-from-pages-to-app).
+
+Unfortunately, the issue wasn't in copy/paste friction, but in converting a template that's relatively new to me to use entirely different paradigms.
+
+<Tweet tweetLink="ericclemmons/status/1604928090508972032" />
+
+For example, _how should I access the filesystem outside of `getStaticProps`?_ (My guess is to move the logic into `/pages/api/posts.js` and `fetch` that instead.)
+
+## My Interest in Qwik
+
+I've been casually observing [Qwik](https://qwik.builder.io/)'s development since I learned that it resumes JS execution from the server.
+
+Years ago (~2015?) at HigherEducation.com, I created monetization "widgets" that were powered by React, but would **generate a dynamic, initial state on the server, serialize the minimal HTML/CSS, and progressively enhance it with vanilla JS**.
+
+For example:
+
+<script
+  async
+  defer
+  src="https://platform.highereducation.com/widgets.js?widget=editorial-program-links&count=2&titleColor=%23639&offset=0&degree=bachelors&subject=computer-science&title=Live%20Example"
+></script>
+
+This is a basic example, but the more complex React widgets' `componentDidMount` had vanilla JS that directly manipulated the DOM with events & mutations.
+
+**Aggressively pursuing progressive enhancement instead of hydration dropped the bundle-size to 1/150th the size.**
+
+## Qwik First Impressions
+
+### Routing
+
+Qwik's [Directory Layout](https://qwik.builder.io/qwikcity/routing/overview/) matches my own intiution of **using `index.js|mdx|tsx` as the page content behind a URL**: [Filesystem Routers & Indexes](https://ericclemmons.com/blog/filesystem-routers-and-indexes)
+
+I believe Next.js made a mistake with the `/pages` convention by making `/pages/about.js` serve `/about`. This has created numerous issues, especially with colocation of code, without making a config change:
+
+<Tweet tweetLink="ericclemmons/status/1415341309900984322" />
+
+### React Support
+
+A deal-breaker with incremental adoption is not being able to re-use any existing functionality.
+
+Luckily, Qwik _does_ support [React](https://qwik.builder.io/qwikcity/integrations/react/) via a `qwikify$`.
+
+Oddly, `pnpm qwik add react` installs Material UI. I think this is as an example, but **shouldn't** be a default:
+
+```console
+...
+🌟 Create
+   - src/routes/react/index.tsx
+   - src/integrations/react/mui.tsx
+
+💾 Install pnpm dependencies:
+   - @builder.io/qwik-react 0.2.1
+   - @emotion/react 11.10.4
+   - @emotion/styled 11.10.4
+   - @mui/material 5.10.10
+   - @mui/x-data-grid 5.17.8
+   - @types/react 18.0.14
+   - @types/react-dom 18.0.5
+   - react 18.2.0
+   - react-dom 18.2.0
+```
+
+The key constraints are:
+
+1.  Don't mix React and Qwik components in the same file.
+2.  Place all your react code inside the `src/integrations/react` folder.
+3.  Add `/** @jsxImportSource react */` at the top of the files containing React code.
+4.  Use `qwikify$()` to convert React components into Qwik components, which you can import from Qwik modules.
+
+What I'm doing is copy/pasting my entire Next.js `src/components/*` contents into Qwik's `src/integrations/react/*`, then creating Qwik-friendly wrappers under `src/components/*`:
+
+```js
+import { component$ } from '@builder.io/qwik'
+import { Header } from '~/integrations/react/Header'
+
+export default component$(Header)
+```
+
+**I would love if I could do this automatically:**
+
+```js
+import { Header } from '~/integration/react/Header?qwikify$'
+```
+
+In reality, there seems to be some nuances preventing this.
+
+One edge-case was that, since I'm no longer using `next/router`, removing this means I needed to replace `useRouter()` with something like [`useLocation()`](https://qwik.builder.io/qwikcity/api/#uselocation).
+
+But this Qwik-specific API throws a build error:
+
+> [vite] Internal server error: Code(14): Invoking 'use\*()' method outside of invocation context.
+
+**My initial take is that, if Tailwind UI had _one component per file_, it would be easier to separate React from Qwik-compatible components!**
+
+Another issue with migration was this frustratingly unclear error:
+
+> QWIK ERROR Code(25): Invalid JSXNode type. It must be either a function or a string.
+
+Remember step 3?
+
+> 3. Add `/** @jsxImportSource react */` at the top of the files containing React code.
+
+That means **all** files. **Why can't this be auto-set for `src/integrations/react`?**
+
+Once I added `/** @jsxImportSource react */`, the errors went away!
+
+Since **interactivity is disabled by default**, I initially added `client:visible` to force hydration on the client:
+
+```js
+/** @jsxImportSource react */
+
+import { qwikify$ } from '@builder.io/qwik-react'
+import Home from '~/integrations/react/pages/Home'
+
+export default qwikify$(Home, { eagerness: 'visible' })
+```
+
+### Click-to-Component
+
+Ever since I prototyped [**code**lift](https://codelift.app/), <kbd>Option+Click</kbd> has been a huge DX improvement to go from _what you see_ to _the code_.
+
+Heck, I even open-sourced [click-to-component](https://github.com/ericclemmons/click-to-component) after engineers at Stripe used it **thousands of times a month**!
+
+Qwik locally welcomed me with this helpful _Click-to-Source_ prompt 😍
+![[Screen Shot 2022-12-19 at 2.02.40 PM.png]]
+_Note – This doesn't work for wrapped React components!_
+
+### `class` vs. `className`
+
+The ship has sailed for JSX 1.0 (maybe [2.0](https://github.com/facebook/jsx/issues?q=is%3Aopen+label%3A%22Proposal+2.0%22+sort%3Aupdated-desc)?), but I was surprised when I saw this `@deprecated` warning:
+
+> ![[Screen Shot 2022-12-19 at 2.29.18 PM.png]]
+
+Note that `className` is still a valid prop (e.g. on React components), but not necessary on HTMLElements.
+
+**However**, if using `/** @jsxImportSource react */` then you have to continue using `className` to avoid this error:
+
+> Warning: Invalid DOM property `class`. Did you mean `className`?
+
+### Inline Scripts
+
+This was one of the pain-points for `/app` in Next.js – `<script>...</script>` isn't well-supported!
+
+A _qwik_ search through their GitHub issues revealed [docs: `RenderOnce` and `dangerouslySetInnerHTML`](https://github.com/BuilderIO/qwik/pull/2452/files#top) – they've ditched React's `{{ __html: ... }}` eyesore.
+
+_Side note: I think this is a case for putting the inline code behind an `href="/public/inline.js"` instead._
+
+### `import` cannot find `index.tsx`
+
+For complex components, I like to structure the directory this way:
+
+- `/components`
+  - `/Head`
+    - `index.tsx`
+    - `styles.css`
+    - `...`
+
+Unfortunately, these cannot be found unless you explicitly use `./components/Head/index`:
+
+> ![[Screen Shot 2022-12-19 at 3.07.21 PM.png]]
+
+### Lack of `next/image`
+
+[next/image](https://nextjs.org/docs/api-reference/next/image) is extremely useful for optimizing images based on how they're used without any manual effort.
+
+I see that [Image Optimization](https://github.com/BuilderIO/qwik/issues/1460#top) is being discussed, so traditional `<img>` tags are probably the way to go.
+
+Although, I wonder if I can re-use some of my previous Node.js image-optimization code to dynamically generate the resized image 🤔
+
+Since Qwik is bundled via Vite, I may be able to use their [Static Asset Handling](https://vitejs.dev/guide/assets.html).
+
+### Lack of `next/link`
+
+Good riddance [next/link](https://nextjs.org/docs/api-reference/next/link) 👋🏻
+
+### Path Aliases
+
+I'm happy to see `~/*` or `@/*` are common conventions for `src/*` ❤️
+
+### Customizing `<head>`
+
+Rather than [next/head](https://nextjs.org/docs/api-reference/next/head) (which I first knew as [react-helmet](https://github.com/nfl/react-helmet)), Qwik [customizes head](https://qwik.builder.io/qwikcity/content/head/) via `export const head = {...}`.
+
+I prefer this because it's less about side-effects when rendering, and something that can be static or dynamically available _without_ rendering.
+
+### Equivalent of `getStaticProps`?
+
+With a a folder of `src/routes/blog/**/*.mdx` files loaded up, the next hurdle is _how to get a list of all blog posts?_
+
+I expected [`@qwik-city-plan`](https://qwik.builder.io/qwikcity/routing/overview/#qwik-city-plan) to solve this:
+
+```js
+import cityPlan from '@qwik-city-plan'
+```
+
+But the only values I'm getting when logging `cityPlan` is `{ props: { [Symbol(IMMUTABLE)]: {} } }`.
+
+### Frontmatter
+
+Even though the docs use Frontmatter, there isn't explicit support: [[DOCS] Frontmatter](https://github.com/BuilderIO/qwik/issues/1930#top).
+
+Since `vite.config.js` is available, then I could [customize Qwik's remark plugins](https://qwik.builder.io/qwikcity/content/mdx/#disabling-default-mdx-plugins-included) to instead use:
+
+```js
+import remarkGfm from 'remark-gfm'
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
+
+...
+
+remarkPlugins: [
+  remarkFrontmatter,
+  [remarkMdxFrontmatter, { name: 'meta' }],
+  ...
+]
+```
+
+## Last Impressions
+
+At this point, a few hours later, I think Qwik is promising, but premature for my usage.
+
+I enjoyed the onboarding experience, the details & examples in the documentation, and a path for React re-use.
+
+However, I believe it needs a strong "brownfield" development story – incrementally migrating to Qwik indeed has "wide islands" which made me wonder if the effort warranted it.
+
+I was hoping that [@qwik-city-plan](https://qwik.builder.io/qwikcity/routing/overview/#qwik-city-plan) & [useContent()](https://qwik.builder.io/qwikcity/api/#usecontent) was going to negate my need for reading the filesystem for blog content.
+
+In practice, Qwik just didn't seem to "scale" to meet my needs.
+
+PR: https://github.com/ericclemmons/ericclemmons/pull/new/qwik

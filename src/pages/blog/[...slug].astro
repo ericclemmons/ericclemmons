@@ -8,7 +8,13 @@ interface Props {
   post: CollectionEntry<'blog'>
 }
 
-const post = await getEntry('blog', `${Astro.params.slug}.mdx`)
+const { slug } = Astro.params
+
+// Prefer .md before .mdx
+const post = await getEntry('blog', `${slug}.md`).catch(() =>
+  getEntry('blog', `${slug}.mdx`)
+)
+
 const { Content } = await post.render()
 ---
 

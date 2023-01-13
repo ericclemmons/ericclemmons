@@ -141,6 +141,20 @@ declare module 'astro:content' {
   collection: "blog",
   data: InferEntrySchema<"blog">
 },
+"convering-nextjs-to-qwik.mdx": {
+  id: "convering-nextjs-to-qwik.mdx",
+  slug: "convering-nextjs-to-qwik",
+  body: string,
+  collection: "blog",
+  data: InferEntrySchema<"blog">
+},
+"converting-nextjs-to-astro.mdx": {
+  id: "converting-nextjs-to-astro.mdx",
+  slug: "converting-nextjs-to-astro",
+  body: string,
+  collection: "blog",
+  data: InferEntrySchema<"blog">
+},
 "copying-databases-in-node.mdx": {
   id: "copying-databases-in-node.mdx",
   slug: "copying-databases-in-node",
