@@ -50,20 +50,7 @@ export default defineConfig({
     preact({ compat: true }),
   ],
   output: 'server',
-  adapter: vercel({
-    includeFiles: [
-      './public/static/images/avatar.jpg',
-      './public/static/images/gradient.png',
-      './src/fonts/Inter-Bold.ttf?raw-hex',
-      './src/fonts/Inter-ExtraBold.ttf?raw-hex',
-      './src/fonts/Inter-ExtraLight.ttf?raw-hex',
-      './src/fonts/Inter-Light.ttf?raw-hex',
-      './src/fonts/Inter-Medium.ttf?raw-hex',
-      './src/fonts/Inter-Regular.ttf?raw-hex',
-      './src/fonts/Inter-SemiBold.ttf?raw-hex',
-      './src/fonts/Inter-Thin.ttf?raw-hex',
-    ],
-  }),
+  adapter: vercel(),
   vite: {
     plugins: [hexLoader],
   },
