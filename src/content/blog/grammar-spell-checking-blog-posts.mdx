@@ -1,0 +1,42 @@
+---
+date: 2023-01-13
+title: Grammar & Spell Checking Blog Posts
+summary: How to install LTeX for VS Code
+---
+
+### Friction Log
+
+1. Install [ltex-ls](https://github.com/valentjn/ltex-ls)
+
+   ```shell
+   brew install ltex-ls
+   ```
+
+2. Get path to `ltex-ls`
+
+   ```shell
+   readlink -f $(brew --prefix ltex-ls)
+   # /opt/homebrew/Cellar/ltex-ls/15.2.0
+   ```
+
+3. Install [LTeX - LanguageTool grammar/spell checking VS Code Extension](https://marketplace.visualstudio.com/items?itemName=valentjn.vscode-ltex)
+
+4. Update [ltex.ltex-ls.path](https://valentjn.github.io/ltex/settings.html#ltexltex-lspath) in VS Code's settings
+
+   ![LTeX settings](/static/images/ltex.settings.png)
+
+5. Reset & Restart LTeX Extension
+
+6. Test it out!
+
+   I used the following text:
+
+   ```
+   This is an mistake.
+   ```
+
+   ![ltex hint](/static/images/ltex.hint.png)
+
+   It can even fix it!
+
+   ![ltex fix](/static/images/ltex.fix.png)

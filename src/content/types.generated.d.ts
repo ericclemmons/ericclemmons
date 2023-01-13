@@ -183,6 +183,13 @@ declare module 'astro:content' {
   collection: "blog",
   data: InferEntrySchema<"blog">
 },
+"grammar-spell-checking-blog-posts.mdx": {
+  id: "grammar-spell-checking-blog-posts.mdx",
+  slug: "grammar-spell-checking-blog-posts",
+  body: string,
+  collection: "blog",
+  data: InferEntrySchema<"blog">
+},
 "graphql-context-services.mdx": {
   id: "graphql-context-services.mdx",
   slug: "graphql-context-services",
