@@ -6,9 +6,10 @@ import tailwind from '@astrojs/tailwind'
 import vercel from '@astrojs/vercel/serverless'
 import { defineConfig } from 'astro/config'
 
-const site = import.meta.env.PROD
-  ? 'https://ericclemmons.com'
+const site = process.env.PUBLIC_VERCEL_URL
+  ? `https://${process.env.PUBLIC_VERCEL_URL}`
   : 'http://localhost:3000'
+
 const paths = import.meta.glob('./src/content/**/*.mdx')
 const slugs = Object.keys(paths).map((file) =>
   file.split('./src/content/').pop().split('.mdx').shift()
