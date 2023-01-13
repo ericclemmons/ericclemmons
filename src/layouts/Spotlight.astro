@@ -82,6 +82,31 @@ const { href, origin } = Astro.url
       }
     </script>
     <link href="/favicon.png" rel="icon" type="image/png" />
+
+    <style is:global>
+      @keyframes appear {
+        0% {
+          transform: translateY(2rem);
+          mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 150%
+            0 / 400% no-repeat;
+          opacity: 0.2;
+        }
+        100% {
+          mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 0 /
+            400% no-repeat;
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      [data-appear],
+      [astro-island] > * {
+        animation-name: appear;
+        animation-duration: 1s;
+        animation-fill-mode: backwards;
+        animation-delay: calc(var(--animation-index) * 0.1s);
+      }
+    </style>
   </head>
   <body class="flex h-full flex-col bg-zinc-50 dark:bg-black">
     <div class="fixed inset-0 flex justify-center sm:px-8">
@@ -101,5 +126,26 @@ const { href, origin } = Astro.url
 
       <Footer />
     </div>
+
+    <script is:inline>
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
+          .forEach((entry, i) => {
+            if (entry.isIntersecting) {
+              entry.intersectionRatio
+              entry.target.dataset.appear = ''
+              entry.target.style.setProperty('--animation-index', i)
+
+              observer.disconnect()
+            }
+          })
+      })
+
+      document
+        .querySelector('main')
+        .querySelectorAll('h1,h2,h3,h4,h5,h6,a,li,blockquote,p,time,img')
+        .forEach((element) => observer.observe(element))
+    </script>
   </body>
 </html>
