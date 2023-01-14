@@ -38,12 +38,12 @@ module.exports = MyFactory;
 The moment one of my dependencies (say, via line `#2`) attempted to
 `require('../my-factory')`, it would get a reference to that empty `{}`.
 
-But, everything goes off the rails during runtime because, on line `#15`,
+But, everything goes off the rails during runtime because, on line number `#15`,
 _I've overridden `{}` with `MyFactory`_!
 
 ### The Solution
 
-Add methods/factories onto the initial `{}` so references are never overwritten:
+Add methods/factories onto the initial `{}`, so references are never overwritten:
 
 ```js
 // my-factory.js

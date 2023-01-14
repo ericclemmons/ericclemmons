@@ -21,7 +21,7 @@ Again, let's start with the _User Requirements_ and speculate how I can solve th
 
 > - view weather for the upcoming week
 
-🤔 Ummm... these descriptions are getting ambiguous, aren't they?
+🤔 Umm... these descriptions are getting ambiguous, aren't they?
 
 When reviewing `app.js` & `index.html`, we basically just have art resources:
 
@@ -39,12 +39,12 @@ So, what's missing from this description?
 
   - From an input for City, State, or Zip code?
 
-    - Will this need geo-location to turn this into longitude/latitude?
+    - Will this need geolocation to turn this into longitude/latitude?
     - Sometimes you want to look up weather for a _different_ city, but that's not in the UI.
 
 - ⛅ Fetching the weather data
 
-  I'll need to find a public API that accepts longitude/latitude or city/state/zipcode.
+  I'll need to find a public API that accepts longitude/latitude or city/state/zip.
 
 ## Geolocation
 
@@ -71,14 +71,14 @@ Personally, I feel like this sort of challenge left too much to change: **what w
 I can unblock myself, but I would've made this challenge more about _the implementation_ than in comparing 3rd party APIs:
 
 - "If you're in the US, you can make calls to `https://some-weather-api.dev/location/{latitude},{longitude}`"
-- "If you're not in the US, there's an `<input>` field with the Seattle, WA coordinates already punched in."
+- "If you're not in the US, there's a `<input>` field with the Seattle, WA coordinates already punched in."
 - "Use the browser's `Geolocation` API to get the user's location."
 
-Without these sort of prompts (or a structured API), it's anyone's guess how to pick the right symbol or which number means what.
+Without these prompts (or a structured API), it's anyone's guess how to pick the right symbol or which number means what.
 
 ## Unfinished Demo
 
-**Sometimes development means known what problems to solve & when to move on so you can spend your energy elsewhere.**
+**Sometimes development means known what problems to solve & when to move on, so you can spend your energy elsewhere.**
 This is one of those – I'm at Legoland 👋
 
 <CodeSandbox codeSandboxId="advent-of-javascript-day-8-9kkp6" />

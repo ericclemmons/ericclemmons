@@ -183,9 +183,9 @@ declare module 'astro:content' {
   collection: "blog",
   data: InferEntrySchema<"blog">
 },
-"grammar-spell-checking-blog-posts.mdx": {
-  id: "grammar-spell-checking-blog-posts.mdx",
-  slug: "grammar-spell-checking-blog-posts",
+"grammar-spell-checking-blog-posts-with-ltex.mdx": {
+  id: "grammar-spell-checking-blog-posts-with-ltex.mdx",
+  slug: "grammar-spell-checking-blog-posts-with-ltex",
   body: string,
   collection: "blog",
   data: InferEntrySchema<"blog">

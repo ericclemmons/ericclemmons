@@ -56,7 +56,7 @@ What this tells me is that there won't be a re-use of variable references.
 
 ## Making it Work
 
-This wasn't much of a challenge. I was able to get this completed while an episode of Spongebob was playing...
+This wasn't much of a challenge. I was able to get this completed while an episode of SpongeBob was playing...
 
 Anyway, the only surprise was with the SVG keys being out of order:
 _the `<a>` elements aren't in left-to-write order, but seemingly random in the SVG._
@@ -89,9 +89,9 @@ _(The browser automatically marks these as `preload`, so they should be ready to
 
 One way to associate clicks-to-keys is to `keyElements.forEach(keyElement, ...)` and `keyElement.addEventListener('click', ...)`.
 
-An alternative is to use `window.addEventListener('click', ...)` so there's _one_ event listener rather than _N_ (23).
+An alternative is to use `window.addEventListener('click', ...)`, so there's _one_ event listener rather than _N_ (23).
 
-This optimization isn't necessary here, but can be a good idea when indescriminately adding events to an unknown number of elements:
+This optimization isn't necessary here, but can be a good idea when indiscriminately adding events to an unknown number of elements:
 
 - Points on a graph
 - Rows in a table

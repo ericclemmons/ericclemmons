@@ -16,13 +16,13 @@ _Queue broadcast voice…_
 
 #### Next week, on Forms…
 
-![Less keystrokes & power of Google.](https://cdn-images-1.medium.com/max/774/1*IrSgaerLsmNzdRvZrTnszA.gif)
+![Fewer keystrokes & power of Google.](https://cdn-images-1.medium.com/max/774/1*IrSgaerLsmNzdRvZrTnszA.gif)
 
 If you’re anything like me, you probably _rarely_ use your mouse and instead press **Enter** on your keyboard. Apparently so does everyone else.
 
 ### Pressing **Enter** would _immediately_ submit the form before the formatted address was converted into individual fields.
 
-Luckily, I know how to Javascript, so I’ll just prevent the **Enter** from propagating up:
+Luckily, I know how to JavaScript, so I’ll just prevent **Enter** from propagating up:
 
 ```js
 handleKeyDown(event) {
@@ -39,9 +39,9 @@ handleKeyDown(event) {
 
 #### Why Don’t Events in React Work as Expected?
 
-After several choice words, a [comment buried in StackOverflow](http://stackoverflow.com/questions/24415631/reactjs-syntheticevent-stoppropagation-only-works-with-react-events#comment37772453_24415631) offers this:
+After several choice words, a [comment buried in Stack Overflow](http://stackoverflow.com/questions/24415631/reactjs-syntheticevent-stoppropagation-only-works-with-react-events#comment37772453_24415631) offers this:
 
-> React’s actual event listener is also at the root of the document, meaning the click event has already bubbled to the root. You can use event.nativeEvent.stopImmediatePropagation to prevent other event listeners from firing, but order of execution is not guaranteed. — [ssorallen](http://stackoverflow.com/users/368697/ssorallen)
+> React’s actual event listener is also at the root of the document, meaning the click event has already bubbled to the root. You can use `event.nativeEvent.stopImmediatePropagation` to prevent other event listeners from firing, but order of execution is not guaranteed. — [Stack Overflow](http://stackoverflow.com/users/368697/ssorallen)
 
 Sure enough, React’s documentation [Interactivity and Dynamic UIs](https://facebook.github.io/react/docs/interactivity-and-dynamic-uis.html#under-the-hood-autobinding-and-event-delegation) inexplicably says:
 
@@ -94,6 +94,6 @@ Sure enough, if you’re using React v0.14 already, there’s a library for this
 
 I’m genuinely surprised that this expectation of event handling is quietly broken in React.
 
-I would have expected that, since events are turned into **SyntheticEvents**, the **event.preventDefault() **and **event.stopPropagation()** would call **console.warn** or **console.error** due to the break in functionality.
+I would have expected that, since events are turned into `SyntheticEvents`, the `event.preventDefault()` and `event.stopPropagation()` would call `console.warn` or `console.error` due to the break in functionality.
 
-I hope this is more of an edge-case due to our forms _actually submitting when the user presses **Enter**_, and not a situation others come across unwittingly.
+This is more of an edge-case due to our forms _actually submitting when the user presses **Enter**_, and not a situation others come across unwittingly.

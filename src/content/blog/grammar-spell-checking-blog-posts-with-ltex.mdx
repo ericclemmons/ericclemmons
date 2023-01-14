@@ -1,10 +1,10 @@
 ---
 date: 2023-01-13
-title: Grammar & Spell Checking Blog Posts
+title: Grammar & Spell Checking Blog Posts with LTeX
 summary: How to install LTeX for VS Code
 ---
 
-### Friction Log
+## Friction Log
 
 1. Install [`ltex-ls`](https://github.com/valentjn/ltex-ls)
 
@@ -40,3 +40,25 @@ summary: How to install LTeX for VS Code
    It can even fix it!
 
    ![LTeX fix](/static/images/ltex.fix.png)
+
+## Results
+
+![LTeX errors](/static/images/ltex.errors.png)
+
+I'm **glad** I spent the hour installing & correcting things! This would've been a lot less work if I followed a few rules:
+
+1. **Always** wrap shell _commands_ & package names in `backticks`. NPM is a word, but `npm` is a _command_.
+
+2. **Always** wrap shell _output_ in _code fences_:
+
+   > Any invalid prose will throw false-positives here.
+
+   ```
+   While you can put anything here
+
+   ERROR: MakingUpStuff.js#34:10
+   ```
+
+3. Avoid clever words like `Vue-ify`, `templatize`, etc.
+
+I'd _love_ to set up a [Husky](https://typicode.github.io/husky/#/) pre-commit hook, but [`ltex-cli`](https://valentjn.github.io/ltex/ltex-ls/cli-usage.html) doesn't seem to correctly process `.mdx` files outside of VS Code 🤔

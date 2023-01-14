@@ -5,7 +5,7 @@ tags: [node, mysql, knex]
 title: Copying Databases in Node
 ---
 
-Yes, there are tons of great, StackOverflow-accepted ways to copy giant databases betweens servers. _But_, sometimes you have a special need for a project that requires selectively copying subsets of data instead of an _entire_ 15GB database.
+Yes, there are tons of great, [Stack Overflow](https://stackoverflow.com/) ways to copy giant databases between servers. _But_, sometimes you have a special need for a project that requires selectively copying subsets of data instead of an _entire_ 15 GB database.
 
 So, when you _have_ to programmatically copy rows between databases in Node...
 
@@ -17,7 +17,7 @@ When I first attempted this, I ran into several problems:
 
 - I didn't use a `LIMIT`, and ran out of memory.
 - I specified a `LIMIT`, but the bulk `INSERT` failed for some reason.
-- I specified a lower `LIMIT`, but the `INSERT` performed differently on each table.
+- Likewise, I specified a lower `LIMIT`, but the `INSERT` performed differently on each table.
 - I specified an arbitrarily low `LIMIT`, but on simple tables, it took longer.
 
 I realized there's no perfect way of doing this, and I surely didn't want to insert a single row at a time.
@@ -28,8 +28,8 @@ First, let's use the following tools:
 
 - [Bluebird][bluebird] for Promises.
 - [Chalk][chalk] for ANSI color output.
-- [Knex.js][knex] for the DBAL.
-- [ProgressBar][progress] for the progress bar.
+- [Knex.js][knex] for the ORM.
+- [`node-progress`][progress] for the progress bar.
 
 The premise is to copy `N` rows that roughly equate to `M` amount of memory.
 

@@ -37,7 +37,7 @@ This time, I wanted to attempt the following:
 
 So, we settled on the following structure, notably the distinction between **/src **and **/lib**:
 
-![Finally, no more **/utils**!](https://cdn-images-1.medium.com/max/3328/1*LvIKVQSFaQU7hzW3UyYqGQ.png)
+![Finally, no more **`/utils`**!](https://cdn-images-1.medium.com/max/3328/1*LvIKVQSFaQU7hzW3UyYqGQ.png)
 
 In practice, we’ve been able to open-source several projects ranging from tiny utilities to well-received libraries:
 
@@ -45,15 +45,15 @@ In practice, we’ve been able to open-source several projects ranging from tiny
 
 - [Nginx LB](https://github.com/willrstern/tutum-nginx-load-balancing) for [Tutum.co](https://www.tutum.co/)
 
-- [grunt-angular-templates](https://github.com/ericclemmons/grunt-angular-templates)
+- [`grunt-angular-templates`](https://github.com/ericclemmons/grunt-angular-templates)
 
-- [start-cluster](https://github.com/ericclemmons/start-cluster)
+- [`start-cluster`](https://github.com/ericclemmons/start-cluster)
 
-- [npm-install-loader](https://github.com/ericclemmons/npm-install-loader)
+- [`npm-install-loader`](https://github.com/ericclemmons/npm-install-loader)
 
 #### 21 Days Later
 
-Not even a month into the New Year on a new project and already I’ve been creating placeholders for functional, but not yet production-ready libraries.
+Not even a month into the New Year on a new project, and already I’ve been creating placeholders for functional, but not yet production-ready libraries.
 
 ![Coming soon — libraries with practical use-cases.](https://cdn-images-1.medium.com/max/5760/1*kYvDA74J-RK50_KfxFrELg.png)
 
@@ -69,13 +69,13 @@ With Browserify, I’m [not so sure.](https://github.com/substack/node-browserif
 
 Besides *actively *working towards contributing to the open-source landscape, this has several obvious benefits:
 
-- **Libraries are grounded in being applicable, not theoretical.** This shows in the terseness of APIs, the initial design to work _with_ the ecosystem around it, and already have a short-list of _what’s next_.
+- **Libraries are grounded in being applicable, not theoretical.** This shows in the terseness of APIs, the initial design to work _with_ the surrounding ecosystem, and already have a short-list of _what’s next_.
 
-- **Application-level logic & dependencies are de-coupled. **Leveraging _/lib_ naturally creates a ripple-effect throughout your application, reducing boilerplate, clarifying concerns, and narrowing scope.
+- **Application-level logic & dependencies are decoupled. **Leveraging _/lib_ naturally creates a ripple-effect throughout your application, reducing boilerplate, clarifying concerns, and narrowing scope.
 
-- **No more _../../../../../../../../../../../utils/dat-path-tho.js!_**
+- **No more _`../../../../../../../../../../../utils/dat-path-tho.js`!_**
 
-- Once released, **no application code has to change**. Simply _npm install _& remove the corresponding folder in _/lib_.
+- Once released, **no application code has to change**. Simply `npm install` & remove the corresponding folder in `/lib`.
 
 Personally, I wait for the parent application to ship so that these internal libraries are “dogfooded” with **production-level traffic & scrutiny**, make a few tweaks, then release the _v1.0.0_ of these projects*.*
 
