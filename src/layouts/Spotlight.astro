@@ -137,7 +137,7 @@ const { href, origin } = Astro.url
         animation-name: appear;
         animation-duration: 1s;
         animation-fill-mode: backwards;
-        animation-delay: calc(var(--animation-index) * 0.1s);
+        animation-delay: calc(var(--animation-delay) * 0.05s);
       }
 
       img[data-appear] {
@@ -172,7 +172,10 @@ const { href, origin } = Astro.url
             if (entry.isIntersecting) {
               entry.intersectionRatio
               entry.target.dataset.appear = ''
-              entry.target.style.setProperty('--animation-index', i)
+              entry.target.style.setProperty(
+                '--animation-delay',
+                i + 1 / Math.sqrt(i + 1)
+              )
 
               observer.disconnect()
             }
