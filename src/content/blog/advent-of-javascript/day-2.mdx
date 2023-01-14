@@ -62,7 +62,7 @@ const cart: CartItem[] = [
 ]
 ```
 
-**Edit – Whoops! Turns out there's an `app.js` I missed that already has a mutable structure they intended:**
+**Edit – Whoops! Turns out there's a `app.js` I missed that already has a mutable structure they intended:**
 
 ```js
 const menuItems = [
@@ -77,7 +77,7 @@ const menuItems = [
 
 **Clearly this structure was intended to modify `count` directly then re-render the Menu & Cart panels in response.**
 
-For these use-cases, I like using `MobX`. Specifically, [MobX-state-tree (MST)](https://mobx-state-tree.js.org/intro/welcome).
+For these use-cases, I like using `MobX`. Specifically, [MobX-State-Tree (MST)](https://mobx-state-tree.js.org/intro/welcome).
 
 MST allows me to use models and easily create relationships between them.
 Plus, I don't have to think worry about mutations, context, or forcing re-renders in the views.
@@ -105,9 +105,9 @@ Updating `state.cart[selectedIndex].quantity` should solve this.
 
 > - A user should not be able to mark the quantity as a negative number.
 
-`quantity` isn't an `<input>`, so this just means that once a `quantity < 1`, the menu item is removed from the `cart`.
+`quantity` isn't a `<input>`, so this just means that once a `quantity < 1`, the menu item is removed from the `cart`.
 
-The next bullet already comvers this...
+The next bullet already covers this...
 
 > - If the quantity goes down to 0, the user will have the option to delete or remove the product from their cart entirely.
 
@@ -140,13 +140,13 @@ Before I get too deep, I want to make sure the following constraints hold true:
   Using React would require rewriting the templates into components, and I'd like to learn Vue more.
   However, **if Vue cannot use MobX easily, it would be quicker to convert this project to React**.
 
-So, to validate these choices, I'm going to add MobX & Vue to the demo, setup a counter and test reactivity.
+So, to validate these choices, I'm going to add MobX & Vue to the demo, set up a counter and test reactivity.
 
 ### Vue
 
-Templatizing the HTML was pretty easy.
+Making the HTML into a template is pretty easy.
 
-First, I was able to Vue-ify the HTML with:
+First, I was able to converting the HTML to Vue:
 
 ```js
 const { Vue } = window;
@@ -237,7 +237,7 @@ making Your Cart reactive only took a few steps.
    },
    ```
 
-1. Having an `addtoCart(menuItem)` method that updates the `count` of the menu item:
+1. Having a `addtoCart(menuItem)` method that updates the `count` of the menu item:
 
    ```js
    methods: {

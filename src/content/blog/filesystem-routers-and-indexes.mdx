@@ -10,8 +10,8 @@ title: Filesystem Routers & Indexes
 Soon, [Next.js will support FS-based routes](https://github.com/zeit/next.js), like
 [Sapper](https://sapper.svelte.dev/docs#Pages),
 [Nuxt.js](https://nuxtjs.org/guide/routing#dynamic-routes),
-and my own [polydev](https://github.com/ericclemmons/polydev/#defining-routes)
-and [mdx-site](https://github.com/ericclemmons/mdx-site/#authoring).
+and my own [`polydev`](https://github.com/ericclemmons/polydev/#defining-routes)
+and [`mdx-site`](https://github.com/ericclemmons/mdx-site/#authoring).
 
 But, there's one design decision I've made that differs from the rest:
 **all routes are `index`-based**.
@@ -32,9 +32,9 @@ But, I've found it more intuitive to work **from the user down**.
 Since [Cool URIs don't change](https://www.w3.org/Provider/Style/URI),
 designing URL structure _is_ good design.
 
-## The Filesystem _Looks_ Like a URL
+## The File system _Looks_ Like a URL
 
-Even when I `git clone` a project, **I have a habit of making the filesystem look like a URL**.
+Even when I `git clone` a project, **I have a habit of making the file system look like a URL**.
 
 For example, my `~/Projects` directory looks like my [GitHub repos](https://github.com/ericclemmons?tab=repositories&type=source):
 
@@ -54,7 +54,7 @@ $ tree -L2
 ```
 
 So it makes sense that projects like [UmiJS](https://umijs.org/guide/router.html#conventional-routing)
-would find a way to map `/users/:id` to the filesystem:
+would find a way to map `/users/:id` to the file system:
 
 ```
 + pages/
@@ -96,7 +96,7 @@ pages/
 Because every file under `pages/` _automatically becomes a page_,
 we have to find ways to get these files _blacklisted_.
 
-### When designing URL structure upfront, a whitelist allows our app to grow without side-effects.
+### When designing URL structure upfront, a whitelist allows our app to grow without side effects.
 
 For comparison, my suggested structure is:
 
@@ -111,7 +111,7 @@ pages/
 
 ## Benefits to Index-based Routes
 
-- Statically compiling `about/index.js` to `about/index.html` is well-suppored by many static servers at the URL `/about`.
+- Statically compiling `about/index.js` to `about/index.html` is well-supported by many static servers at the URL `/about`.
 
 - Dependencies of `index.js` can be called whatever you'd like, without accidentally generating new pages for each file.
 
@@ -125,4 +125,4 @@ pages/
 
 Of course, what people choose for denoting parameters (e.g. `:`, `[]`, `$`)
 has to be a [valid filename](https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words),
-but the most important goal is to **provide an quick, intuitive path from the URL in the browser to the file serving it**.
+but the most important goal is to **provide a quick, intuitive path from the URL in the browser to the file serving it**.

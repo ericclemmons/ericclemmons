@@ -6,7 +6,7 @@ summary: 'Challenge #17 – Table of Contents Web Component'
 draft: true
 ---
 
-import Demo from "@/components/TableOfContents.astro"
+import Demo from '@/components/TableOfContents.astro'
 
 <style>{`
   details {
@@ -58,11 +58,11 @@ that doesn't require bundling and could be used from a CDN:
 - [Slim.JS](https://slimjs.com/#/getting-started) has a CDN solution, but I wonder how far I can get without any library...
 - Native [Web Components](https://www.webcomponents.org/) wouldn't require bundling or other libraries. Hopefully, it's just a `<script>` tag away from usage!
 
-For styling, I want to remove everything that exists in the default `styles.css` and let [tailwindcss' `.prose`](https://tailwindcss.com/docs/typography-plugin) takeover.
+For styling, I want to remove everything that exists in the default `styles.css` and let [Tailwind CSS' `.prose`](https://tailwindcss.com/docs/typography-plugin) takeover.
 
 But that's going to make things a bit more complicated, since `@tailwindcss/typography` is a plugin.
 
-**I'm going to skip the Codesandbox and develop `toc.js` right here for this page!**
+**I'm going to skip the CodeSandbox and develop `toc.js` right here for this page!**
 
 ## Demo
 

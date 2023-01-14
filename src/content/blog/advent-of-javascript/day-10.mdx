@@ -15,7 +15,7 @@ I decided to **mix it up and use [Svelte](https://svelte.dev/) instead of Vue fo
 
 With the project files downloaded and `codesandbox`'d into [a live CodeSandbox](https://codesandbox.io/s/advent-of-javascript-day-10-0lvw8), I'm ready to get going!
 
-_(CodeSandbox let's you drag-and-drop files to upload, too!)_
+_(CodeSandbox lets you drag-and-drop files to upload, too!)_
 
 ---
 
@@ -31,7 +31,7 @@ Normally, the text would be inserted, but with a fixed amount, then what?
 
 I'm going to limit `maxLength` to `1` and `onKeyUp` find the next `<input>` and `.focus()` it.
 
-> - paste in a 4 digit code
+> - paste in a 4-digit code
 
 There's a [`paste`](https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event) event that I can listen to.
 
@@ -93,7 +93,7 @@ When this happens **only on the 1st input**, hopefully I can capture the full co
 
 1. `bind:value`
 
-   Rathern than 4 distinct `<input>` fields, I used Svelte's `{#each}` & `bind:value={digits[i]}`:
+   Rather than 4 distinct `<input>` fields, I used Svelte's `{#each}` & `bind:value={digits[i]}`:
 
    ```html {2,5,7}
    <script>
@@ -114,7 +114,7 @@ When this happens **only on the 1st input**, hopefully I can capture the full co
 
    **Note – There's [apparently _no way_](https://stackoverflow.com/questions/9555143/html-maxlength-attribute-not-working-on-chrome-and-safari) for vanilla HTML to restrict the `value` to a single 1-9 digit.**
 
-1. Auto-focus Inputs
+1. Autofocus Inputs
 
    Using `bind:this`, I assigned each `<input>` to the `inputs` array and advanced `on:input`:
 

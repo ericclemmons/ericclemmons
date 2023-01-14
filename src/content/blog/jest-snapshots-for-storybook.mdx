@@ -56,9 +56,9 @@ _Note: [`.jestrc` may be implicitly used in the future](https://github.com/faceb
 
 Libraries like `react-codemirror` require `import`ing CSS files, which will throw exceptions within Jest.
 
-If you’re using CSS Modules, consider [identity-obj-proxy](https://github.com/keyanzhang/identity-obj-proxy), which will let you easily reference properties (e.g. `styles.foo`).
+If you’re using CSS Modules, consider [`identity-obj-proxy`](https://github.com/keyanzhang/identity-obj-proxy), which will let you easily reference properties (e.g. `styles.foo`).
 
-_Note: Until [facebook/jest#1774](https://github.com/facebook/jest/issues/1774) & [facebook/jest#462](https://github.com/facebook/jest/issues/462) are resolved, **namespaced mock packages must be explicitly listed**_.
+_Note: Until [`facebook/jest#1774`](https://github.com/facebook/jest/issues/1774) & [`facebook/jest#462`](https://github.com/facebook/jest/issues/462) are resolved, **namespaced mock packages must be explicitly listed**_.
 
 #### 5. Create `__mocks/.css.js`:
 
@@ -103,7 +103,7 @@ export const storiesOf = (groupName) => {
 };
 ```
 
-_Note: Once [facebook/jest#2094](https://github.com/facebook/jest/pull/2094) is released, you can customize snapshot names!_
+_Note: Once [`facebook/jest#2094`](https://github.com/facebook/jest/pull/2094) is released, you can customize snapshot names!_
 
 #### 7. Move `*.stories.js` under `__tests__`.
 
@@ -111,12 +111,9 @@ Jest will automatically discover & run any `.js` under `__tests__`.
 
 #### 8. Run Tests.
 
-summary: How to take Jest snapshots from Storybook (before Storyshots existed)
-tags: [jest, testing, javascript, storybook]
-
 # All done!
 
-For better syntax-highlighting & a runnable example, check out the source repo:
+For better syntax-highlighting & a running example, check out the source repo:
 
 > [**ericclemmons/jest-storybook**](https://github.com/ericclemmons/jest-storybook)
 >

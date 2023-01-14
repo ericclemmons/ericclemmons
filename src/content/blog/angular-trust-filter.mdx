@@ -11,7 +11,7 @@ It seems every Angular project I write, at some point, sees the error:
 
 This is because of Angular's [`$sce`][1] service, which _enabled_ by default:
 
-> SCE assists in writing code in way that (a) is secure by default and (b) makes auditing for security vulnerabilities such as XSS, clickjacking, etc. a lot easier.
+> `$sce` assists in writing code in way that (a) is secure by default and (b) makes auditing for security vulnerabilities such as XSS, clickjacking, etc. a lot easier.
 
 Unfortunately, it can be cumbersome, especially when working with dynamic objects.
 
@@ -67,7 +67,7 @@ angular.module('example', []).filter('trust', [
 ])
 ```
 
-Now your view an simply read:
+Now your view and simply read:
 
 ```html
 <h1 ng-bind-html="response.title | trust"></h1>

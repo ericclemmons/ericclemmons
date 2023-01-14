@@ -19,7 +19,7 @@ In a rush, we discovered Node's [`cluster`][cluster] module, which I don't remem
 Per the [`cluster`][cluster] documentation:
 
 > A single instance of Node runs in a single thread. To take advantage of
-> multi-core systems the user will sometimes want to launch a cluster of
+> multicore systems the user will sometimes want to launch a cluster of
 > Node processes to handle the load.
 >
 > The cluster module allows you to easily create child processes that all
@@ -27,7 +27,7 @@ Per the [`cluster`][cluster] documentation:
 
 Implementation was _dead easy_.
 
-### 1. Setup our Express application for easy use via `require`:
+### 1. Set up our Express application for easy use via `require`:
 
 ```js
 // app/server.js

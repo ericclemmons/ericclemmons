@@ -7,7 +7,7 @@ title: Hydra, a precursor to GraphQL
 
 ![Hydra (v1), 2013](https://cdn-images-1.medium.com/max/4970/1*hlN_seNJiXAsIoBZHXHqbA.png)
 
-_This post was sparked by [Lee Byron](https://medium.com/u/d9b1a61823fa)’s excellent writeup on how several Facebook projects (such as GraphQL) came about:_
+_This post was sparked by [Lee Byron](https://medium.com/u/d9b1a61823fa)’s excellent write-up on how several Facebook projects (such as GraphQL) came about:_
 
 > [**Why Invest in Tools?**](https://medium.com/@leeb/why-invest-in-tools-3240ce289930)
 
@@ -40,7 +40,7 @@ Now, consumers were starting to run queries that could take **several seconds** 
 At this point, in April 2014, I was kicking around ideas that, in my mind, would solve several architectural issues:
 
 - Introduce a Dictionary of _Terms.
-  _(e.g. A school’s address would be called _school.address_).
+  _(e.g. A school’s address would be called `school.address`).
 
 - **Every** data-point would be _opt-in_.
 
@@ -62,7 +62,7 @@ As the data came from SQL and would be fetched again with SQL, I tried out a few
 
 Naturally, **relational data performed best in a relational database**.
 
-After a week of prototyping , I had a **functioning demo of a dynamic API**:
+After a week of prototyping, I had a **functioning demo of a dynamic API**:
 
 ![Hydra (v2) Prototype, 2014](https://cdn-images-1.medium.com/max/2046/1*_ydk_hdleHZifVg6Eqg7DQ.gif)
 
@@ -96,19 +96,19 @@ For example, this is how the query, UI, and warehousing was handled for the stat
 
 - **Colocating responsibilities to the _Term_** reduces cognitive overhead. As in, managing the UI, warehousing, schema, for each term was simpler vs. having a dedicated admin, migrations folder, or similar.
 
-- **Documentation must co-exist with the API**. Generating & maintaining API docs separately (we used [aglio](https://github.com/danielgtaylor/aglio)) made keeping changes in sync difficult. With the rewrite, the UI became much of the documentation, as it is with GraphiQL.
+- **Documentation must co-exist with the API**. Generating & maintaining API docs separately (we used [`aglio`](https://github.com/danielgtaylor/aglio)) made keeping changes in sync difficult. With the rewrite, the UI became much of the documentation, as it is with GraphiQL.
 
 #### 👎 What We Did Wrong
 
 - Ignored the similarities that the path for the *Term *had to the JSON output. **GraphQL seems so obvious in retrospect**, in that it is visually similar to JSON.
 
-- **Warehousing data is largely unnecessary** if you aggressively cache & optimize queries per _Term_. This is where [facebook/dataloader](https://github.com/facebook/dataloader) shines.
+- **Warehousing data is largely unnecessary** if you aggressively cache & optimize queries per _Term_. This is where [`facebook/dataloader`](https://github.com/facebook/dataloader) shines.
 
 - **Validate the request first**. The response was built as queries completed, so we’d often waste 9 to find the 10th had an invalid argument provided by the user.
 
-- **Uncaught Exceptions can cause DOS downtime**. Typically you want errors to be load and _throw new Error(…)_ shows up real nicely in [New Relic](https://newrelic.com/). But, one errant script can cause all instances of your app to crash before another comes back online. GraphQL correctly traps errors and makes them part of the response.
+- **Uncaught Exceptions can cause DOS downtime**. Typically, you want errors to be load and _throw new Error(…)_ shows up real nicely in [New Relic](https://newrelic.com/). But, one errant script can cause all instances of your app to crash before another comes back online. GraphQL correctly traps errors and makes them part of the response.
 
-#### …Two Years Later…
+#### … Two Years Later…
 
 ![](https://cdn-images-1.medium.com/max/500/1*VkifORfYG9rs-PTTqAq77A.png)
 
@@ -120,4 +120,4 @@ Today, we recognize & leverage GraphQL as the architectural successor to what we
 
 Thanks for making it this far! 😍
 
-If you’d like to discuss improving “Developer Experience”, hit me up on [Twitter](https://twitter.com/ericclemmons) or [Github](https://github.com/ericclemmons).
+If you’d like to discuss improving “Developer Experience”, hit me up on [Twitter](https://twitter.com/ericclemmons) or [GitHub](https://github.com/ericclemmons).

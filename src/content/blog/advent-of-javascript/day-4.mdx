@@ -30,9 +30,9 @@ Done already via `styles.css`.
 The animation already exists via `styles.css`' `jiggle` class.
 
 As for choosing a _random_ letter, each `<button>` has a `data-key` that indicates what should be pressed (e.g. `TAB`).
-I can randomly pick one of these (ideally, from a dwindling list so repeats don't happen) and toggle `jiggle`.
+I can randomly pick one of these (ideally, from a dwindling list, so repeats don't happen) and toggle `jiggle`.
 
-> - The user should type the same key that's jiggling and it will stop.
+> - The user should type the same key that's jiggling, and it will stop.
 
 I'll need to double-check the [`KeyboardEvent` properties](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent#properties)
 to support `SHIFT` & possibly others.
@@ -72,7 +72,7 @@ So, this was actually a little more fun than I expected!
    })
    ```
 
-   I also listen to `click` events so I can click the Capslock button (since I have it mapped to `Escape` on my keyboard):
+   I also listen to `click` events, so I can click the Caps lock button (since I have it mapped to `Escape` on my keyboard):
 
    ```js
    window.addEventListener('click', (event) => {
@@ -129,11 +129,11 @@ and **an optimal, simple shuffling algorithm**.
    1. Initially, the `end` index is the length of the array.
    1. We randomly pick `i` from 0 to the `end` of the array.
    1. We decrement `end` by 1 so that we can move the random keys to the end of the array.
-   1. Using the previous swap algorithm, we swap the randomly selected key with the unshuffled key at the end.
+   1. Using the previous swap algorithm, we swap the randomly selected key with the untouched key at the end.
    1. After we finish shuffling and the `end` is `0`, we reset it back to `keys.length` & reshuffle the shuffled array all over again.
 
 ## Demo
 
-I spent the most time actually writing this blog post and porting over [Mike Bostock's visualization](https://bost.ocks.org/mike/shuffle/) :)
+I spent the most time actually writing this blog post and porting over [Mike Bostocks' visualization](https://bost.ocks.org/mike/shuffle/) :)
 
 <CodeSandbox codeSandboxId="advent-of-js-day-4-l4umn" />

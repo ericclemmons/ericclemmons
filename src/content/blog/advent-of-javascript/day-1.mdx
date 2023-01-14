@@ -5,11 +5,11 @@ tags: ['advent', 'javascript', 'challenge']
 summary: 'Challenge #1 – Create a Pomodoro timer'
 ---
 
-![Advent of JS Homagepage](/static/images/advent-of-js.png)
+![Advent of JS Homage page](/static/images/advent-of-js.png)
 
 For the first time ever, I'm going to attempt [Advent of JS](https://www.adventofjs.com/).
 
-**Note – this post is a stream-of-conciousness and not a "How-to" guide.**
+**Note – this post is a stream of consciousness and not a "How-to" guide.**
 
 ---
 
@@ -33,7 +33,7 @@ _Then_, you define Function (Technical) Requirements, Architecture, etc.
 
 ### Progressive Enhancement
 
-After downloading the project files, the first thing I noticed is **it's all static HTML/CSS**.
+After downloading the project files, the first thing I noticed is **it is all static HTML/CSS**.
 
 This immediately reminded me of progressive enhancement, where server-rendered pages (often with PHP)
 would have JavaScript loaded with `<script>` tags that would sprinkle in interactivity using [jQuery](https://jquery.com/).
@@ -66,7 +66,7 @@ Instead, I'll install Vue using a [CDN](https://v3.vuejs.org/guide/installation.
 
 I've really enjoyed using [XState](https://xstate.js.org/) for the [Amplify UI Authenticator](https://ui.docs.amplify.aws/components/authenticator).
 
-I can manage much of this state by hand with Vue, but I'd really like to have a vizualization and assurance that I don't end up with impossible states.
+I can manage much of this state by hand with Vue, but I'd really like to have a visualization and assurance that I don't end up with impossible states.
 
 Luckily, XState can be installed using a [CDN](https://xstate.js.org/docs/packages/xstate-vue/#quick-start), too:
 
@@ -138,25 +138,25 @@ using the [XState Visualizer](https://stately.ai/viz):
 >
 > - Start the timer by clicking on the start link/button.
 
-This tells me we'll begin in an `paused` state and have a `START` transition to a `running` state.
+This tells me we'll begin in a `paused` state and have a `START` transition to a `running` state.
 
 > - Once the user clicks start, the word start will change to stop. Then, the user can click on the stop button to make the timer stop.
 
-Vue will observe the machine and do something like `state.matches('running')` to determine whether or not to render the stop button.
+Vue will observe the machine and do something like `state.matches('running')` to determine whether to render the stop button.
 _In Advent of JS' own solution, the button says `pause`, not `stop`_.
 
 When this button is clicked, it'll send a `STOP` event to the machine, which should transition back to `paused`.
 
 > - Click on the gear icon to change the length (minutes and seconds) of the timer.
 
-When the machine is `paused`, an `EDIT` event will transition the machine to `editing`.
+When the machine is `paused`, a `EDIT` event will transition the machine to `editing`.
 
 Vue will check for `state.matches('editing')` and toggle the `disabled` attribute accordingly.
 These `input`s will fire `@change` events, which will send `CHANGE` signals to the machine that will `assign({ minutes, seconds })` to the machine's `context`.
 
 > - Once the timer finishes, the ring should change from green to red and an alert message is passed to the browser.
 
-I haven't ran a timer in XState before, but luckily there's an example: https://xstate.js.org/docs/tutorials/7guis/timer.html#coding
+I haven't run a timer in XState before, but luckily there's an example: https://xstate.js.org/docs/tutorials/7guis/timer.html#coding
 
 Normally, I would use `setInterval` when `running` and `clearInterval` when transitioning back to `paused`.
 

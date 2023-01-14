@@ -4,7 +4,7 @@ summary: Friction log & impressions migrating from Next.js to Qwik
 date: 2022-12-18
 ---
 
-During the holiday break, I decided to convert my site to [Spotlight](https://tailwindui.com/templates/spotlight). The main reason was so I could remove blog pagination, group related content (e.g. last year's _Advent of JS_ section), and add a CV.
+During the holiday break, I decided to convert my site to [Spotlight](https://tailwindui.com/templates/spotlight). The main reason was, so I could remove blog pagination, group related content (e.g. last year's _Advent of JS_ section), and add a CV.
 
 Being a long-time user of Next.js & many Vercel projects, I attempted to migrate `/pages` to `/app` via this guide: [Migrating from `pages` to `app`](https://beta.nextjs.org/docs/upgrade-guide#migrating-from-pages-to-app).
 
@@ -12,7 +12,7 @@ Unfortunately, the issue wasn't in copy/paste friction, but in converting a temp
 
 <Tweet tweetLink="ericclemmons/status/1604928090508972032" />
 
-For example, _how should I access the filesystem outside of `getStaticProps`?_ (My guess is to move the logic into `/pages/api/posts.js` and `fetch` that instead.)
+For example, _how should I access the file system outside `getStaticProps`?_ (My guess is to move the logic into `/pages/api/posts.js` and `fetch` that instead.)
 
 ## My Interest in Qwik
 
@@ -36,7 +36,7 @@ This is a basic example, but the more complex React widgets' `componentDidMount`
 
 ### Routing
 
-Qwik's [Directory Layout](https://qwik.builder.io/qwikcity/routing/overview/) matches my own intiution of **using `index.js|mdx|tsx` as the page content behind a URL**: [Filesystem Routers & Indexes](https://ericclemmons.com/blog/filesystem-routers-and-indexes)
+Qwik's [Directory Layout](https://qwik.builder.io/qwikcity/routing/overview/) matches my own intuition of **using `index.js|mdx|tsx` as the page content behind a URL**: [File system Routers & Indexes](https://ericclemmons.com/blog/filesystem-routers-and-indexes)
 
 I believe Next.js made a mistake with the `/pages` convention by making `/pages/about.js` serve `/about`. This has created numerous issues, especially with colocation of code, without making a config change:
 
@@ -71,11 +71,11 @@ Oddly, `pnpm qwik add react` installs Material UI. I think this is as an example
 The key constraints are:
 
 1.  Don't mix React and Qwik components in the same file.
-2.  Place all your react code inside the `src/integrations/react` folder.
+2.  Place all your React code inside the `src/integrations/react` folder.
 3.  Add `/** @jsxImportSource react */` at the top of the files containing React code.
 4.  Use `qwikify$()` to convert React components into Qwik components, which you can import from Qwik modules.
 
-What I'm doing is copy/pasting my entire Next.js `src/components/*` contents into Qwik's `src/integrations/react/*`, then creating Qwik-friendly wrappers under `src/components/*`:
+What I'm doing is copy/pasting my entire Next.js `src/components/*` contents into Qwik's `src/integrations/react/*`, then creating Qwik wrappers under `src/components/*`:
 
 ```js
 import { component$ } from '@builder.io/qwik'
@@ -94,15 +94,19 @@ In reality, there seems to be some nuances preventing this.
 
 One edge-case was that, since I'm no longer using `next/router`, removing this means I needed to replace `useRouter()` with something like [`useLocation()`](https://qwik.builder.io/qwikcity/api/#uselocation).
 
-But this Qwik-specific API throws a build error:
+But this Qwik API throws a build error:
 
-> [vite] Internal server error: Code(14): Invoking 'use\*()' method outside of invocation context.
+```
+[vite] Internal server error: Code(14): Invoking 'use\*()' method outside of invocation context.
+```
 
-**My initial take is that, if Tailwind UI had _one component per file_, it would be easier to separate React from Qwik-compatible components!**
+**My initial take is that, if Tailwind UI had _one component per file_, it would be easier to separate React from Qwik components!**
 
 Another issue with migration was this frustratingly unclear error:
 
-> QWIK ERROR Code(25): Invalid JSXNode type. It must be either a function or a string.
+```
+QWIK ERROR Code(25): Invalid JSXNode type. It must be either a function or a string.
+```
 
 Remember step 3?
 
@@ -130,16 +134,17 @@ Ever since I prototyped [**code**lift](https://codelift.app/), <kbd>Option+Click
 Heck, I even open-sourced [click-to-component](https://github.com/ericclemmons/click-to-component) after engineers at Stripe used it **thousands of times a month**!
 
 Qwik locally welcomed me with this helpful _Click-to-Source_ prompt 😍
-![[Screen Shot 2022-12-19 at 2.02.40 PM.png]]
+![Qwik](/static/images/qwik.png)
+
 _Note – This doesn't work for wrapped React components!_
 
 ### `class` vs. `className`
 
 The ship has sailed for JSX 1.0 (maybe [2.0](https://github.com/facebook/jsx/issues?q=is%3Aopen+label%3A%22Proposal+2.0%22+sort%3Aupdated-desc)?), but I was surprised when I saw this `@deprecated` warning:
 
-> ![[Screen Shot 2022-12-19 at 2.29.18 PM.png]]
+![Qwik className](/static/images/qwik.className.png)
 
-Note that `className` is still a valid prop (e.g. on React components), but not necessary on HTMLElements.
+Note that `className` is still a valid prop (e.g. on React components), but not necessary on `HTMLElement`s.
 
 **However**, if using `/** @jsxImportSource react */` then you have to continue using `className` to avoid this error:
 
@@ -149,9 +154,9 @@ Note that `className` is still a valid prop (e.g. on React components), but not 
 
 This was one of the pain-points for `/app` in Next.js – `<script>...</script>` isn't well-supported!
 
-A _qwik_ search through their GitHub issues revealed [docs: `RenderOnce` and `dangerouslySetInnerHTML`](https://github.com/BuilderIO/qwik/pull/2452/files#top) – they've ditched React's `{{ __html: ... }}` eyesore.
+A _Qwik_ search through their GitHub issues revealed [docs: `RenderOnce` and `dangerouslySetInnerHTML`](https://github.com/BuilderIO/qwik/pull/2452/files#top) – they've ditched React's `{{ __html: ... }}` eyesore.
 
-_Side note: I think this is a case for putting the inline code behind an `href="/public/inline.js"` instead._
+_Side note: I think this is a case for putting the inline code behind a `href="/public/inline.js"` instead._
 
 ### `import` cannot find `index.tsx`
 
@@ -165,11 +170,11 @@ For complex components, I like to structure the directory this way:
 
 Unfortunately, these cannot be found unless you explicitly use `./components/Head/index`:
 
-> ![[Screen Shot 2022-12-19 at 3.07.21 PM.png]]
+![Qwik index](/static/images/qwik.index.png)
 
 ### Lack of `next/image`
 
-[next/image](https://nextjs.org/docs/api-reference/next/image) is extremely useful for optimizing images based on how they're used without any manual effort.
+I've found that [next/image](https://nextjs.org/docs/api-reference/next/image) is extremely useful for optimizing images based on how they're used without any manual effort.
 
 I see that [Image Optimization](https://github.com/BuilderIO/qwik/issues/1460#top) is being discussed, so traditional `<img>` tags are probably the way to go.
 
@@ -189,11 +194,11 @@ I'm happy to see `~/*` or `@/*` are common conventions for `src/*` ❤️
 
 Rather than [next/head](https://nextjs.org/docs/api-reference/next/head) (which I first knew as [react-helmet](https://github.com/nfl/react-helmet)), Qwik [customizes head](https://qwik.builder.io/qwikcity/content/head/) via `export const head = {...}`.
 
-I prefer this because it's less about side-effects when rendering, and something that can be static or dynamically available _without_ rendering.
+I prefer this because it's less about side effects when rendering, and something that can be static or dynamically available _without_ rendering.
 
 ### Equivalent of `getStaticProps`?
 
-With a a folder of `src/routes/blog/**/*.mdx` files loaded up, the next hurdle is _how to get a list of all blog posts?_
+With a folder of `src/routes/blog/**/*.mdx` files loaded up, the next hurdle is _how to get a list of all blog posts?_
 
 I expected [`@qwik-city-plan`](https://qwik.builder.io/qwikcity/routing/overview/#qwik-city-plan) to solve this:
 
@@ -230,7 +235,7 @@ I enjoyed the onboarding experience, the details & examples in the documentation
 
 However, I believe it needs a strong "brownfield" development story – incrementally migrating to Qwik indeed has "wide islands" which made me wonder if the effort warranted it.
 
-I was hoping that [@qwik-city-plan](https://qwik.builder.io/qwikcity/routing/overview/#qwik-city-plan) & [useContent()](https://qwik.builder.io/qwikcity/api/#usecontent) was going to negate my need for reading the filesystem for blog content.
+I was hoping that [`@qwik-city-plan`](https://qwik.builder.io/qwikcity/routing/overview/#qwik-city-plan) & [`useContent()`](https://qwik.builder.io/qwikcity/api/#usecontent) was going to negate my need for reading the file system for blog content.
 
 In practice, Qwik just didn't seem to "scale" to meet my needs.
 

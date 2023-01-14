@@ -9,8 +9,8 @@ After first [Converting Next.js to Qwik](./convering-nextjs-to-qwik) then cuttin
 
 ## Requirements
 
-- [Spotlight](https://tailwindui.com/templates/spotlight) TailwindCSS Theme
-- [TailwindCSS Support](https://docs.astro.build/en/guides/integrations-guide/tailwind/)
+- [Spotlight](https://tailwindui.com/templates/spotlight) Tailwind CSS Theme
+- [Tailwind CSS Support](https://docs.astro.build/en/guides/integrations-guide/tailwind/)
 - [MDX Support](https://docs.astro.build/en/guides/markdown-content/)
 - [Image Resizing](https://docs.astro.build/en/guides/images/#astros-image-integration)
 - [Content Collections](https://docs.astro.build/en/guides/content-collections/#the-content-directory)
@@ -34,7 +34,7 @@ Eventually I settled on installing the following with 1 command:
 pnpm astro add react vercel sitemap mdx tailwind image
 ```
 
-The fact that Astro **shows you what changed** is a great DX. Most CLIs will modify `package.json` & configs, but it's up to you to recognize the changes the next time you run `git add -p`.
+The fact that Astro **shows you what changed** is a great DX. Most CLI's will modify `package.json` & configs, but it's up to you to recognize the changes the next time you run `git add -p`.
 
 ### `<script>`
 
@@ -68,17 +68,17 @@ module.exports = {
 
 ### `node_modules`
 
-When I'm missing a dependency, such as [clsx](https://github.com/lukeed/clsx), the build predicatably fails. **But**, if I install it in another terminal window, Astro _rebuilds_ the page without anything else from me!
+When I'm missing a dependency, such as [`clsx`](https://github.com/lukeed/clsx), the build predictably fails. **But**, if I install it in another terminal window, Astro _rebuilds_ the page without anything else from me!
 
 ### `<Image />` doesn't work within React components, only `.astro` components
 
-[Improve error handling for @astro/image within react components](https://github.com/withastro/astro/issues/5673#top)
+[Improve error handling for `@astrojs/image` within react components](https://github.com/withastro/astro/issues/5673#top)
 
 ### `rss.xml`
 
 [Install Astro’s RSS package](https://docs.astro.build/en/tutorial/5-astro-api/4/#install-astros-rss-package), and this is pretty much ready to go!
 
-### [class:list](https://docs.astro.build/en/reference/directives-reference/#classlist) instead of [clsx](https://github.com/lukeed/clsx)
+### [`class:list`](https://docs.astro.build/en/reference/directives-reference/#classlist) instead of [`clsx`](https://github.com/lukeed/clsx)
 
 When setting `className` conditionally, `clsx` is a common approach and is used by Tailwind UI.
 
@@ -97,13 +97,13 @@ Personally, I prefer doing the following:
 
 ### Content Collections
 
-Where I struggled with Qwik was getting a list of all the content on the filesystem.
+Where I struggled with Qwik was getting a list of all the content on the file system.
 
 Astro has a guide on [Importing Markdown](https://docs.astro.build/en/guides/markdown-content/#importing-markdown) that amounts to `import`ing a file specifically or `Astro.glob('*.md')` (my preference).
 
-However, I'm interested in trying Astro's [Content Collections (Experimental)](https://docs.astro.build/en/guides/content-collections/) so that frontmatter is strictly enforced, there can be different sub-sections of content, and content is separate from the theme.
+However, I'm interested in trying Astro's [Content Collections (Experimental)](https://docs.astro.build/en/guides/content-collections/) so that frontmatter is strictly enforced, there can be different subsections of content, and content is separate from the theme.
 
-A couple things immediately impressed me!
+A couple of things immediately impressed me!
 
 First, it's a cinch to fetch & render data automatically:
 
@@ -122,7 +122,7 @@ posts.map(post => <Post post={post} />)
 <Content />
 ```
 
-Second, `getCollection` is _automatically typed_ with the **actual data**. This means that TypeScript knows what posts exist, what their slugs are, and all of their meta data.
+Second, `getCollection` is _automatically typed_ with the **actual data**. This means that TypeScript knows what posts exist, what their slugs are, and all of their metadata.
 
 This caught errors in my frontmatter where I was incorrectly specifying dates!
 
@@ -145,17 +145,19 @@ After much usage, my biggest complaint is that `getEntry` isn't equivalent to a 
 
 You have to know the extension the file, which can be `.md` or `.mdx`.
 
-I'm using `.mdx` everywhere, so `getEntry('blog', 'javascript-fatigue.mdx')` isn't much a problem, but it feels like there should be a direct equivalent between URL's `slug` & the equivalent on the filesystem without having TypeScript errors:
+I'm using `.mdx` everywhere, so `getEntry('blog', 'javascript-fatigue.mdx')` isn't much a problem, but it feels like there should be a direct equivalent between URL's `slug` & the equivalent on the file system without having TypeScript errors:
 
-> Argument of type '`${string}.mdx`' is not assignable to parameter of type '"3-ways-to-define-webpack-loaders.mdx" | "advent-of-javascript/day-1.mdx" | "advent-of-javascript/day-10.mdx" | "advent-of-javascript/day-17.mdx" | "advent-of-javascript/day-2.mdx" | ... 29 more ... | "writing-paralysis.mdx"'.
+```
+Argument of type '`${string}.mdx`' is not assignable to parameter of type '"3-ways-to-define-webpack-loaders.mdx" | "advent-of-javascript/day-1.mdx" | "advent-of-javascript/day-10.mdx" | "advent-of-javascript/day-17.mdx" | "advent-of-javascript/day-2.mdx" | ... 29 more ... | "writing-paralysis.mdx"'.
+```
 
 A "gotcha" is that [Custom components with imported MDX](https://docs.astro.build/en/guides/markdown-content/#custom-components-with-imported-mdx) **only work with `.mdx` content, not `.md`**.
 
-I expected that at least `h1`, `h2`, `p`, etc. would work (not actualy _components_) with `<Content components={...} />`, but no.
+I expected that at least `h1`, `h2`, `p`, etc. would work (not actually _components_) with `<Content components={...} />`, but no.
 
 ### Converting from React to `.astro`
 
-What I've found is that presentational (read: logicless) components are pretty straightforward to convert.
+What I've found is that presentational (read: stateless) components are pretty straightforward to convert.
 
 For example, here's a simple React component:
 
@@ -199,7 +201,7 @@ const { title, description, event, cta, href } = Astro.props
 </Card>
 ```
 
-For stateful components, I either opt to leave them as React components (because mutations and re-rendering can get complicated!) or moving side-effects to a separate [Client-Side Scripts](https://docs.astro.build/en/core-concepts/astro-components/#client-side-scripts).
+For stateful components, I either opt to leave them as React components (because mutations and re-rendering can get complicated!) or moving side effects to a separate [Client-Side Scripts](https://docs.astro.build/en/core-concepts/astro-components/#client-side-scripts).
 
 ### `<head />`
 
@@ -268,7 +270,7 @@ TypeError: $$result.createAstro is not a function
     at eval (/src/components/Button.astro:8:27)
 ```
 
-The dev server would hard-crash with this error & I'd have to restart. It takes mostly trial & error to resolve it since the error message contains `eval`'d code, not actual source :(
+The dev server would hard-crash with this error & I'd have to restart. It takes mostly trial & error to resolve it since the error message contains `eval`'d code, not actual source 😔
 
 I've found that having Astro components render React that also try to re-use Astro components is often the problem. In these cases, converting all leaf nodes to Astro components and working up to the top-level React components resolves the errors.
 
@@ -285,7 +287,7 @@ I was naively looking for the equivalent from Astro until I remembered that \*\*
 
 > [Can I Hydrate Astro Components?](https://docs.astro.build/en/core-concepts/framework-components/#can-i-hydrate-astro-components)
 
-Instead I can generate a unique `id` simply with:
+Instead, I can generate a unique `id` simply with:
 
 ```js
 const id = `section-${Math.random().toString(16)}`
@@ -342,7 +344,7 @@ index 46ec881..39e7273 100644
      }
 ```
 
-But I found it went smoothest by aliasing `react` & `react-dom` to `@preact/compat` rather than relying on [pnpm.overrides](https://pnpm.io/package_json#pnpmoverrides) (which didn't work for me).
+But I found it went the smoothest by aliasing `react` & `react-dom` to `@preact/compat` rather than relying on [`pnpm.overrides`](https://pnpm.io/package_json#pnpmoverrides) (which didn't work for me).
 
 ```diff
 diff --git a/package.json b/package.json
@@ -396,20 +398,20 @@ Subsequent builds take **~5s**.
 
 ### Image & Picture
 
-[@astrojs/image](https://docs.astro.build/en/guides/integrations-guide/image/#installation) provides 2 dynamic components:
+[`@astrojs/image`](https://docs.astro.build/en/guides/integrations-guide/image/#installation) provides 2 dynamic components:
 
 - [`<Image />`](https://docs.astro.build/en/guides/integrations-guide/image/#image-)
 - [`<Picture />`](https://docs.astro.build/en/guides/integrations-guide/image/#picture-)
 
-In practice, `<Picture>` is most analagous to [next/image](https://nextjs.org/docs/api-reference/next/image) for **responsive images** because it also supports the [sizes](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/sizes) attribute.
+In practice, `<Picture>` is most analogous to [next/image](https://nextjs.org/docs/api-reference/next/image) for **responsive images** because it also supports the [sizes](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/sizes) attribute.
 
-The only difficult is also providing [widths](https://docs.astro.build/en/guides/integrations-guide/image/#widths) in pixels when Tailwind's units are amibiguous – `w-72` might mean `18rem`, or `288px` ¯\_(ツ)\_/¯
+The only difficult is also providing [widths](https://docs.astro.build/en/guides/integrations-guide/image/#widths) in pixels when Tailwind's units are ambiguous – `w-72` might mean `18rem`, or `288px` ¯\_(ツ)\_/¯
 
 For non-responsive images, `<Image>` is pretty much like `<img>`, except that `width` **or** `height` need to be provided alongside `aspectRatio`.
 
-I typically set a maximum `width` of `1024` and an `aspectRatio` of `16:9`.
+I typically set a maximum `width` of `1024` and a `aspectRatio` of `16:9`.
 
-But what makes these so handy is that I can use an `import` statement for the `src`!
+But what makes these so handy is that I can use a `import` statement for the `src`!
 
 ```jsx
 <Image
@@ -420,19 +422,19 @@ But what makes these so handy is that I can use an `import` statement for the `s
 />
 ```
 
-For SVGs, in the future I'll look into [astro-icon](https://github.com/natemoo-re/astro-icon).
+For SVGs, in the future I'll look into [`astro-icon`](https://github.com/natemoo-re/astro-icon).
 
 ### Social Images
 
-Unfortunately, to use [@vercel/og](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation) **requires [Edge Runtime](https://vercel.com/docs/concepts/functions/edge-functions/edge-functions-api)** ([Limits](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation#limits))
+Unfortunately, to use [`@vercel/og`](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation) **requires [Edge Runtime](https://vercel.com/docs/concepts/functions/edge-functions/edge-functions-api)** ([Limits](https://vercel.com/docs/concepts/functions/edge-functions/og-image-generation#limits))
 
 I... didn't see this until late at night after experimenting for several hours 😳
 
-But, [@astrojs/image **does not** support the Edge Runtime](https://docs.astro.build/en/guides/integrations-guide/image/#installation)!
+But, [`@astrojs/image` **does not** support the Edge Runtime](https://docs.astro.build/en/guides/integrations-guide/image/#installation)!
 
 I was able to get [social images running locally, but failing on Vercel](https://github.com/ericclemmons/ericclemmons/pull/3/commits/e50d741779502abd69aeab838f26f10c0cd0f776), likely due to `yoga-wasm-web/asm`, `satori/wasm`, and `sharp` for rendering.
 
-With a clear head today, I'm going to try out [resvg-js](https://github.com/yisibl/resvg-js) for rendering & see if that makes the difference.
+With a clear head today, I'm going to try out [`resvg-js`](https://github.com/yisibl/resvg-js) for rendering & see if that makes the difference.
 
 I did learn something new about **importing `?raw` files in Astro/Vite**, though! Binary doesn't cleanly get imported for use by `satori`.
 
@@ -467,7 +469,7 @@ Then, I could import the fonts via `?raw-hex`:
 import ttf from '../../../public/Inter/static/Inter-Regular.ttf?raw-hex'
 ```
 
-And finally create an [ArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) by:
+And finally create a [`ArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) by:
 
 ```js
 const fromHexString = (hexString) =>
@@ -487,7 +489,7 @@ require() of ES Module ./node_modules/.pnpm/yoga-wasm-web@0.3.0/node_modules/yog
 
 Based on [some other examples I found](https://github.com/zernonia/keypress/blob/main/server/routes/og/%5Bslug%5D.ts), `satori` works with `v0.0.45`, so this is clearly a bug with Satori.
 
-But the probem is, even when I get this working locally, is that Vercel has cryptic errors that I have no way of diagnosing:
+But the problem is, even when I get this working locally, is that Vercel has cryptic errors that I have no way of diagnosing:
 
 ```
 Function Status:None
@@ -507,7 +509,7 @@ User Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (K
 2023-01-12T21:57:47.502Z	9f0bc511-56f8-4b17-ad95-a4581c3f4528	ERROR	Invoke Error 	{"errorType":"Error","errorMessage":"socket hang up","code":"ECONNRESET","stack":["Error: socket hang up","    at connResetException (node:internal/errors:711:14)","    at Socket.socketOnEnd (node:_http_client:518:23)","    at Socket.emit (node:events:525:35)","    at Socket.emit (node:domain:489:12)","    at endReadableNT (node:internal/streams/readable:1359:12)","    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)"]}
 ```
 
-On a hunch, I went to a preview build for `/api/og.png` and [it worked](https://ericclemmons-f2ooeiz43-ericclemmons.vercel.app/api/og.png?title=Migrating%20to%20the%20Apple%20MacBook%20Air%20M2)!
+On a hunch, I went to a preview build for `/api/og.png`, and [it worked](https://ericclemmons-f2ooeiz43-ericclemmons.vercel.app/api/og.png?title=Migrating%20to%20the%20Apple%20MacBook%20Air%20M2)!
 
 So it looks like serving _normal content_ is failing on Vercel with `output: server` with [this change](https://github.com/ericclemmons/ericclemmons/compare/1b122d5e41ff5b2febf8315640a49a0e45e0b637..cb47aa9d5e4fc671fc7e1f7b2813a092df6552c8) 🤔
 
@@ -596,10 +598,10 @@ With the [majority of the work done](https://github.com/ericclemmons/ericclemmon
 1. Astro **feels like the old days of the web.**
    This is a good thing. HTML is HTML, `<script>` and `<style>` tags are copy/paste-able, and modern libraries like Svelte, Vue, & React are an extension away.
 
-   It feels like I start with _form_, then get to choose how to progressively add _function_. [Remix](https://remix.run/) may say the same, as it centralizes on primatives like Request & Response. But being React-first rather than _HTML_-first means abstractions for `link`/`style`/`script` are essential.
+   It feels like I start with _form_, then get to choose how to progressively add _function_. [Remix](https://remix.run/) may say the same, as it centralizes on primitives like Request & Response. But being React-first rather than _HTML_-first means abstractions for `link`/`style`/`script` are essential.
 
 2. Astro's growth and positive impressions are warranted, & will only improve:
-   ![StateOfJS](https://assets.devographics.com/captures/js2022/en-US/astro.png)
+   ![State of JS](https://assets.devographics.com/captures/js2022/en-US/astro.png)
 
 3. With this growth, bugs are shallower but **getting _fixed pretty fast_**.
 4. There are still rough edges with boilerplate around dynamic content, sitemaps, dynamic `<head>` tags, & image optimization. But, it's clear that the team is **optimizing for these common use-cases and rapidly experimenting**.

@@ -22,13 +22,13 @@ Again, let's start with the _User Requirements_ and speculate how I can solve th
 
 > - See the list of podcast episodes
 
-There's a provided `app.js` with `episodes` defined. The static HTML only has 10 `<li>`s, so I'll already need to templatize these.
+There's a provided `app.js` with `episodes` defined. The static HTML only has 10 `<li>`s, so I'll already need to convert these to templates.
 
 I've been using Vue a _bunch_, so let's mix things up a bit by using [`htm`](https://github.com/developit/htm).
 
 > - Check one episode, shift-click to select all the episodes in between
 
-On the surface, this seems straightfward:
+On the surface, this seems straightforward:
 
 1. `onClick`, check if `Shift` is pressed.
 1. If so, select all the episodes in between.
@@ -44,13 +44,13 @@ The video explicitly states:
 
 ### `htm`
 
-First, I need to make sure `app.js` is treated as an ES Module so I can use `import` within it:
+First, I need to make sure `app.js` is treated as an ES Module, so I can use `import` within it:
 
 ```html
 <script src="app.js" type="module"></script>
 ```
 
-Then, I can move `episodes` to it's own file and `import` `htm` already bound to `preact`:
+Then, I can move `episodes` to its own file and `import` `htm` already bound to `preact`:
 
 ```js
 import {
@@ -75,7 +75,7 @@ Now to make this static content _dynamic_!
 
 ### Components
 
-Normally the 1st thing I do when I'm making a template _React_-ive (heh)
+Normally the 1st thing I do when I'm making a template _Reactive_ (heh)
 is put the **entire** static markup into `App`'s `render` method.
 
 Then, the moment I want to loop over data (e.g. `episodes.map`),
