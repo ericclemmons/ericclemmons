@@ -17,7 +17,7 @@ const posts = (await getCollection('blog'))
 
 <Layout>
   <div
-    class="absolute -mt-16 h-96 w-full bg-fuchsia-500 shadow-inner"
+    class="absolute -mt-16 h-[30rem] w-full bg-fuchsia-500 shadow-inner"
     style={{
       clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
     }}
@@ -82,7 +82,7 @@ const posts = (await getCollection('blog'))
         </style>
       </h1>
       <p
-        class="mt-6 text-base text-white shadow-black drop-shadow-[0_0.5rem_1rem_black]"
+        class="mt-6 rounded bg-gradient-to-bl from-black/30 to-black/20 p-4 text-base text-white shadow-inner"
       >
         <span role="img" aria-label="waving hand" class="wave pr-1 text-white">
           {'👋🏻'}
