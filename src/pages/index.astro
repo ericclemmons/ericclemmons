@@ -1,5 +1,5 @@
 ---
-import { Canvas } from '@/components/Canvas'
+import Canvas from '@/components/Canvas.astro'
 import { Container } from '@/components/Container'
 import HeroSocialLink from '@/components/HeroSocialLink.astro'
 import { GitHubIcon, LinkedInIcon, TwitterIcon } from '@/components/Icons'
@@ -22,7 +22,7 @@ const posts = (await getCollection('blog'))
       clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
     }}
   >
-    <Canvas client:only="preact" />
+    <Canvas />
   </div>
   <Container className="mt-9">
     <div class="max-w-2xl">
