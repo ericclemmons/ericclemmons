@@ -1,12 +1,12 @@
 ---
-import { Container } from '@/components/Container'
+import { InnerContainer, OuterContainer } from '@/components/Container.astro'
 import NavLink from '@/components/NavLink.astro'
 ---
 
 <footer class="mt-32">
-  <Container.Outer>
+  <OuterContainer>
     <div class="border-t border-zinc-100 pt-10 pb-16 dark:border-zinc-700/40">
-      <Container.Inner>
+      <InnerContainer>
         <div
           class="flex flex-col items-center justify-between gap-6 sm:flex-row"
         >
@@ -23,7 +23,7 @@ import NavLink from '@/components/NavLink.astro'
             &copy; {new Date().getFullYear()} Eric Clemmons. All rights reserved.
           </p>
         </div>
-      </Container.Inner>
+      </InnerContainer>
     </div>
-  </Container.Outer>
+  </OuterContainer>
 </footer>
