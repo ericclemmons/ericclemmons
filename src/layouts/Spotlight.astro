@@ -1,6 +1,6 @@
 ---
 import Footer from '@/components/Footer.astro'
-import { Header } from '@/components/Header'
+import Header from '@/components/Header.astro'
 
 const {
   title = 'Home',
@@ -155,7 +155,7 @@ const { href, origin } = Astro.url
       </div>
     </div>
     <div class="relative">
-      <Header client:visible />
+      <Header />
 
       <main>
         <slot />
