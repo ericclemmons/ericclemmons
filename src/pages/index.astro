@@ -29,7 +29,9 @@ const posts = (await getCollection('blog'))
       <h1
         class="md:leading-14 text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-xl sm:text-4xl sm:leading-10 md:text-6xl"
       >
-        User-First,<br />Product-Driven, Frontend Engineer.
+        User-First,<br class="hidden md:block" /> Product-Driven,<br
+          class="hidden sm:block"
+        /> Frontend Engineer.
 
         <style>
           .wave {
