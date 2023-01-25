@@ -13,9 +13,10 @@ const site = process.env.PUBLIC_VERCEL_URL
 const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
   (file) => file.split('./src/content/').pop().split('.mdx').shift()
 )
-const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro')).map(
-  (file) => file.split('./src/pages/').pop().split('.astro').shift()
-)
+const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro'))
+  .map((file) => file.split('./src/pages/').pop().split('.astro').shift())
+  .filter((page) => !page.includes('['))
+
 const customPages = [...pages, ...content].map((slug) => `${site}${slug}`)
 
 /** @type {import('vite').Plugin} */
