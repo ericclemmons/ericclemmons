@@ -14,7 +14,19 @@ const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
   (file) => file.split('./src/content/').pop().split('.mdx').shift()
 )
 const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro'))
-  .map((file) => file.split('./src/pages/').pop().split('.astro').shift())
+  .map((file) =>
+    file
+      // Remove first part of path
+      .split('./src/pages/')
+      .pop()
+      // Remove extension
+      .split('.astro')
+      .shift()
+      // Remove "/index" suffix
+      .split('/index')
+      .shift()
+  )
+  // Remove dynamic pages
   .filter((page) => !page.includes('['))
 
 const customPages = [...pages, ...content].map((slug) => `${site}${slug}`)
