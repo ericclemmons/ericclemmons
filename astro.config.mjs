@@ -35,9 +35,6 @@ const hexLoader = {
 // https://astro.build/config
 export default defineConfig({
   site,
-  experimental: {
-    contentCollections: true,
-  },
   integrations: [
     tailwind(),
     sitemap({
