@@ -16,7 +16,7 @@ const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
 const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro')).map(
   (file) => file.split('./src/pages/').pop().split('.astro').shift()
 )
-const customPages = [...pages, ...content].map((slug) => `${site}/${slug}`)
+const customPages = [...pages, ...content].map((slug) => `${site}${slug}`)
 
 /** @type {import('vite').Plugin} */
 const hexLoader = {
