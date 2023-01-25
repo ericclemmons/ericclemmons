@@ -7,8 +7,8 @@ import vercel from '@astrojs/vercel/serverless'
 import { defineConfig } from 'astro/config'
 
 const site = process.env.PUBLIC_VERCEL_URL
-  ? `https://${process.env.PUBLIC_VERCEL_URL}`
-  : 'http://localhost:3000'
+  ? `https://${process.env.PUBLIC_VERCEL_URL}/`
+  : 'http://localhost:3000/'
 
 const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
   (file) => file.split('./src/content/').pop().split('.mdx').shift()
