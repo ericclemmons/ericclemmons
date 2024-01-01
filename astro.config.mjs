@@ -10,7 +10,7 @@ const site = process.env.PUBLIC_VERCEL_URL
   : 'http://localhost:3000/'
 
 const content = Object.keys(import.meta.glob('./src/content/**/*.mdx')).map(
-  (file) => file.split('./src/content/').pop().split('.mdx').shift()
+  (file) => file.split('./src/content/').pop().split('.mdx').shift(),
 )
 const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro'))
   .map((file) =>
@@ -23,7 +23,7 @@ const pages = Object.keys(import.meta.glob('./src/pages/**/*.astro'))
       .shift()
       // Remove "/index" suffix
       .split('/index')
-      .shift()
+      .shift(),
   )
   // Remove dynamic pages
   .filter((page) => !page.includes('['))
@@ -56,7 +56,9 @@ export default defineConfig({
     preact({ compat: true }),
   ],
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({
+    imageService: true,
+  }),
   vite: {
     plugins: [hexLoader],
   },
