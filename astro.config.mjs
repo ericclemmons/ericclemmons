@@ -1,4 +1,3 @@
-import image from '@astrojs/image'
 import mdx from '@astrojs/mdx'
 import preact from '@astrojs/preact'
 import sitemap from '@astrojs/sitemap'
@@ -54,9 +53,6 @@ export default defineConfig({
       customPages,
     }),
     mdx(),
-    image({
-      serviceEntryPoint: '@astrojs/image/sharp',
-    }),
     preact({ compat: true }),
   ],
   output: 'server',

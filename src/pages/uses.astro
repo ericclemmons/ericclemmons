@@ -2,7 +2,7 @@
 import Tool from '@/components/Tool.astro'
 import ToolsSection from '@/components/ToolsSection.astro'
 import Layout from '@/layouts/Simple.astro'
-import { Image } from '@astrojs/image/components'
+import { Image } from 'astro:assets'
 ---
 
 <Layout
@@ -20,7 +20,6 @@ import { Image } from '@astrojs/image/components'
     <ToolsSection title="Workstation">
       <Image
         alt="My desk"
-        aspectRatio="16:9"
         class="bg-zinc-100 dark:bg-zinc-800 rounded-2xl object-cover aspect-video"
         src={import('@/images/photos/desk.jpg')}
         width="1200"
