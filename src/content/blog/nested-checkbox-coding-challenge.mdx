@@ -1,0 +1,81 @@
+---
+date: 2024-01-01
+summary: I had an interview challenge shared with me that's used at a large fintech company. This is my solution.
+tags: [interview, coding-challenge, javascript]
+title: Nested Checkbox Coding Challenge
+
+---
+import { Code } from 'astro:components';
+import NestedCheckboxDemo from '@/components/NestedCheckboxDemo';
+import code from '@/components/NestedCheckboxDemo?raw';
+
+_{frontmatter.summary}_
+
+## Requirements
+
+![](https://i.ibb.co/s18N9p5/nested-checkbox.png)
+
+Implement a nested checkbox component that satisfies the following interface:
+
+```ts
+type CheckboxOption = {
+  [key: string]: boolean | CheckboxOption;
+};
+
+const NestedCheckbox: ({
+  value,
+  onChange
+}: {
+  value: CheckboxOption;
+  onChange: (value: CheckboxOption) => void;
+}) => React.ReactNode;
+```
+
+The following input should produce the following output:
+
+```tsx
+const App = () => {
+  const [value, onChange] = useState({
+    foo: true,
+    bar: false,
+    group1: {
+      level2: true,
+      level2option2: false,
+      nested: {
+        option: true
+      }
+    }
+  });
+
+  return <NestedCheckbox value={value} onChange={onChange} />;
+};
+```
+
+The requirements for the implementation are:
+
+- The non-leaf checkboxes (those corresponding to object values) are checked only if all of their child leaf checkboxes are checked
+- There is no state maintained inside `NestedCheckbox`, as the component is fully controlled
+- [EXTRA] Clicking a non-leaf checkbox will toggle all of its children on or off, depending its the current checked status
+
+## Demo
+
+ <NestedCheckboxDemo client:visible />
+
+## Source
+
+The problem I have with this problem is that the interface doesn't allow for recursiveness with reference to a top-level root.
+
+With a top-level `onChange`, we could always mutate the initial `value` object directly and call `onChange(value)` to re-render the fully-controlled `NestedCheckbox`.
+
+However, this means not being able to call `<NestedCheckbox value={childValue} onChange={onChange} />` because that would replace the top-level value.
+
+So instead, I created a `refresh` wrapper function that triggers the parent `NestedCheckbox`'s `onChange`, eventually reaching the parent:
+
+```tsx
+const refresh = () => onChange(structuredClone(value))
+```
+
+1. This is passed to child `<NestedCheckbox value={childValue} onChange={refresh} />`, since I don't care about the child `value` updates and only want to refresh.
+1. I'm using [`structuredClone`](https://developer.mozilla.org/en-US/docs/Web/API/structuredClone), which is a performant alternative to `JSON.parse(JSON.stringify(value))`.
+
+<Code code={code} lang="tsx" />
