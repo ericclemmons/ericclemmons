@@ -59,7 +59,7 @@ const fonts = [
 
 const html = htm.bind(h)
 
-export const get: APIRoute = async ({ url, site }) => {
+export const GET: APIRoute = async ({ url, site }) => {
   const title = url.searchParams.get('title') ?? 'Missing Title'
   const options = {
     // debug: true,
@@ -87,7 +87,7 @@ export const get: APIRoute = async ({ url, site }) => {
       >
         <img
           src=${`data:image/png;base64, ${Buffer.from(
-            fromHexString(backgroundHex)
+            fromHexString(backgroundHex),
           ).toString('base64')}`}
           style=${{
             position: 'absolute',
@@ -102,7 +102,7 @@ export const get: APIRoute = async ({ url, site }) => {
           x=${0}
           y=${0}
           src=${`data:image/jpeg;base64, ${Buffer.from(
-            fromHexString(avatarHex)
+            fromHexString(avatarHex),
           ).toString('base64')}`}
           style=${{
             position: 'absolute',
@@ -150,7 +150,7 @@ export const get: APIRoute = async ({ url, site }) => {
         </div>
       </div>
     `,
-    options
+    options,
   )
 
   // return new Response(svg, {
