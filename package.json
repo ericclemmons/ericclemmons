@@ -11,30 +11,30 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/mdx": "^2.0.3",
-    "@astrojs/preact": "^3.0.2",
-    "@astrojs/sitemap": "^3.0.4",
+    "@astrojs/mdx": "^2.3.1",
+    "@astrojs/preact": "^3.2.0",
+    "@astrojs/sitemap": "^3.1.4",
     "@astrojs/tailwind": "^5.1.0",
-    "@astrojs/vercel": "^6.1.1",
-    "@headlessui/react": "^1.7.17",
-    "@notionhq/client": "^2.2.14",
-    "@tailwindcss/typography": "^0.5.10",
-    "astro": "^4.0.8",
-    "clsx": "^2.1.0",
+    "@astrojs/vercel": "^7.5.4",
+    "@headlessui/react": "^1.7.19",
+    "@notionhq/client": "^2.2.15",
+    "@tailwindcss/typography": "^0.5.13",
+    "astro": "^4.7.0",
+    "clsx": "^2.1.1",
     "htm": "^3.1.1",
-    "preact": "^10.19.3",
+    "preact": "^10.21.0",
     "react": "npm:@preact/compat@^17.1.2",
     "react-dom": "npm:@preact/compat@^17.1.2",
-    "satori": "0.10.11",
-    "sharp": "^0.32.4",
-    "tailwindcss": "^3.4.0",
-    "three": "^0.160.0",
+    "satori": "0.10.13",
+    "sharp": "^0.33.3",
+    "tailwindcss": "^3.4.3",
+    "three": "^0.164.1",
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
-    "@types/react": "^18.2.46",
-    "@types/react-dom": "^18.2.18",
-    "@types/three": "^0.160.0",
-    "prettier-plugin-tailwindcss": "^0.5.10"
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@types/three": "^0.164.0",
+    "prettier-plugin-tailwindcss": "^0.5.14"
   }
 }
