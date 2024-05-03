@@ -1,0 +1,341 @@
+---
+title: "Write Design Docs like Amazon"
+date: 2024-05-02
+summary: "This is the exhaustive Design Document format that I used while working at AWS Amplify."
+---
+
+import Button from "@/components/Button.astro"
+
+I wrote _lots_ of design docs while working at [AwS Amplify](https://aws.amazon.com/amplify/). The most recent of which was the [Amplify Authenticator Relaunch](https://web.archive.org/web/20230116010109/https://github.com/aws-amplify/amplify-ui/discussions/200).
+
+This is a thorough template that's meant to be adjusted to meet your needs.
+
+## Document Guidelines
+
+- Aim for 6-8 pages of primary content. Further explanation & examples can be included in the Appendix.
+- Don't use [weasel words](https://en.wikipedia.org/wiki/Weasel_word). Use numbers, percentages, dates, etc. If you don't have the data, get some.
+- When referencing data, only include the data-point itself in the body.  Move graphs, explanation, & methodologies to the Appendix.
+- _Rarely_ use bullet-points. Instead, write prose.
+
+  _(Yes, there are lots of bullets in this document, but that's because it's acting as an instructional checklist for what prose you should be writing!)_
+
+## The Template
+
+### Problem Statement
+
+<details>
+<summary>&hellip;</summary>
+
+Present an abstract of your document that clearly and succinctly defines your problem, summarizes your solution, and states your goal.
+
+For example:
+
+> The existing `@aws-amplify/ui-*` packages successfully reduced the level of effort to create cross-framework components (e.g. [`<Chatbot>`](https://github.com/aws-amplify/amplify-js/pull/6684)) for web, but led to certain technical limitations (e.g. fine-grained customizability of the UI styling, password manager support) that prevented customers from using the `Authenticator` in production apps.
+>
+> The next major release of the `Authenticator` resolves [long-standing customers issues]() with the existing `@aws-amplify/ui-*` packages and creates a foundation to ensure cross-framework (e.g. Angular, React, React Native, Vue) and cross-platform (e.g. Android, iOS, Flutter) feature parity & stability.
+
+</details>
+
+### Glossary
+
+<details>
+<summary>&hellip;</summary>
+
+Define terms, acronyms, and abbreviations here. This doc will last beyond your meeting, so help future readers (including yourself!).
+
+For example:
+
+> - _**SSG**_ – [Static Site Generation](https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation). The page HTML is generated at _build time_, rather than per-request.
+> - _**Next.js**_ – React framework developed by Vercel for full-stack web applications.
+
+</details>
+
+### Use cases
+
+<details>
+<summary>&hellip;</summary>
+
+
+- Define use cases in terms of impact or business value, not technical outcomes.
+- Have a representative list of examples, but not exhaustive (i.e. covering edge-cases).
+- Work backwards from & show the customer's perspective.
+
+For example:
+
+> Customers can wrap their React pages in authentication with zero-configuration of their underlying backend:
+> ```jsx
+> import { Authenticator, useAuthenticator } from "@aws-amplify/ui-react"
+>
+> export default function App() {
+>   const auth = useAuthenticator();
+>  
+>   if (auth.state !== 'AUTHENTICATED') {
+>     return <Authenticator />
+>   }
+>
+>   return (
+>     <>
+>       <h1>Welcome {auth.user.username}!</h1>
+>       <button onClick={auth.signOut}>Sign out</button>
+>     <>
+>   )
+> }
+> ```
+
+</details>
+
+### Breaking changes
+
+<details>
+<summary>&hellip;</summary>
+
+Does your design break customers, services, or anything else? Such as:
+
+- 404 URLs.
+- HTTP API request/response changes.
+- Component `props` change.
+- Making a `null`-able property non-`null`.
+- Updating to this dependency breaks code compilations.
+- Performance regressions.
+- Function signature changes.
+- UI structure may break E2E tests.
+- Buggy behavior customers had to work around, and those workarounds will break.
+
+  ![There are probably children out there holding down spacebar to stay warm in the winter! YOUR UPDATE MURDERS CHILDREN.](https://imgs.xkcd.com/comics/workflow.png)
+
+- etc.
+
+</details>
+
+### Success criteria
+
+<details>
+<summary>&hellip;</summary>
+
+What will you measure and **quantify** to demonstrate you've successfully solved the problem? Use relative _and_ absolute values. Doubling customers sounds huge, until you find out it's from 1 to 2.
+
+For example:
+
+> - _**Performance**_ – Time-to-first-byte (TTFB) will improve 4x, from 200ms to 50ms.
+> - _**Cost**_ – We'll reduce our DataDog bill by $12,000 each month, from $30,000 to $18,000.
+> - _**Adoption**_ By Q2, 25% of our users (4,250) will be using this new version, based on NPM downloads.
+> - _**Stability**_ Our session error percentage will drop from 3% to 1%, eliminating crashes in 2,000 sessions a month.
+
+Notice how there's a _directional_ stat, and an before/after comparison.
+
+</details>
+
+### Proposed design
+
+<details>
+<summary>&hellip;</summary>
+
+This is where you outline your solution & approach and _what_ it does.
+
+Focus on ideas, concepts, and tenets that are directionally true, no matter the implementation. There should be key features that are accomplished through the technical design below.
+
+</details>
+
+### Technical design
+
+<details>
+<summary>&hellip;</summary>
+
+This is where you discuss _how_ your achieve your solution. Provide architecture diagrams, algorithms, data structures, interfaces, etc. that developers or systems will rely on.
+
+Primarily describe the happy-path, well-supported use cases.  If edge-cases or errors impact the design (e.g. working around AWS SQS Standard not behaving like a FIFO Queue), include them.
+
+When including a design, link to the original. (You'll want that again.)
+
+Here are the tools I like:
+
+- https://excalidraw.com/
+- https://www.tldraw.com/
+- https://whimsical.com/
+- https://stately.ai/
+- Keynote
+
+</details>
+
+### Components
+
+<details>
+<summary>&hellip;</summary>
+
+Like the  [C4 model](https://c4model.com/), this should enumerate the various humans, systems, processes, & components that are interacting with each other.
+
+![C4 model](https://c4model.com/img/abstractions.png)
+
+For example:
+
+> -  _**Studio** - The primary interface for UX Designers. It consumes UI Codegen as a dependency._
+> -  _**CLI** - The primary interface for App Developers. It consumes UI Codegen as a dependency._
+> -  _**GitHub** - The source control system-of-record for the open-source UI Codegen package._
+> -  _**Actions** - The CI/CD system for building, testing, and deploying the UI Codegen package._
+> -  _**NPM** - The primary distribution channel for the open-source UI Codegen package._
+    
+</details>
+
+### Dependencies
+
+<details>
+<summary>&hellip;</summary>
+
+What external or sibling systems or components does your design rely on?  List these out, as they may be relevant as a risk to mitigate.
+
+For example:
+
+- _**LaunchDarkly** – Feature flag service that is responsible for rolling out this feature to users.
+
+</details>
+
+### Monitoring
+
+<details>
+<summary>&hellip;</summary>
+
+Similar to the customer-facing or business-oriented success metrics above, how will you track technical metrics for the health & stability of your solution?
+
+</details>
+
+### New APIs or behaviors
+
+<details>
+<summary>&hellip;</summary>
+
+This means _public-facing_ (i.e. an API another service or person may depend on) changes. These require broader buy-in, particularly by stakeholders and senior technical staff.
+
+For example:
+
+> - Queues go from delivering messages _exactly once_ to _at least once_.
+> - Introdicing an `experimental: {...}` configuration object
+
+</details>
+
+### Pros & cons
+
+<details>
+<summary>&hellip;</summary>
+
+Show you've pragmattically considered the impact of _adopting_ your solution as well as _not adopting_ it.
+
+- Is there development cost that will take away from or delay other initiatives?
+- Is this solution easy or difficult to maintain? Will this affect headcount?
+- Does this solution introduce complexity that impacts on-call or operational load?
+- Is this a [1-way or 2-way door decision](https://www.youtube.com/watch?v=rxsdOQa_QkM)?
+
+</details>
+
+### Major risks & mitigations
+
+<details>
+<summary>&hellip;</summary>
+
+
+This is an opportunity to go deeper into Dependencies, Cons, & Components listed above.
+
+- Are there dependencies that are outside your control? If there's a bug or an outage, how will your solution be affected?
+- Does your solution introduce a new technology or pattern? How will others gain experience with it?
+- Are there any assumptions your solution has that haven't been validated yet? What happens if those assumptions are incorrect?
+- Does your solution introduce technical debt? How will you pay it off? (Feature flags are great fodder for this!)
+
+</details>
+
+### Security
+
+<details>
+<summary>&hellip;</summary>
+
+Good designs are also accompanied by a separate security review.
+
+- Does the exposed surface area of our systems change?
+- Is new data being gathered or stored? What type of data? Stored where? What happens if it's exposed?
+- Is the design secure-by-default? Or are there extra steps required to improve the security posture?
+
+</details>
+    
+### Scope
+
+<details>
+<summary>&hellip;</summary>
+
+This should touch on the exact features & functionality that's required to deploy the solution, including scale & a SLA.
+
+For example:
+
+> - Customers will be able to upgrade their dependency to this version without changing any code.
+> - This API will use existing, local LLM models, without affecting our OpenAI quota.
+
+</details>
+
+Consider what the minimum possible work is to solve the above use cases, without having to "boil the ocean".
+
+### Out of scope
+
+<details>
+<summary>&hellip;</summary>
+
+
+With a minimal set of work defined, incremental delivery can be listed here.  This is where you can "look around corners" for potential needs, but not block your solution for them.
+
+For example:
+
+> - The API will not support batch editing, but is planned for Q2.
+> - There are no changes to existing user Roles & Permissions.
+
+</details>
+
+### Alternatives considered
+
+<details>
+<summary>&hellip;</summary>
+
+By this point, you should have a well-written proposal for your solution.  But "do nothing" is an option that **must** be addressed.
+
+Likewise, include alternative systems or solutions that are _close_, but fall short enough to justify the effort of both _writing this long-freakin' proposal_ and _building the damned thing_.
+
+> ## Alternative #1
+> 
+> ### Pros & cons
+>
+> Similar to Pros & Cons for your solution, list those, tradeoffs, & benefits concisely here.
+>
+> ### Reasons discarded
+>
+> Why was this not persued?  Is there any aspect of this that can change (e.g. release cadences, team structure, support, expertise) that would make this viable?
+
+</details>
+
+### FAQ
+
+<details>
+<summary>&hellip;</summary>
+
+If there's a trend in questions as you solicit pre-review feedback (your team is excellent for this!), you can get ahead of those & answer them here._createMdxContent
+
+**However**, I consider this section a _smell_.  Don't bury the lede by making people go to the bottom to get their question answered. Put it up top where it makes sense in context!
+
+</details>
+
+### Open Questions & Feedback
+
+<details>
+<summary>&hellip;</summary>
+
+This is where you record items from the design review.
+
+**Every item** must be addressed and resolved by updating the document.  Keep the original questions here, but strike them out:
+
+> - ~Missing Pros & Cons~
+> - Have you considered _this other solution_?
+
+</details>
+
+### Appendix
+
+<details>
+<summary>&hellip;</summary>
+
+This is where you include the methodology & sources behind your data, prior art, resources, & attachments.
+
+</details>
