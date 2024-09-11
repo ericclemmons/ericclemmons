@@ -47,6 +47,11 @@ const hexLoader = {
 // https://astro.build/config
 export default defineConfig({
   site,
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
+  },
   integrations: [
     tailwind(),
     sitemap({
@@ -57,7 +62,7 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: vercel({
-    imageService: true,
+    imageService: false,
   }),
   vite: {
     plugins: [hexLoader],
