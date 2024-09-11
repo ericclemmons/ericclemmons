@@ -29,7 +29,7 @@
     "react": "npm:@preact/compat@^17.1.2",
     "react-dom": "npm:@preact/compat@^17.1.2",
     "satori": "0.10.13",
-    "sharp": "^0.33.3",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.3",
     "three": "^0.164.1",
     "timeago.js": "^4.0.2"
