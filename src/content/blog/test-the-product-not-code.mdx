@@ -1,0 +1,56 @@
+---
+date: 2025-05-20
+summary: How to Ensure Real User Success
+tags: [testing]
+title: Test the Product, Not Code
+---
+
+
+In my experience, the most critical aspect of testing is validating **correctness**—ensuring that an application not only _looks right_ but also _works right_ from the user's perspective. I've learned this lesson through various projects where focusing solely on unit tests for individual components or behaviors led to blind spots in the overall user flow.
+
+For instance, I once managed lead generation forms for hundreds of schools, with **thousands of tests** covering all possible form behaviors. Despite this extensive coverage, we missed critical issues in the **user journey**—issues that only surfaced when they impacted business metrics. The code functioned as intended, but the overall funnel wasn’t performing as expected because we weren’t testing the holistic user experience.
+
+Another example comes from my work on the [AWS Amplify UI](https://ui.docs.amplify.aws/) project. We prioritized acceptance testing by building state machines with [XState](https://xstate.js.org/docs/), which allowed us to model complex authentication flows. This not only helped us ensure consistent behavior across multiple frameworks, but it also gave us a clear, visual understanding of every possible state a user could encounter. By moving beyond isolated unit tests and toward **end-to-end flows**, we delivered a better and more consistent experience.
+
+
+## When to Use Other Types of Tests
+
+As engineers, we’re often asked to balance delivering value quickly with ensuring high quality. And while **end-to-end tests** can sometimes be flaky or slow, they’re the best tool for catching real regressions in the way users actually experience the product.
+
+That said, it’s important to **capture behavior in an implementation-agnostic way**. That means describing the expected behavior in terms that are understandable and durable across changes to technology or frameworks.
+
+Tools like [Cucumber](https://cucumber.io/) or Gherkin-style syntax let you write tests like this:
+
+```gherkin
+Given a user is signed in
+When they visit the settings page
+Then they should see the "Change Password" option
+```
+
+This decouples **what you test** from **how you test**, making it easier to evolve your test suite over time—whether you’re using [Jest](https://jestjs.io/), [Vitest](https://vitest.dev/), [Playwright](https://playwright.dev/), [Cypress](https://www.cypress.io/), or even AI-driven tools like [TestDriver.ai](https://www.testdriver.ai/).
+
+## Leveraging AI and Natural Language for Testing
+
+With the rise of **large language models (LLMs)**, we now have the ability to define and execute tests using **human language and visual understanding**.
+
+Instead of writing brittle selectors like:
+
+```js
+await page.click('button#submit');
+```
+
+You can now write:
+
+```js
+await ai('Click the "Submit" button')
+```
+
+These AI-driven systems can understand the **intent** behind the interaction, not just the implementation. This creates **more robust, more maintainable tests** that closely resemble how users actually use your product.
+
+## Final Thoughts
+
+If there’s one thing I’ve learned, it’s that **your business doesn’t care how many tests you wrote—it cares that users can complete their journey successfully**.
+
+By testing **user flows**, not just **units of code**, and writing **behavioral specifications** in a portable, intentional way, you’ll build better software and catch the issues that actually matter.
+
+And with AI continuing to improve test abstraction and interaction, there’s never been a better time to rethink how we test.
