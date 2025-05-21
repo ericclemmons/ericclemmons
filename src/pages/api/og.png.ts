@@ -128,6 +128,7 @@ export const GET: APIRoute = async ({ url, site }) => {
             lineHeight: 1.25,
             fontWeight: 700,
             whiteSpace: 'pre-wrap',
+            textWrap: 'balance',
           }}
         >
           ${title}
