@@ -197,21 +197,24 @@ jobs:
           FULL_PROMPT=$(cat full-prompt.txt)
 
           # Call Claude API
+          # Build JSON payload
+          CONTENT_JSON=$(echo "$FULL_PROMPT" | jq -Rs .)
+          cat > api-request.json <<API_EOF
+          {
+            "model": "claude-3-5-haiku-20241022",
+            "max_tokens": 4096,
+            "messages": [{
+              "role": "user",
+              "content": $CONTENT_JSON
+            }]
+          }
+          API_EOF
+          
           RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
             -H "x-api-key: $ANTHROPIC_API_KEY" \
             -H "anthropic-version: 2023-06-01" \
             -H "content-type: application/json" \
-            -d @- <<EOF
-{
-  "model": "claude-3-5-haiku-20241022",
-  "max_tokens": 4096,
-  "messages": [{
-    "role": "user",
-    "content": $(echo "$FULL_PROMPT" | jq -Rs .)
-  }]
-}
-EOF
-)
+            -d @api-request.json)
           
           # Check for API errors
           if echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
