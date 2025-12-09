@@ -15,10 +15,14 @@ UMBRELLA_PR=$(gh pr list \
 
 # Query all child PRs
 echo "🔎 Querying child PRs..."
-CHILD_PRS_JSON=$(gh pr list \
-  --search "head:pr-split/$USERNAME is:open" \
+# Use gh pr list without search to avoid GitHub search API lag
+# Filter client-side for pr-split/$USERNAME branches
+ALL_PRS=$(gh pr list \
+  --state open \
   --json number,title,url,baseRefName,headRefName \
   --limit 100 2>/dev/null || echo "[]")
+
+CHILD_PRS_JSON=$(echo "$ALL_PRS" | jq "[.[] | select(.headRefName | startswith(\"pr-split/$USERNAME\"))]")
 
 CHILD_COUNT=$(echo "$CHILD_PRS_JSON" | jq 'length')
 echo "📋 Found $CHILD_COUNT child PRs"
