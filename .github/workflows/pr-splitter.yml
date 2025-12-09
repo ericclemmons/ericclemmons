@@ -91,7 +91,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           
           # Ensure main branch exists locally
-          git fetch origin main:main 2>/dev/null || git branch main origin/main
+          git fetch origin main:main 2>/dev/null || true
 
       - name: Determine branch and context
         id: context
