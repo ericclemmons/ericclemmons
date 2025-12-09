@@ -117,6 +117,7 @@ if [ -z "$UMBRELLA_PR" ]; then
   # Create PR
   PR_URL=$(gh pr create \
     --draft \
+    --assignee "$USERNAME" \
     --head "$BRANCH" \
     --base main \
     --title "[WIP] ☂️ $USERNAME" \
