@@ -1,0 +1,98 @@
+{
+  "base_branch": "main",
+  "user_branch": "dev/ericclemmons",
+  "user": "ericclemmons",
+  "new_commits": [
+    {
+      "hash": "365ba946c241bff1773ba5d807303529fa672fe0",
+      "subject": "Test refactored workflow\n",
+      "body": "\n",
+      "files": []
+    }
+,
+    {
+      "hash": "cc750f6b2c20b8b611e05f6e359fccf03a3d9ac3",
+      "subject": "Add utility functions using lodash\n",
+      "body": "These utility functions depend on the lodash package.\nThis feature should be stacked on top of the lodash dependency PR.\n",
+      "files": [{"path":"src/lib/utils.ts\n","added":18,"deleted":0}]
+    }
+,
+    {
+      "hash": "7cd71bc716239c9ffb21a76081785b9475a55dc8",
+      "subject": "Add lodash dependency for utility functions\n",
+      "body": "This shared dependency will be used by future features.\nIt can safely land on its own without breaking main.\n",
+      "files": [{"path":"package.json\n","added":2,"deleted":1}]
+    }
+,
+    {
+      "hash": "fc6f6b5f42705cfb012b3d4c911fce7558edd254",
+      "subject": "Add Feature B component\n",
+      "body": "This is another independent feature that is unrelated to Feature A.\nIt should be in a separate PR that can land independently.\n",
+      "files": [{"path":"src/components/FeatureB.astro\n","added":15,"deleted":0}]
+    }
+,
+    {
+      "hash": "4d42ba5a941a6eea2f160e6e3abd9a25ca27a57d",
+      "subject": "Add Feature A component\n",
+      "body": "This is an independent feature that adds a new reusable component.\nIt can safely land on main without breaking anything.\n",
+      "files": [{"path":"src/components/FeatureA.astro\n","added":15,"deleted":0}]
+    }
+
+  ],
+  "existing_prs": [
+    {
+      "number": 32,
+      "title": "Update umbrella format\n",
+      "branch": "pr-split/ericclemmons/update-umbrella-format\n",
+      "base_branch": "main\n",
+      "commits": ["20c4baa1ce546fe48225136a21feb5ca6090192c"],
+      "files": [".github/scripts/pr-split-analyze.sh\n",".github/scripts/pr-split-umbrella.sh\n",".github/workflows/pr-splitter.yml\n","api-request.json\n","claude-response-raw.txt\n","commits-context.json\n","full-prompt.txt\n","package.json\n","pr-plan.json\n","src/components/FeatureA.astro\n","src/components/FeatureB.astro\n","src/lib/utils.ts\n"]
+    }
+,
+    {
+      "number": 31,
+      "title": "Update umbrella with hierarchy\n",
+      "branch": "pr-split/ericclemmons/update-umbrella-hierarchy\n",
+      "base_branch": "main\n",
+      "commits": ["b81c8d242682a99f95bc87fc952878b1ac552024"],
+      "files": [".github/scripts/pr-split-analyze.sh\n",".github/scripts/pr-split-umbrella.sh\n",".github/workflows/pr-splitter.yml\n","api-request.json\n","claude-response-raw.txt\n","commits-context.json\n","full-prompt.txt\n","package.json\n","pr-plan.json\n","src/components/FeatureA.astro\n","src/components/FeatureB.astro\n","src/lib/utils.ts\n"]
+    }
+,
+    {
+      "number": 30,
+      "title": "Add Feature B component\n",
+      "branch": "pr-split/ericclemmons/add-feature-b\n",
+      "base_branch": "main\n",
+      "commits": ["971ac2c84b0b8f00a565468cee4dc9d1178ebe1e"],
+      "files": ["src/components/FeatureB.astro\n"]
+    }
+,
+    {
+      "number": 29,
+      "title": "Add Feature A component\n",
+      "branch": "pr-split/ericclemmons/add-feature-a\n",
+      "base_branch": "main\n",
+      "commits": ["5a20e1cf6f3bdc6a8d85a7d7d0fb791c76920aad"],
+      "files": ["src/components/FeatureA.astro\n"]
+    }
+,
+    {
+      "number": 28,
+      "title": "Add utility functions using lodash\n",
+      "branch": "pr-split/ericclemmons/add-utility-functions\n",
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency\n",
+      "commits": ["54d4bf336522e53a8060c3fdad3ef754df473e75"],
+      "files": ["src/lib/utils.ts\n"]
+    }
+,
+    {
+      "number": 27,
+      "title": "Add lodash dependency\n",
+      "branch": "pr-split/ericclemmons/add-lodash-dependency\n",
+      "base_branch": "main\n",
+      "commits": ["e6c84dd378588ed7689ba253e1cdc75439e45ec7"],
+      "files": ["package.json\n"]
+    }
+
+  ]
+}

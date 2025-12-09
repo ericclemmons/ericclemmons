@@ -1,0 +1,57 @@
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Analyzing new commits and existing PRs to optimize PR splitting",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "title": "Add lodash dependency",
+      "commits": ["7cd71bc716239c9ffb21a76081785b9475a55dc8"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Standalone dependency addition that can safely land on main"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-utility-functions",
+      "title": "Add utility functions using lodash",
+      "commits": ["cc750f6b2c20b8b611e05f6e359fccf03a3d9ac3"],
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "depends_on": ["pr-split/ericclemmons/add-lodash-dependency"],
+      "related_to": [],
+      "reasoning": "Utility functions depend on lodash package, so must be stacked"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-a",
+      "title": "Add Feature A component",
+      "commits": ["4d42ba5a941a6eea2f160e6e3abd9a25ca27a57d"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent feature component that can land on main"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-b",
+      "title": "Add Feature B component",
+      "commits": ["fc6f6b5f42705cfb012b3d4c911fce7558edd254"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent feature component that can land on main"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/test-workflow-refactor",
+      "title": "Test refactored workflow",
+      "commits": ["365ba946c241bff1773ba5d807303529fa672fe0"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Small test commit with no specific file changes"
+    }
+  ]
+}
