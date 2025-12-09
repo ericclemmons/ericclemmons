@@ -153,9 +153,10 @@ process_pr() {
     else
       # Create new PR (don't exit on failure)
       set +e
-      # Try to create PR (skip assignee for now since email != GitHub username)
+      # Try to create PR and assign to the user from the branch name
       PR_URL=$(gh pr create \
         --draft \
+        --assignee "$USER" \
         --base "$BASE_BRANCH" \
         --head "$branch" \
         --title "$TITLE" \
