@@ -19,9 +19,9 @@ fi
 echo "📊 Found $(echo "$ALL_COMMITS" | wc -l | tr -d ' ') total commits"
 
 # Query existing PRs from this user in pr-split namespace
-echo "🔎 Querying existing PRs from pr-split/$USER/*..."
+echo "🔎 Querying existing PRs from pr-split/$USER..."
 EXISTING_PRS_JSON=$(gh pr list \
-  --search "head:pr-split/$USER/* is:open author:$USER" \
+  --search "head:pr-split/$USER is:open" \
   --json number,headRefName,title,baseRefName,state,url \
   --limit 100 2>/dev/null || echo "[]")
 
