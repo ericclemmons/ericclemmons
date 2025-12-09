@@ -4,26 +4,39 @@ set -e
 # Inputs from environment
 EVENT_NAME="$1"
 REF_NAME="$2"
-WORKFLOW_BRANCH="$3"
-DETECT_BRANCH="$4"
-DETECT_INSTRUCTION="$5"
+INPUT_BRANCH="$3"
+DETECTED_BRANCH="$4"
+INSTRUCTION="$5"
 ACTOR="$6"
 
-echo "🔍 Determining context..."
+echo "🔍 Determining branch and context..."
+echo "Event: $EVENT_NAME"
+echo "Ref: $REF_NAME"
+echo "Input branch: $INPUT_BRANCH"
+echo "Detected branch: $DETECTED_BRANCH"
+echo "Actor: $ACTOR"
 
-# Determine which branch to analyze and mode
-if [ "$EVENT_NAME" = "push" ]; then
+# Determine which branch to analyze
+if [ -n "$DETECTED_BRANCH" ]; then
+  # From comment detection
+  BRANCH="$DETECTED_BRANCH"
+  MODE="incremental"
+elif [ -n "$INPUT_BRANCH" ]; then
+  # From workflow_dispatch input
+  BRANCH="$INPUT_BRANCH"
+  MODE="incremental"
+elif [ "$EVENT_NAME" = "pull_request" ]; then
+  # From PR ready_for_review or synchronize event
+  # Get the head branch from the PR
+  BRANCH=$(gh pr view --json headRefName -q .headRefName 2>/dev/null || echo "$REF_NAME")
+  MODE="incremental"
+elif [ "$EVENT_NAME" = "push" ]; then
+  # From push event
   BRANCH="$REF_NAME"
-  INSTRUCTION=""
   MODE="incremental"
-elif [ "$EVENT_NAME" = "workflow_dispatch" ]; then
-  BRANCH="$WORKFLOW_BRANCH"
-  INSTRUCTION=""
-  MODE="full"
 else
-  BRANCH="$DETECT_BRANCH"
-  INSTRUCTION="$DETECT_INSTRUCTION"
-  MODE="incremental"
+  echo "❌ Could not determine branch to analyze"
+  exit 1
 fi
 
 # Use GitHub actor as username
