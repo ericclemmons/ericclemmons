@@ -86,43 +86,20 @@ jobs:
 
       - name: Setup git branches
         run: |
-          # Configure git user for commits
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          
-          # Ensure main branch exists locally
-          git fetch origin main:main 2>/dev/null || true
+          chmod +x .github/scripts/pr-split-setup.sh
+          .github/scripts/pr-split-setup.sh
 
       - name: Determine branch and context
         id: context
         run: |
-          # Determine which branch to analyze
-          if [ "${{ github.event_name }}" = "push" ]; then
-            BRANCH="${{ github.ref_name }}"
-            INSTRUCTION=""
-            MODE="incremental"
-          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            BRANCH="${{ github.event.inputs.branch }}"
-            INSTRUCTION=""
-            MODE="full"
-          else
-            BRANCH="${{ needs.detect-command.outputs.branch }}"
-            INSTRUCTION="${{ needs.detect-command.outputs.instruction }}"
-            MODE="incremental"
-          fi
-          
-          # Use GitHub actor as username
-          USER="${{ github.actor }}"
-          
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-          echo "user=$USER" >> $GITHUB_OUTPUT
-          echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
-          echo "mode=$MODE" >> $GITHUB_OUTPUT
-          
-          echo "🌿 Branch: $BRANCH"
-          echo "👤 User: $USER"
-          echo "📝 Instruction: $INSTRUCTION"
-          echo "🔄 Mode: $MODE"
+          chmod +x .github/scripts/pr-split-context.sh
+          .github/scripts/pr-split-context.sh \
+            "${{ github.event_name }}" \
+            "${{ github.ref_name }}" \
+            "${{ github.event.inputs.branch }}" \
+            "${{ needs.detect-command.outputs.branch }}" \
+            "${{ needs.detect-command.outputs.instruction }}" \
+            "${{ github.actor }}"
 
       - name: Analyze commits
         env:
@@ -135,71 +112,11 @@ jobs:
             "${{ steps.context.outputs.mode }}"
 
       - name: Call Claude API
-        
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          echo "🤖 Calling Claude API for commit analysis..."
-          
-          # Read the prompt from file
-          PROMPT=$(cat .github/scripts/pr-split-prompt.md)
-          
-          # Read the commits context
-          COMMITS_JSON=$(cat commits-context.json)
-          
-          # Combine prompt with data into a temp file to avoid YAML escaping issues
-          cat > full-prompt.txt <<PROMPT_EOF
-          $PROMPT
-          
-          $COMMITS_JSON
-          
-          Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON.
-          PROMPT_EOF
-          
-          FULL_PROMPT=$(cat full-prompt.txt)
-
-          # Call Claude API
-          # Build JSON payload
-          CONTENT_JSON=$(echo "$FULL_PROMPT" | jq -Rs .)
-          cat > api-request.json <<API_EOF
-          {
-            "model": "claude-3-5-haiku-20241022",
-            "max_tokens": 4096,
-            "messages": [{
-              "role": "user",
-              "content": $CONTENT_JSON
-            }]
-          }
-          API_EOF
-          
-          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            -d @api-request.json)
-          
-          # Check for API errors
-          if echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
-            ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message')
-            echo "❌ Claude API Error: $ERROR_MSG"
-            exit 1
-          fi
-          
-          # Extract JSON response
-          echo "$RESPONSE" | jq -r '.content[0].text' > claude-response-raw.txt
-          
-          # Validate JSON
-          if ! jq empty claude-response-raw.txt 2>/dev/null; then
-            echo "❌ Claude returned invalid JSON:"
-            cat claude-response-raw.txt
-            exit 1
-          fi
-          
-          # Parse and save
-          cat claude-response-raw.txt | jq '.' > pr-plan.json
-          
-          echo "✅ Claude analysis complete"
-          cat pr-plan.json
+          chmod +x .github/scripts/pr-split-claude.sh
+          .github/scripts/pr-split-claude.sh
 
       - name: Check if diffs required
         
