@@ -1,0 +1,43 @@
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Three independent commits with no shared dependencies",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/fix-umbrella-pr-query",
+      "title": "Fix: umbrella PR query should not filter by author",
+      "commits": [
+        "8c79394342b68a596c841f5f3a9e049edd7107e0"
+      ],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Small script fix that can be independently merged"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-b-component",
+      "title": "Add Feature B component",
+      "commits": [
+        "c6b74800337b11947fdce65fce1e496d8e2933cf"
+      ],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent feature component that can land separately"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-a-component",
+      "title": "Add Feature A component",
+      "commits": [
+        "a7b32ca1ac9f26098066fd402ead50ec327e35f1"
+      ],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent feature component that can land separately"
+    }
+  ]
+}

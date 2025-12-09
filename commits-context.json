@@ -1,0 +1,31 @@
+{
+  "base_branch": "main",
+  "user_branch": "dev/ericclemmons",
+  "user": "ericclemmons",
+  "new_commits": [
+    {
+      "hash": "8c79394342b68a596c841f5f3a9e049edd7107e0",
+      "subject": "Fix: umbrella PR query should not filter by author (github-actions creates PRs)\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-umbrella.sh\n","added":1,"deleted":1}]
+    }
+,
+    {
+      "hash": "c6b74800337b11947fdce65fce1e496d8e2933cf",
+      "subject": "Add Feature B component\n",
+      "body": "This is another independent feature that is unrelated to Feature A.\nIt should be in a separate PR that can land independently.\n",
+      "files": [{"path":"src/components/FeatureB.astro\n","added":15,"deleted":0}]
+    }
+,
+    {
+      "hash": "a7b32ca1ac9f26098066fd402ead50ec327e35f1",
+      "subject": "Add Feature A component\n",
+      "body": "This is an independent feature that adds a new reusable component.\nIt can safely land on main without breaking anything.\n",
+      "files": [{"path":"src/components/FeatureA.astro\n","added":15,"deleted":0}]
+    }
+
+  ],
+  "existing_prs": [
+
+  ]
+}
