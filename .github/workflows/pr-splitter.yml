@@ -108,8 +108,8 @@ jobs:
             INSTRUCTION="${{ needs.detect-command.outputs.instruction }}"
           fi
           
-          # Extract username from branch (dev/username -> username)
-          USER=$(echo "$BRANCH" | cut -d'/' -f2)
+          # Use GitHub actor as username
+          USER="${{ github.actor }}"
           
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "user=$USER" >> $GITHUB_OUTPUT
