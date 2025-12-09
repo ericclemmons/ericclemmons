@@ -1,21 +1,9 @@
 #!/bin/bash
 set -e
 
-# Requires either CLAUDE_CODE_OAUTH_TOKEN or ANTHROPIC_API_KEY environment variable
+# Requires ANTHROPIC_API_KEY environment variable
 
 echo "🤖 Calling Claude API for commit analysis..."
-
-# Determine which auth method to use
-if [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
-  AUTH_HEADER="Authorization: Bearer $CLAUDE_CODE_OAUTH_TOKEN"
-  echo "  Using OAuth token authentication"
-elif [ -n "$ANTHROPIC_API_KEY" ]; then
-  AUTH_HEADER="x-api-key: $ANTHROPIC_API_KEY"
-  echo "  Using API key authentication"
-else
-  echo "❌ Error: Neither CLAUDE_CODE_OAUTH_TOKEN nor ANTHROPIC_API_KEY is set"
-  exit 1
-fi
 
 # Read the prompt from file
 PROMPT=$(cat .github/scripts/pr-split-prompt.md)
@@ -49,7 +37,7 @@ API_EOF
 
 # Call Claude API
 RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-  -H "$AUTH_HEADER" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "content-type: application/json" \
   -d @api-request.json)

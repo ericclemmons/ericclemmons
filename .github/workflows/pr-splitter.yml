@@ -89,7 +89,6 @@ jobs:
 
       - name: Call Claude API
         env:
-          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: .github/scripts/pr-split-claude.sh
 
