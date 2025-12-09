@@ -50,34 +50,16 @@ else
   # Incremental mode: only analyze commits not in existing PRs
   echo "➕ Incremental mode: finding new commits..."
   
-  # Build array of commits currently on the branch
-  BRANCH_COMMITS=()
-  for commit in $ALL_COMMITS; do
-    BRANCH_COMMITS+=("$commit")
-  done
-  
-  # Check existing PRs and close orphaned ones
+  # Build array of commits already in PRs
   KNOWN_COMMITS=()
   for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
     echo "  Checking PR #$pr_number..."
     PR_COMMITS=$(gh pr view $pr_number --json commits --jq '.commits[].oid' 2>/dev/null || echo "")
     
     if [ -n "$PR_COMMITS" ]; then
-      # Check if ANY commit from this PR still exists on the branch
-      PR_IS_ORPHANED=true
       while IFS= read -r commit; do
-        if [[ " ${BRANCH_COMMITS[@]} " =~ " ${commit} " ]]; then
-          # At least one commit still exists on branch
-          PR_IS_ORPHANED=false
-          KNOWN_COMMITS+=("$commit")
-        fi
+        KNOWN_COMMITS+=("$commit")
       done <<< "$PR_COMMITS"
-      
-      # Close orphaned PRs
-      if [ "$PR_IS_ORPHANED" = true ]; then
-        echo "  🗑️  Closing orphaned PR #$pr_number (commits no longer on branch)..."
-        gh pr close $pr_number --comment "Closing: commits no longer exist on $BRANCH" 2>/dev/null || true
-      fi
     fi
   done
 
