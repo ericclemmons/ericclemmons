@@ -160,7 +160,8 @@ process_pr() {
       echo "  ℹ️  PR already exists: #$EXISTING_PR"
       PR_NUMBER=$EXISTING_PR
     else
-      # Create new PR
+      # Create new PR (don't exit on failure)
+      set +e
       PR_NUMBER=$(gh pr create \
         --draft \
         --assignee "$USER" \
@@ -170,11 +171,14 @@ process_pr() {
         --body "" \
         --json number \
         --jq '.number' 2>&1)
+      PR_CREATE_EXIT=$?
+      set -e
       
-      if [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+      if [ $PR_CREATE_EXIT -eq 0 ] && [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
         echo "  ✅ Created PR #$PR_NUMBER"
       else
-        echo "  ❌ Failed to create PR: $PR_NUMBER"
+        echo "  ❌ Failed to create PR (exit code: $PR_CREATE_EXIT)"
+        echo "  Error output: $PR_NUMBER"
         PR_NUMBER=""
       fi
     fi
