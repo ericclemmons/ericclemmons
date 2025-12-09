@@ -84,11 +84,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup git branches
-        run: |
-          chmod +x .github/scripts/pr-split-setup.sh
-          .github/scripts/pr-split-setup.sh
-
       - name: Determine branch and context
         id: context
         run: |
@@ -100,6 +95,11 @@ jobs:
             "${{ needs.detect-command.outputs.branch }}" \
             "${{ needs.detect-command.outputs.instruction }}" \
             "${{ github.actor }}"
+
+      - name: Setup git branches
+        run: |
+          chmod +x .github/scripts/pr-split-setup.sh
+          .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
 
       - name: Analyze commits
         env:
