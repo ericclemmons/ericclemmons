@@ -1,9 +1,6 @@
 name: PR Splitter
 
 on:
-  push:
-    branches: 
-      - 'dev/**'  # Matches dev/ericclemmons, dev/username, etc.
   workflow_dispatch:
     inputs:
       branch:

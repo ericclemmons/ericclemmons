@@ -136,21 +136,44 @@ process_pr() {
     fi
   done
   
+  # Check if PR exists (open or recently closed due to force-push)
+  EXISTING_OPEN_PR=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+  EXISTING_CLOSED_PR=$(gh pr list --head "$branch" --state closed --json number,closedAt --jq 'sort_by(.closedAt) | reverse | .[0].number' 2>/dev/null || echo "")
+  
   # Push branch
   echo "📤 Pushing branch to origin..."
   git push -f origin "$branch"
+  
+  # Wait a moment for GitHub to process the push
+  sleep 2
   
   # Create or update PR
   if [ "$ACTION" = "create" ]; then
     echo "🆕 Creating new PR..."
     
-    # Check if PR already exists
-    EXISTING_PR=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null || echo "")
+    # Check if there's a recently closed PR we can reopen (within last 5 minutes)
+    if [ -n "$EXISTING_CLOSED_PR" ]; then
+      CLOSED_AT=$(gh pr view "$EXISTING_CLOSED_PR" --json closedAt --jq '.closedAt')
+      CLOSED_TIMESTAMP=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CLOSED_AT" "+%s" 2>/dev/null || date -d "$CLOSED_AT" "+%s" 2>/dev/null || echo "0")
+      NOW_TIMESTAMP=$(date "+%s")
+      AGE=$((NOW_TIMESTAMP - CLOSED_TIMESTAMP))
+      
+      if [ "$AGE" -lt 300 ]; then
+        echo "  🔄 Reopening recently closed PR #$EXISTING_CLOSED_PR (closed ${AGE}s ago)"
+        gh pr reopen "$EXISTING_CLOSED_PR" 2>/dev/null || true
+        sleep 1
+        PR_NUMBER=$EXISTING_CLOSED_PR
+      fi
+    fi
     
-    if [ -n "$EXISTING_PR" ]; then
-      echo "  ℹ️  PR already exists: #$EXISTING_PR (skipping creation)"
-      PR_NUMBER=$EXISTING_PR
-    else
+    # If we didn't reopen, check for open PR or create new
+    if [ -z "$PR_NUMBER" ]; then
+      EXISTING_PR_NOW=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+      
+      if [ -n "$EXISTING_PR_NOW" ]; then
+        echo "  ℹ️  PR already exists: #$EXISTING_PR_NOW (skipping creation)"
+        PR_NUMBER=$EXISTING_PR_NOW
+      else
       # Create new PR (don't exit on failure)
       set +e
       # Try to create PR and assign to the user from the branch name
@@ -188,6 +211,7 @@ process_pr() {
           echo "  Error output: $PR_URL"
           PR_NUMBER=""
         fi
+      fi
       fi
     fi
     

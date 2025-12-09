@@ -15,10 +15,25 @@ You are analyzing commits from a developer's branch to automatically split them 
 
 ### Commit Grouping
 - NEW commits can either:
-  - Be added to an EXISTING_PR (if logically related to that PR's purpose)
-  - Create a NEW_PR (if unrelated to existing PRs)
+  - Be added to an EXISTING_PR (use "action": "update") if:
+    - The commit message/files are logically related to that PR's existing commits
+    - The commit extends or fixes something in that PR
+  - Create a NEW_PR (use "action": "create") if:
+    - No existing PR matches this commit's purpose
+    - Unrelated to existing PRs
 - Consider commit order - earlier commits might be dependencies for later ones
 - Look for logical cohesion in commit messages and file paths
+
+### Update vs Create Actions
+- Use "action": "update" when:
+  - An EXISTING_PR already covers this commit's purpose
+  - The new commits logically extend that PR's work
+  - List ONLY the new commits in "commits" array
+  - IMPORTANT: Keep the same "branch" name as the existing PR
+- Use "action": "create" when:
+  - No existing PR matches this commit's purpose
+  - Starting fresh work on a new feature/fix
+  - List all commits for this new PR
 
 ### Shared File Changes
 When multiple commits modify the same file for different purposes:
@@ -61,7 +76,7 @@ When multiple commits modify the same file for different purposes:
 
 ## Examples
 
-### Example 1: Independent Features
+### Example 1: Independent Features (New)
 Input:
 - Commit abc123: "Add authentication system" (files: auth.ts, login.tsx)
 - Commit def456: "Add user profile page" (files: profile.tsx, api/user.ts)
@@ -91,6 +106,33 @@ Output:
       "depends_on": [],
       "related_to": [],
       "reasoning": "Independent profile feature"
+    }
+  ]
+}
+
+### Example 1b: Extending Existing PR (Update)
+Input:
+- Commit xyz789: "Fix authentication error handling" (files: auth.ts)
+- Existing PRs:
+  - PR #42: "Add authentication system" 
+    - branch: pr-split/eric/add-authentication-system
+    - commits: [abc123]
+    - files: [auth.ts, login.tsx]
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "New commit extends existing auth PR",
+  "prs": [
+    {
+      "action": "update",
+      "branch": "pr-split/eric/add-authentication-system",
+      "title": "Add authentication system",
+      "commits": ["xyz789"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Error handling fix extends existing auth PR"
     }
   ]
 }
