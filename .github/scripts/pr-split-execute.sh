@@ -164,7 +164,6 @@ process_pr() {
       set +e
       PR_URL=$(gh pr create \
         --draft \
-        --assignee "@me" \
         --base "$BASE_BRANCH" \
         --head "$branch" \
         --title "$TITLE" \
