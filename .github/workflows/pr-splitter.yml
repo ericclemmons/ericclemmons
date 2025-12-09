@@ -38,32 +38,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Get PR context
-          if [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-          else
-            PR_NUMBER="${{ github.event.issue.number }}"
-          fi
-          
-          # Get PR head branch
-          BRANCH=$(gh pr view $PR_NUMBER --json headRefName -q .headRefName)
-          
-          # If this is umbrella PR (dev/*), use it; if child PR (pr-split/*), find umbrella
-          if [[ "$BRANCH" =~ ^dev/ ]]; then
-            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-          else
-            # Extract user from child PR branch (pr-split/user/feature)
-            USER=$(echo "$BRANCH" | cut -d'/' -f2)
-            echo "branch=dev/$USER" >> $GITHUB_OUTPUT
-          fi
-          
-          # Extract instruction (everything after @splitter)
-          COMMENT_BODY="${{ github.event.comment.body }}"
-          INSTRUCTION=$(echo "$COMMENT_BODY" | sed -n 's/.*@splitter[[:space:]]*\(.*\)/\1/p' | tr '\n' ' ')
-          echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
-          
-          echo "🔍 Detected branch: $BRANCH"
-          echo "📝 User instruction: $INSTRUCTION"
+          .github/scripts/pr-split-detect-command.sh \
+            "${{ github.event_name }}" \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.issue.number }}" \
+            "${{ github.event.comment.body }}"
 
   split:
     needs: [detect-command]
@@ -87,7 +66,6 @@ jobs:
       - name: Determine branch and context
         id: context
         run: |
-          chmod +x .github/scripts/pr-split-context.sh
           .github/scripts/pr-split-context.sh \
             "${{ github.event_name }}" \
             "${{ github.ref_name }}" \
@@ -97,15 +75,12 @@ jobs:
             "${{ github.actor }}"
 
       - name: Setup git branches
-        run: |
-          chmod +x .github/scripts/pr-split-setup.sh
-          .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
+        run: .github/scripts/pr-split-setup.sh
 
       - name: Analyze commits
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          chmod +x .github/scripts/pr-split-analyze.sh
           .github/scripts/pr-split-analyze.sh \
             "${{ steps.context.outputs.branch }}" \
             "${{ steps.context.outputs.user }}" \
@@ -114,37 +89,34 @@ jobs:
       - name: Call Claude API
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: |
-          chmod +x .github/scripts/pr-split-claude.sh
-          .github/scripts/pr-split-claude.sh
+        run: .github/scripts/pr-split-claude.sh
 
       - name: Check if diffs required
-        
+        run: .github/scripts/pr-split-check-diffs.sh
+
+      - name: Execute PR plan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: .github/scripts/pr-split-execute.sh "${{ steps.context.outputs.user }}"
+
+      - name: Update umbrella PR
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          NEEDS_DIFFS=$(jq -r '.requires_diffs' pr-plan.json)
+          .github/scripts/pr-split-umbrella.sh \
+            "${{ steps.context.outputs.branch }}" \
+            "${{ steps.context.outputs.user }}"
+
+      - name: Summary
+        run: |
+          echo "## 🎉 PR Splitter Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch analyzed:** \`${{ steps.context.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           
-          if [ "$NEEDS_DIFFS" = "true" ]; then
-            echo "❌ Cannot determine PR splits without seeing code diffs."
-            echo ""
-            echo "Claude's reasoning:"
-            jq -r '.reasoning' pr-plan.json
-            echo ""
-            echo "Files needing review:"
-            jq -r '.files_needing_review[]' pr-plan.json
-            echo ""
-            echo "💡 Tip: Write more descriptive commit messages that explain WHAT changed and WHY."
-            echo "This allows the splitter to work without analyzing code diffs, keeping costs low."
-            echo ""
-            echo "Examples of good commit messages:"
-            echo "  ✅ 'Add lodash dependency for array utilities'"
-            echo "  ✅ 'Create auth service with JWT token handling'"
-            echo "  ✅ 'Add user profile page that consumes auth service'"
-            echo ""
-            echo "Examples of unclear commit messages:"
-            echo "  ❌ 'Update config'"
-            echo "  ❌ 'Add stuff'"
-            echo "  ❌ 'WIP'"
-            exit 1
+          if [ -f pr-plan.json ]; then
+            echo "**PRs created/updated:**" >> $GITHUB_STEP_SUMMARY
+            jq -r '.prs[] | "- **\(.title)** (\(.action)) - `\(.branch)`"' pr-plan.json >> $GITHUB_STEP_SUMMARY
           fi
 
       - name: Execute PR plan
