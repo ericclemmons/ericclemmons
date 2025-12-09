@@ -16,7 +16,7 @@ UMBRELLA_PR=$(gh pr list \
 # Query all child PRs
 echo "🔎 Querying child PRs..."
 CHILD_PRS_JSON=$(gh pr list \
-  --search "head:pr-split/$USERNAME/* is:open" \
+  --search "head:pr-split/$USERNAME is:open" \
   --json number,title,url \
   --limit 100 2>/dev/null || echo "[]")
 
