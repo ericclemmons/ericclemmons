@@ -75,7 +75,7 @@ jobs:
             "${{ github.actor }}"
 
       - name: Setup git branches
-        run: .github/scripts/pr-split-setup.sh
+        run: .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
 
       - name: Analyze commits
         env:
