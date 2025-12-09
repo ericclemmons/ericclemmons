@@ -9,6 +9,9 @@ echo "🔍 Analyzing commits in branch: $BRANCH"
 echo "👤 User: $USER"
 echo "🔄 Mode: $MODE"
 
+# Fetch the branch if it exists remotely
+git fetch origin $BRANCH:$BRANCH 2>/dev/null || true
+
 # Get all commits in the branch
 ALL_COMMITS=$(git log main..$BRANCH --format="%H" 2>/dev/null || echo "")
 
