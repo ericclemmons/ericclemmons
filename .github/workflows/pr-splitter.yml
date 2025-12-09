@@ -185,12 +185,16 @@ jobs:
           # Read the commits context
           COMMITS_JSON=$(cat commits-context.json)
           
-          # Combine prompt with data
-          FULL_PROMPT="$PROMPT
-
-$COMMITS_JSON
-
-Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON."
+          # Combine prompt with data into a temp file to avoid YAML escaping issues
+          cat > full-prompt.txt <<PROMPT_EOF
+          $PROMPT
+          
+          $COMMITS_JSON
+          
+          Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON.
+          PROMPT_EOF
+          
+          FULL_PROMPT=$(cat full-prompt.txt)
 
           # Call Claude API
           RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
