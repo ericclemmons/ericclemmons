@@ -95,11 +95,17 @@ process_pr() {
     git checkout -b "$branch"
   fi
   
-  # Cherry-pick commits
+  # Cherry-pick commits and get author from first commit for PR assignee
   echo "🍒 Cherry-picking commits..."
   CONFLICT_OCCURRED=false
+  COMMIT_AUTHOR=""
   
   for commit in $COMMITS; do
+    # Get commit author email for first commit (use as PR assignee)
+    if [ -z "$COMMIT_AUTHOR" ]; then
+      COMMIT_AUTHOR=$(git log -1 --format='%ae' $commit)
+    fi
+    
     echo "  📌 Cherry-picking $commit..."
     
     if git cherry-pick "$commit" >/dev/null 2>&1; then
@@ -115,10 +121,10 @@ process_pr() {
       CONFLICTED_FILES=$(git diff --name-only --diff-filter=U)
       
       if [ -n "$CONFLICTED_FILES" ]; then
-        # Resolve conflicts by taking our version (the incoming commit)
+        # Resolve conflicts by taking theirs (the commit being cherry-picked)
         while IFS= read -r file; do
           echo "      📄 Resolving $file (using incoming changes)"
-          git checkout --ours "$file"
+          git checkout --theirs "$file"
           git add "$file"
         done <<< "$CONFLICTED_FILES"
         
@@ -162,12 +168,23 @@ process_pr() {
     else
       # Create new PR (don't exit on failure)
       set +e
-      PR_URL=$(gh pr create \
-        --draft \
-        --base "$BASE_BRANCH" \
-        --head "$branch" \
-        --title "$TITLE" \
-        --body "" 2>&1)
+      # Try to assign to commit author if available
+      if [ -n "$COMMIT_AUTHOR" ]; then
+        PR_URL=$(gh pr create \
+          --draft \
+          --assignee "$COMMIT_AUTHOR" \
+          --base "$BASE_BRANCH" \
+          --head "$branch" \
+          --title "$TITLE" \
+          --body "" 2>&1)
+      else
+        PR_URL=$(gh pr create \
+          --draft \
+          --base "$BASE_BRANCH" \
+          --head "$branch" \
+          --title "$TITLE" \
+          --body "" 2>&1)
+      fi
       PR_CREATE_EXIT=$?
       set -e
       
