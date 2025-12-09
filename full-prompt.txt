@@ -1,0 +1,291 @@
+You are analyzing commits from a developer's branch to automatically split them into logical, self-contained PRs.
+
+## Input Context
+- NEW_COMMITS: Commits not yet in any PR (hash, message, files changed, diff stats)
+- EXISTING_PRS: Open PRs with their commits and files
+- BASE_BRANCH: Usually "main"
+
+## Your Goals
+1. Group commits into logical, self-contained PRs that could safely land independently
+2. Each PR should be a complete "vertical stripe" - a full feature/fix that doesn't break main
+3. Minimize stacking - only create stacks when there's a clear, necessary dependency
+4. Detect shared file changes across potential PRs and decide the best strategy
+
+## Decision Rules
+
+### Commit Grouping
+- NEW commits can either:
+  - Be added to an EXISTING_PR (if logically related to that PR's purpose)
+  - Create a NEW_PR (if unrelated to existing PRs)
+- Consider commit order - earlier commits might be dependencies for later ones
+- Look for logical cohesion in commit messages and file paths
+
+### Shared File Changes
+When multiple commits modify the same file for different purposes:
+- **Extract to parent PR:** If the file change is safe to land alone AND doesn't break main
+  - Example: Adding a new dependency to package.json that both features need
+  - Create PR #0 with just that change, make other PRs depend on it
+- **Duplicate in both PRs:** If the file change breaks main alone BUT is needed for both features
+  - Example: tsconfig.json changes that only make sense with feature code
+  - Apply same change to both PR branches
+- **Ask for clarification:** If you cannot determine safety or independence from commit messages + file paths + stats
+  - Set "requires_diffs": true with reasoning
+
+### Stacking Strategy
+- Prefer independent PRs that can land in any order
+- Only create stacks (PR B depends on PR A) when:
+  - PR B's code imports/uses code from PR A
+  - PR B's feature logically requires PR A's feature to exist first
+- Use "base_branch" to indicate dependencies:
+  - Independent PR: "base_branch": "main"
+  - Stacked PR: "base_branch": "pr-split/user/parent-feature"
+
+## Output Schema
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Brief explanation of analysis approach",
+  "prs": [
+    {
+      "action": "create" | "update",
+      "branch": "pr-split/username/descriptive-name",
+      "title": "Concise PR title (imperative mood, e.g., 'Add user authentication')",
+      "commits": ["hash1", "hash2"],
+      "base_branch": "main" | "pr-split/username/other-branch",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Why these commits belong together"
+    }
+  ]
+}
+
+## Examples
+
+### Example 1: Independent Features
+Input:
+- Commit abc123: "Add authentication system" (files: auth.ts, login.tsx)
+- Commit def456: "Add user profile page" (files: profile.tsx, api/user.ts)
+- No existing PRs
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "Two unrelated features that can land independently",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-authentication-system",
+      "title": "Add authentication system",
+      "commits": ["abc123"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Self-contained auth feature"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-user-profile-page",
+      "title": "Add user profile page",
+      "commits": ["def456"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent profile feature"
+    }
+  ]
+}
+
+### Example 2: Clear Dependency (Stack)
+Input:
+- Commit abc123: "Add auth service" (files: auth.ts)
+- Commit def456: "Add login page using auth" (files: login.tsx)
+- No existing PRs
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "Login page depends on auth service based on commit message",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-auth-service",
+      "title": "Add auth service",
+      "commits": ["abc123"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Foundation auth service"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-login-page",
+      "title": "Add login page",
+      "commits": ["def456"],
+      "base_branch": "pr-split/eric/add-auth-service",
+      "depends_on": ["pr-split/eric/add-auth-service"],
+      "related_to": [],
+      "reasoning": "Depends on auth service"
+    }
+  ]
+}
+
+### Example 3: Shared Config (Extract)
+Input:
+- Commit abc123: "Add TypeScript strict mode" (files: tsconfig.json)
+- Commit def456: "Add auth types" (files: auth.ts)
+- Commit ghi789: "Add profile types" (files: profile.ts)
+- No existing PRs
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "TypeScript config is shared foundation, extract it",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/eric/enable-typescript-strict-mode",
+      "title": "Enable TypeScript strict mode",
+      "commits": ["abc123"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Config foundation for type-safe code"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-auth-types",
+      "title": "Add auth types",
+      "commits": ["def456"],
+      "base_branch": "pr-split/eric/enable-typescript-strict-mode",
+      "depends_on": ["pr-split/eric/enable-typescript-strict-mode"],
+      "related_to": [],
+      "reasoning": "Depends on strict mode config"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-profile-types",
+      "title": "Add profile types",
+      "commits": ["ghi789"],
+      "base_branch": "pr-split/eric/enable-typescript-strict-mode",
+      "depends_on": ["pr-split/eric/enable-typescript-strict-mode"],
+      "related_to": [],
+      "reasoning": "Depends on strict mode config"
+    }
+  ]
+}
+
+## Now Analyze
+
+{
+  "base_branch": "main",
+  "user_branch": "dev/ericclemmons",
+  "user": "ericclemmons",
+  "new_commits": [
+    {
+      "hash": "d3a2e01a4e3e0f7cc06766b27e5db153bd5e793c",
+      "subject": "Close orphaned PRs: auto-close PRs whose commits no longer exist on branch\n",
+      "body": "In incremental mode, now checks if PR commits still exist on dev/username.\nIf ALL commits from a PR are gone (e.g., after branch reset), closes the PR.\nThis prevents stale PRs from staying open when their work is no longer relevant.\n",
+      "files": [{"path":".github/scripts/pr-split-analyze.sh\n","added":20,"deleted":2}]
+    }
+,
+    {
+      "hash": "ef7f0e14ba314dd9053cdefd6c6cdb043f4f4c8a",
+      "subject": "Add assignee back: assign PRs to user from branch name (github.actor)\n",
+      "body": "When workflow runs, $USER is set to github.actor (e.g., 'ericclemmons')\nThis is the real GitHub username, not the github-actions bot.\nPRs will now be assigned to the person who owns the dev/username branch.\n",
+      "files": [{"path":".github/scripts/pr-split-execute.sh\n","added":2,"deleted":1}]
+    }
+,
+    {
+      "hash": "eb498c52ca6ec0542d90f9f4aed11a2eff3b3aeb",
+      "subject": "Refactor workflow: extract inline scripts to separate files\n",
+      "body": "- Created pr-split-setup.sh for git configuration\n- Created pr-split-context.sh for context detection\n- Created pr-split-claude.sh for Claude API calls\n- Workflow now passes all params via args (cleaner than inline heredocs)\n- MODE is properly set and passed: incremental for push/comment, full for workflow_dispatch\n",
+      "files": [{"path":".github/scripts/pr-split-claude.sh\n","added":66,"deleted":0},{"path":".github/scripts/pr-split-context.sh\n","added":41,"deleted":0},{"path":".github/scripts/pr-split-setup.sh\n","added":13,"deleted":0},{"path":".github/workflows/pr-splitter.yml\n","added":12,"deleted":95}]
+    }
+,
+    {
+      "hash": "fe08a6d5a03a674612d3979765160a3ead0ed4ab",
+      "subject": "Simplify umbrella PR format: just show PR numbers (GitHub auto-expands)\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-umbrella.sh\n","added":2,"deleted":2}]
+    }
+,
+    {
+      "hash": "1342e6e868f2d7a2250997033363100f7d38299f",
+      "subject": "Show PR hierarchy in umbrella PR: nested numbered lists for stacks\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-umbrella.sh\n","added":67,"deleted":5}]
+    }
+,
+    {
+      "hash": "22d8d8ba291e4c4a713c9b3ae5901a966af79384",
+      "subject": "Fix analyze script: fetch branch before analyzing commits\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-analyze.sh\n","added":3,"deleted":0}]
+    }
+,
+    {
+      "hash": "2eff492f81a364b85f07c417b1b2d18a9d22f890",
+      "subject": "Fix git branch setup: don't fail if main already exists\n",
+      "body": "\n",
+      "files": [{"path":".github/workflows/pr-splitter.yml\n","added":1,"deleted":1}]
+    }
+,
+    {
+      "hash": "4dfa287ff5755ce64259f5799d6f637c3a17c06b",
+      "subject": "Add full vs incremental mode: manual dispatch resets and re-evaluates all PRs\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-analyze.sh\n","added":40,"deleted":19},{"path":".github/workflows/pr-splitter.yml\n","added":7,"deleted":1}]
+    }
+,
+    {
+      "hash": "cc750f6b2c20b8b611e05f6e359fccf03a3d9ac3",
+      "subject": "Add utility functions using lodash\n",
+      "body": "These utility functions depend on the lodash package.\nThis feature should be stacked on top of the lodash dependency PR.\n",
+      "files": [{"path":"src/lib/utils.ts\n","added":18,"deleted":0}]
+    }
+,
+    {
+      "hash": "7cd71bc716239c9ffb21a76081785b9475a55dc8",
+      "subject": "Add lodash dependency for utility functions\n",
+      "body": "This shared dependency will be used by future features.\nIt can safely land on its own without breaking main.\n",
+      "files": [{"path":"package.json\n","added":2,"deleted":1}]
+    }
+,
+    {
+      "hash": "fc6f6b5f42705cfb012b3d4c911fce7558edd254",
+      "subject": "Add Feature B component\n",
+      "body": "This is another independent feature that is unrelated to Feature A.\nIt should be in a separate PR that can land independently.\n",
+      "files": [{"path":"src/components/FeatureB.astro\n","added":15,"deleted":0}]
+    }
+,
+    {
+      "hash": "4d42ba5a941a6eea2f160e6e3abd9a25ca27a57d",
+      "subject": "Add Feature A component\n",
+      "body": "This is an independent feature that adds a new reusable component.\nIt can safely land on main without breaking anything.\n",
+      "files": [{"path":"src/components/FeatureA.astro\n","added":15,"deleted":0}]
+    }
+
+  ],
+  "existing_prs": [
+    {
+      "number": 43,
+      "title": "Add utility functions using lodash\n",
+      "branch": "pr-split/ericclemmons/add-utility-functions\n",
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency\n",
+      "commits": ["b75016e58d2aa09a2005fd288cc2a7deca2d8303"],
+      "files": ["src/lib/utils.ts\n"]
+    }
+,
+    {
+      "number": 42,
+      "title": "Add lodash dependency\n",
+      "branch": "pr-split/ericclemmons/add-lodash-dependency\n",
+      "base_branch": "main\n",
+      "commits": ["c85268dc8b0e72712484393f971d53dc845dd500"],
+      "files": ["package.json\n"]
+    }
+
+  ]
+}
+
+Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON.

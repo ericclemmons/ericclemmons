@@ -1,0 +1,107 @@
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Group commits into logical PRs, handling dependencies and independent features",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/close-orphaned-prs",
+      "title": "Close orphaned PRs automatically",
+      "commits": ["d3a2e01a4e3e0f7cc06766b27e5db153bd5e793c"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent script change for PR management"
+    },
+    {
+      "action": "create", 
+      "branch": "pr-split/ericclemmons/add-pr-assignee",
+      "title": "Assign PRs to branch owner",
+      "commits": ["ef7f0e14ba314dd9053cdefd6c6cdb043f4f4c8a"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Small script modification to improve PR assignment"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/refactor-workflow-scripts", 
+      "title": "Refactor workflow with separate scripts",
+      "commits": ["eb498c52ca6ec0542d90f9f4aed11a2eff3b3aeb"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Comprehensive workflow script refactoring"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/improve-umbrella-pr-format",
+      "title": "Improve umbrella PR formatting",
+      "commits": ["fe08a6d5a03a674612d3979765160a3ead0ed4ab", "1342e6e868f2d7a2250997033363100f7d38299f"],
+      "base_branch": "main", 
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Related changes to umbrella PR script"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/fix-analysis-and-branch-setup",
+      "title": "Fix analysis script and branch setup",
+      "commits": ["22d8d8ba291e4c4a713c9b3ae5901a966af79384", "2eff492f81a364b85f07c417b1b2d18a9d22f890"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Minor fixes to analysis script and workflow"
+    },
+    {
+      "action": "create", 
+      "branch": "pr-split/ericclemmons/add-full-incremental-mode",
+      "title": "Add full vs incremental workflow mode",
+      "commits": ["4dfa287ff5755ce64259f5799d6f637c3a17c06b"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "New workflow mode for manual PR re-evaluation"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-a",
+      "title": "Add Feature A component",
+      "commits": ["4d42ba5a941a6eea2f160e6e3abd9a25ca27a57d"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent new feature component"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-b", 
+      "title": "Add Feature B component",
+      "commits": ["fc6f6b5f42705cfb012b3d4c911fce7558edd254"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent new feature component"
+    },
+    {
+      "action": "update",
+      "branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "title": "Add lodash dependency",
+      "commits": ["7cd71bc716239c9ffb21a76081785b9475a55dc8"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Shared dependency for utility functions"
+    },
+    {
+      "action": "update",
+      "branch": "pr-split/ericclemmons/add-utility-functions",
+      "title": "Add utility functions using lodash",
+      "commits": ["cc750f6b2c20b8b611e05f6e359fccf03a3d9ac3"],
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "depends_on": ["pr-split/ericclemmons/add-lodash-dependency"],
+      "related_to": [],
+      "reasoning": "Depends on lodash dependency for utility functions"
+    }
+  ]
+}

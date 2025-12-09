@@ -1,0 +1,111 @@
+{
+  "base_branch": "main",
+  "user_branch": "dev/ericclemmons",
+  "user": "ericclemmons",
+  "new_commits": [
+    {
+      "hash": "d3a2e01a4e3e0f7cc06766b27e5db153bd5e793c",
+      "subject": "Close orphaned PRs: auto-close PRs whose commits no longer exist on branch\n",
+      "body": "In incremental mode, now checks if PR commits still exist on dev/username.\nIf ALL commits from a PR are gone (e.g., after branch reset), closes the PR.\nThis prevents stale PRs from staying open when their work is no longer relevant.\n",
+      "files": [{"path":".github/scripts/pr-split-analyze.sh\n","added":20,"deleted":2}]
+    }
+,
+    {
+      "hash": "ef7f0e14ba314dd9053cdefd6c6cdb043f4f4c8a",
+      "subject": "Add assignee back: assign PRs to user from branch name (github.actor)\n",
+      "body": "When workflow runs, $USER is set to github.actor (e.g., 'ericclemmons')\nThis is the real GitHub username, not the github-actions bot.\nPRs will now be assigned to the person who owns the dev/username branch.\n",
+      "files": [{"path":".github/scripts/pr-split-execute.sh\n","added":2,"deleted":1}]
+    }
+,
+    {
+      "hash": "eb498c52ca6ec0542d90f9f4aed11a2eff3b3aeb",
+      "subject": "Refactor workflow: extract inline scripts to separate files\n",
+      "body": "- Created pr-split-setup.sh for git configuration\n- Created pr-split-context.sh for context detection\n- Created pr-split-claude.sh for Claude API calls\n- Workflow now passes all params via args (cleaner than inline heredocs)\n- MODE is properly set and passed: incremental for push/comment, full for workflow_dispatch\n",
+      "files": [{"path":".github/scripts/pr-split-claude.sh\n","added":66,"deleted":0},{"path":".github/scripts/pr-split-context.sh\n","added":41,"deleted":0},{"path":".github/scripts/pr-split-setup.sh\n","added":13,"deleted":0},{"path":".github/workflows/pr-splitter.yml\n","added":12,"deleted":95}]
+    }
+,
+    {
+      "hash": "fe08a6d5a03a674612d3979765160a3ead0ed4ab",
+      "subject": "Simplify umbrella PR format: just show PR numbers (GitHub auto-expands)\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-umbrella.sh\n","added":2,"deleted":2}]
+    }
+,
+    {
+      "hash": "1342e6e868f2d7a2250997033363100f7d38299f",
+      "subject": "Show PR hierarchy in umbrella PR: nested numbered lists for stacks\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-umbrella.sh\n","added":67,"deleted":5}]
+    }
+,
+    {
+      "hash": "22d8d8ba291e4c4a713c9b3ae5901a966af79384",
+      "subject": "Fix analyze script: fetch branch before analyzing commits\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-analyze.sh\n","added":3,"deleted":0}]
+    }
+,
+    {
+      "hash": "2eff492f81a364b85f07c417b1b2d18a9d22f890",
+      "subject": "Fix git branch setup: don't fail if main already exists\n",
+      "body": "\n",
+      "files": [{"path":".github/workflows/pr-splitter.yml\n","added":1,"deleted":1}]
+    }
+,
+    {
+      "hash": "4dfa287ff5755ce64259f5799d6f637c3a17c06b",
+      "subject": "Add full vs incremental mode: manual dispatch resets and re-evaluates all PRs\n",
+      "body": "\n",
+      "files": [{"path":".github/scripts/pr-split-analyze.sh\n","added":40,"deleted":19},{"path":".github/workflows/pr-splitter.yml\n","added":7,"deleted":1}]
+    }
+,
+    {
+      "hash": "cc750f6b2c20b8b611e05f6e359fccf03a3d9ac3",
+      "subject": "Add utility functions using lodash\n",
+      "body": "These utility functions depend on the lodash package.\nThis feature should be stacked on top of the lodash dependency PR.\n",
+      "files": [{"path":"src/lib/utils.ts\n","added":18,"deleted":0}]
+    }
+,
+    {
+      "hash": "7cd71bc716239c9ffb21a76081785b9475a55dc8",
+      "subject": "Add lodash dependency for utility functions\n",
+      "body": "This shared dependency will be used by future features.\nIt can safely land on its own without breaking main.\n",
+      "files": [{"path":"package.json\n","added":2,"deleted":1}]
+    }
+,
+    {
+      "hash": "fc6f6b5f42705cfb012b3d4c911fce7558edd254",
+      "subject": "Add Feature B component\n",
+      "body": "This is another independent feature that is unrelated to Feature A.\nIt should be in a separate PR that can land independently.\n",
+      "files": [{"path":"src/components/FeatureB.astro\n","added":15,"deleted":0}]
+    }
+,
+    {
+      "hash": "4d42ba5a941a6eea2f160e6e3abd9a25ca27a57d",
+      "subject": "Add Feature A component\n",
+      "body": "This is an independent feature that adds a new reusable component.\nIt can safely land on main without breaking anything.\n",
+      "files": [{"path":"src/components/FeatureA.astro\n","added":15,"deleted":0}]
+    }
+
+  ],
+  "existing_prs": [
+    {
+      "number": 43,
+      "title": "Add utility functions using lodash\n",
+      "branch": "pr-split/ericclemmons/add-utility-functions\n",
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency\n",
+      "commits": ["b75016e58d2aa09a2005fd288cc2a7deca2d8303"],
+      "files": ["src/lib/utils.ts\n"]
+    }
+,
+    {
+      "number": 42,
+      "title": "Add lodash dependency\n",
+      "branch": "pr-split/ericclemmons/add-lodash-dependency\n",
+      "base_branch": "main\n",
+      "commits": ["c85268dc8b0e72712484393f971d53dc845dd500"],
+      "files": ["package.json\n"]
+    }
+
+  ]
+}
