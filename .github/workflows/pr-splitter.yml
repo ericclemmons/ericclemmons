@@ -47,7 +47,7 @@ jobs:
     needs: [detect-command]
     if: |
       always() && 
-      (github.event_name == 'pull_request' || 
+      ((github.event_name == 'pull_request' && startsWith(github.head_ref, 'dev/')) || 
        github.event_name == 'workflow_dispatch' || 
        (needs.detect-command.result == 'success' && needs.detect-command.outputs.branch != ''))
     runs-on: ubuntu-latest
