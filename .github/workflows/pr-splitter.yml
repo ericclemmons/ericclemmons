@@ -118,35 +118,3 @@ jobs:
             echo "**PRs created/updated:**" >> $GITHUB_STEP_SUMMARY
             jq -r '.prs[] | "- **\(.title)** (\(.action)) - `\(.branch)`"' pr-plan.json >> $GITHUB_STEP_SUMMARY
           fi
-
-      - name: Execute PR plan
-        
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          chmod +x .github/scripts/pr-split-execute.sh
-          .github/scripts/pr-split-execute.sh \
-            "${{ steps.context.outputs.user }}"
-
-      - name: Update umbrella PR
-        
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          chmod +x .github/scripts/pr-split-umbrella.sh
-          .github/scripts/pr-split-umbrella.sh \
-            "${{ steps.context.outputs.branch }}" \
-            "${{ steps.context.outputs.user }}"
-
-      - name: Summary
-        
-        run: |
-          echo "## 🎉 PR Splitter Complete!" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Branch analyzed:** \`${{ steps.context.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -f pr-plan.json ]; then
-            echo "**PRs created/updated:**" >> $GITHUB_STEP_SUMMARY
-            jq -r '.prs[] | "- **\(.title)** (\(.action)) - `\(.branch)`"' pr-plan.json >> $GITHUB_STEP_SUMMARY
-          fi
