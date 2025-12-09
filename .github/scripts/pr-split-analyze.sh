@@ -3,14 +3,9 @@ set -e
 
 BRANCH="$1"
 USER="$2"
-MODE="${3:-incremental}" # incremental (default) or full
 
 echo "🔍 Analyzing commits in branch: $BRANCH"
 echo "👤 User: $USER"
-echo "🔄 Mode: $MODE"
-
-# Fetch the branch if it exists remotely
-git fetch origin $BRANCH:$BRANCH 2>/dev/null || true
 
 # Get all commits in the branch
 ALL_COMMITS=$(git log main..$BRANCH --format="%H" 2>/dev/null || echo "")
@@ -32,47 +27,28 @@ EXISTING_PRS_JSON=$(gh pr list \
 
 echo "📋 Found $(echo "$EXISTING_PRS_JSON" | jq 'length') existing PRs"
 
-# In full mode, close existing PRs and analyze all commits
-if [ "$MODE" = "full" ]; then
-  echo "🔄 Full mode: closing existing PRs..."
-  for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
-    echo "  Closing PR #$pr_number..."
-    gh pr close $pr_number --comment "Closing for full re-evaluation" 2>/dev/null || true
-  done
+# Build array of commits already in PRs
+KNOWN_COMMITS=()
+for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
+  echo "  Checking PR #$pr_number..."
+  PR_COMMITS=$(gh pr view $pr_number --json commits --jq '.commits[].oid' 2>/dev/null || echo "")
   
-  # Analyze all commits
-  NEW_COMMITS=()
-  for commit in $ALL_COMMITS; do
+  if [ -n "$PR_COMMITS" ]; then
+    while IFS= read -r commit; do
+      KNOWN_COMMITS+=("$commit")
+    done <<< "$PR_COMMITS"
+  fi
+done
+
+# Find NEW commits (not in any existing PR)
+NEW_COMMITS=()
+for commit in $ALL_COMMITS; do
+  if [[ ! " ${KNOWN_COMMITS[@]} " =~ " ${commit} " ]]; then
     NEW_COMMITS+=("$commit")
-  done
-  echo "🆕 Full mode: analyzing all ${#NEW_COMMITS[@]} commits"
-else
-  # Incremental mode: only analyze commits not in existing PRs
-  echo "➕ Incremental mode: finding new commits..."
-  
-  # Build array of commits already in PRs
-  KNOWN_COMMITS=()
-  for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
-    echo "  Checking PR #$pr_number..."
-    PR_COMMITS=$(gh pr view $pr_number --json commits --jq '.commits[].oid' 2>/dev/null || echo "")
-    
-    if [ -n "$PR_COMMITS" ]; then
-      while IFS= read -r commit; do
-        KNOWN_COMMITS+=("$commit")
-      done <<< "$PR_COMMITS"
-    fi
-  done
+  fi
+done
 
-  # Find NEW commits (not in any existing PR)
-  NEW_COMMITS=()
-  for commit in $ALL_COMMITS; do
-    if [[ ! " ${KNOWN_COMMITS[@]} " =~ " ${commit} " ]]; then
-      NEW_COMMITS+=("$commit")
-    fi
-  done
-
-  echo "🆕 Found ${#NEW_COMMITS[@]} new commits to analyze"
-fi
+echo "🆕 Found ${#NEW_COMMITS[@]} new commits to analyze"
 
 # Build JSON context for Claude
 echo "📝 Building commit context..."
