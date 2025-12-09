@@ -1,0 +1,482 @@
+name: PR Splitter
+
+on:
+  push:
+    branches: 
+      - 'dev/*'
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to split (e.g., dev/eric)'
+        required: true
+        type: string
+      force:
+        description: 'Force re-analysis (ignore cache)'
+        required: false
+        type: boolean
+        default: false
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+
+jobs:
+  detect-command:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@splitter')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@splitter'))
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+      issues: read
+    outputs:
+      branch: ${{ steps.detect.outputs.branch }}
+      instruction: ${{ steps.detect.outputs.instruction }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect branch and instruction
+        id: detect
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Get PR context
+          if [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          else
+            PR_NUMBER="${{ github.event.issue.number }}"
+          fi
+          
+          # Get PR head branch
+          BRANCH=$(gh pr view $PR_NUMBER --json headRefName -q .headRefName)
+          
+          # If this is umbrella PR (dev/*), use it; if child PR (pr-split/*), find umbrella
+          if [[ "$BRANCH" =~ ^dev/ ]]; then
+            echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          else
+            # Extract user from child PR branch (pr-split/user/feature)
+            USER=$(echo "$BRANCH" | cut -d'/' -f2)
+            echo "branch=dev/$USER" >> $GITHUB_OUTPUT
+          fi
+          
+          # Extract instruction (everything after @splitter)
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          INSTRUCTION=$(echo "$COMMENT_BODY" | sed -n 's/.*@splitter[[:space:]]*\(.*\)/\1/p' | tr '\n' ' ')
+          echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
+          
+          echo "🔍 Detected branch: $BRANCH"
+          echo "📝 User instruction: $INSTRUCTION"
+
+  split:
+    needs: [detect-command]
+    if: |
+      always() && 
+      (github.event_name == 'push' || 
+       github.event_name == 'workflow_dispatch' || 
+       (needs.detect-command.result == 'success' && needs.detect-command.outputs.branch != ''))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine branch and context
+        id: context
+        run: |
+          # Determine which branch to analyze
+          if [ "${{ github.event_name }}" = "push" ]; then
+            BRANCH="${{ github.ref_name }}"
+            INSTRUCTION=""
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BRANCH="${{ github.event.inputs.branch }}"
+            INSTRUCTION=""
+          else
+            BRANCH="${{ needs.detect-command.outputs.branch }}"
+            INSTRUCTION="${{ needs.detect-command.outputs.instruction }}"
+          fi
+          
+          # Extract username from branch (dev/username -> username)
+          USER=$(echo "$BRANCH" | cut -d'/' -f2)
+          
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "user=$USER" >> $GITHUB_OUTPUT
+          echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
+          echo "force=${{ github.event.inputs.force || 'false' }}" >> $GITHUB_OUTPUT
+          
+          echo "🌿 Branch: $BRANCH"
+          echo "👤 User: $USER"
+          echo "📝 Instruction: $INSTRUCTION"
+
+      - name: Generate cache key
+        id: cache-key
+        run: |
+          BRANCH="${{ steps.context.outputs.branch }}"
+          
+          # Get all commit hashes in branch
+          COMMITS=$(git log main..$BRANCH --format="%H" 2>/dev/null | sort || echo "")
+          
+          if [ -z "$COMMITS" ]; then
+            echo "No commits found in $BRANCH ahead of main"
+            echo "cache_key=pr-split-empty" >> $GITHUB_OUTPUT
+            echo "has_commits=false" >> $GITHUB_OUTPUT
+          else
+            # Generate hash of all commits
+            CACHE_KEY=$(echo "$COMMITS" | sha256sum | cut -d' ' -f1)
+            echo "cache_key=pr-split-$CACHE_KEY" >> $GITHUB_OUTPUT
+            echo "has_commits=true" >> $GITHUB_OUTPUT
+            echo "📦 Cache key: pr-split-$CACHE_KEY"
+          fi
+
+      - name: Restore cache
+        if: steps.cache-key.outputs.has_commits == 'true'
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .github/pr-split-cache/
+          key: ${{ steps.cache-key.outputs.cache_key }}
+
+      - name: Check if analysis needed
+        id: check
+        run: |
+          HAS_COMMITS="${{ steps.cache-key.outputs.has_commits }}"
+          CACHE_HIT="${{ steps.cache.outputs.cache-hit }}"
+          FORCE="${{ steps.context.outputs.force }}"
+          
+          if [ "$HAS_COMMITS" = "false" ]; then
+            echo "❌ No commits to analyze"
+            echo "analysis_needed=false" >> $GITHUB_OUTPUT
+          elif [ "$CACHE_HIT" = "true" ] && [ "$FORCE" = "false" ]; then
+            echo "✅ Cache hit, no new commits"
+            echo "analysis_needed=false" >> $GITHUB_OUTPUT
+          else
+            echo "🔍 New commits detected or force=true"
+            echo "analysis_needed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Analyze commits
+        if: steps.check.outputs.analysis_needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          chmod +x .github/scripts/pr-split-analyze.sh
+          .github/scripts/pr-split-analyze.sh \
+            "${{ steps.context.outputs.branch }}" \
+            "${{ steps.context.outputs.user }}"
+
+      - name: Call Claude API
+        if: steps.check.outputs.analysis_needed == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          echo "🤖 Calling Claude API for commit analysis..."
+          
+          # Prepare the prompt
+          PROMPT=$(cat <<'PROMPT_END'
+You are analyzing commits from a developer's branch to automatically split them into logical, self-contained PRs.
+
+## Input Context
+- NEW_COMMITS: Commits not yet in any PR (hash, message, files changed, diff stats)
+- EXISTING_PRS: Open PRs with their commits and files
+- BASE_BRANCH: Usually "main"
+
+## Your Goals
+1. Group commits into logical, self-contained PRs that could safely land independently
+2. Each PR should be a complete "vertical stripe" - a full feature/fix that doesn't break main
+3. Minimize stacking - only create stacks when there's a clear, necessary dependency
+4. Detect shared file changes across potential PRs and decide the best strategy
+
+## Decision Rules
+
+### Commit Grouping
+- NEW commits can either:
+  - Be added to an EXISTING_PR (if logically related to that PR's purpose)
+  - Create a NEW_PR (if unrelated to existing PRs)
+- Consider commit order - earlier commits might be dependencies for later ones
+- Look for logical cohesion in commit messages and file paths
+
+### Shared File Changes
+When multiple commits modify the same file for different purposes:
+- **Extract to parent PR:** If the file change is safe to land alone AND doesn't break main
+  - Example: Adding a new dependency to package.json that both features need
+  - Create PR #0 with just that change, make other PRs depend on it
+- **Duplicate in both PRs:** If the file change breaks main alone BUT is needed for both features
+  - Example: tsconfig.json changes that only make sense with feature code
+  - Apply same change to both PR branches
+- **Ask for clarification:** If you cannot determine safety or independence from commit messages + file paths + stats
+  - Set "requires_diffs": true with reasoning
+
+### Stacking Strategy
+- Prefer independent PRs that can land in any order
+- Only create stacks (PR B depends on PR A) when:
+  - PR B's code imports/uses code from PR A
+  - PR B's feature logically requires PR A's feature to exist first
+- Use "base_branch" to indicate dependencies:
+  - Independent PR: "base_branch": "main"
+  - Stacked PR: "base_branch": "pr-split/user/parent-feature"
+
+## Output Schema
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Brief explanation of analysis approach",
+  "prs": [
+    {
+      "action": "create" | "update",
+      "branch": "pr-split/username/descriptive-name",
+      "title": "Concise PR title (imperative mood, e.g., 'Add user authentication')",
+      "commits": ["hash1", "hash2"],
+      "base_branch": "main" | "pr-split/username/other-branch",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Why these commits belong together"
+    }
+  ]
+}
+
+## Examples
+
+### Example 1: Independent Features
+Input:
+- Commit abc123: "Add authentication system" (files: auth.ts, login.tsx)
+- Commit def456: "Add user profile page" (files: profile.tsx, api/user.ts)
+- No existing PRs
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "Two unrelated features that can land independently",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-authentication-system",
+      "title": "Add authentication system",
+      "commits": ["abc123"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Self-contained auth feature"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-user-profile-page",
+      "title": "Add user profile page",
+      "commits": ["def456"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent profile feature"
+    }
+  ]
+}
+
+### Example 2: Clear Dependency (Stack)
+Input:
+- Commit abc123: "Add auth service" (files: auth.ts)
+- Commit def456: "Add login page using auth" (files: login.tsx)
+- No existing PRs
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "Login page depends on auth service based on commit message",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-auth-service",
+      "title": "Add auth service",
+      "commits": ["abc123"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Foundation auth service"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-login-page",
+      "title": "Add login page",
+      "commits": ["def456"],
+      "base_branch": "pr-split/eric/add-auth-service",
+      "depends_on": ["pr-split/eric/add-auth-service"],
+      "related_to": [],
+      "reasoning": "Depends on auth service"
+    }
+  ]
+}
+
+### Example 3: Shared Config (Extract)
+Input:
+- Commit abc123: "Add TypeScript strict mode" (files: tsconfig.json)
+- Commit def456: "Add auth types" (files: auth.ts)
+- Commit ghi789: "Add profile types" (files: profile.ts)
+- No existing PRs
+
+Output:
+{
+  "requires_diffs": false,
+  "reasoning": "TypeScript config is shared foundation, extract it",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/eric/enable-typescript-strict-mode",
+      "title": "Enable TypeScript strict mode",
+      "commits": ["abc123"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Config foundation for type-safe code"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-auth-types",
+      "title": "Add auth types",
+      "commits": ["def456"],
+      "base_branch": "pr-split/eric/enable-typescript-strict-mode",
+      "depends_on": ["pr-split/eric/enable-typescript-strict-mode"],
+      "related_to": [],
+      "reasoning": "Depends on strict mode config"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/eric/add-profile-types",
+      "title": "Add profile types",
+      "commits": ["ghi789"],
+      "base_branch": "pr-split/eric/enable-typescript-strict-mode",
+      "depends_on": ["pr-split/eric/enable-typescript-strict-mode"],
+      "related_to": [],
+      "reasoning": "Depends on strict mode config"
+    }
+  ]
+}
+
+## Now Analyze
+
+PROMPT_END
+)
+
+          # Read the commits context
+          COMMITS_JSON=$(cat commits-context.json)
+          
+          # Combine prompt with data
+          FULL_PROMPT="$PROMPT
+
+$COMMITS_JSON
+
+Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON."
+
+          # Call Claude API
+          RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+            -H "x-api-key: $ANTHROPIC_API_KEY" \
+            -H "anthropic-version: 2023-06-01" \
+            -H "content-type: application/json" \
+            -d @- <<EOF
+{
+  "model": "claude-3-5-haiku-20241022",
+  "max_tokens": 4096,
+  "messages": [{
+    "role": "user",
+    "content": $(echo "$FULL_PROMPT" | jq -Rs .)
+  }]
+}
+EOF
+)
+          
+          # Check for API errors
+          if echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
+            ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message')
+            echo "❌ Claude API Error: $ERROR_MSG"
+            exit 1
+          fi
+          
+          # Extract JSON response
+          echo "$RESPONSE" | jq -r '.content[0].text' > claude-response-raw.txt
+          
+          # Validate JSON
+          if ! jq empty claude-response-raw.txt 2>/dev/null; then
+            echo "❌ Claude returned invalid JSON:"
+            cat claude-response-raw.txt
+            exit 1
+          fi
+          
+          # Parse and save
+          cat claude-response-raw.txt | jq '.' > pr-plan.json
+          
+          echo "✅ Claude analysis complete"
+          cat pr-plan.json
+
+      - name: Check if diffs required
+        if: steps.check.outputs.analysis_needed == 'true'
+        run: |
+          NEEDS_DIFFS=$(jq -r '.requires_diffs' pr-plan.json)
+          
+          if [ "$NEEDS_DIFFS" = "true" ]; then
+            echo "❌ Cannot determine PR splits without seeing code diffs."
+            echo ""
+            echo "Claude's reasoning:"
+            jq -r '.reasoning' pr-plan.json
+            echo ""
+            echo "Files needing review:"
+            jq -r '.files_needing_review[]' pr-plan.json
+            echo ""
+            echo "💡 Tip: Write more descriptive commit messages that explain WHAT changed and WHY."
+            echo "This allows the splitter to work without analyzing code diffs, keeping costs low."
+            echo ""
+            echo "Examples of good commit messages:"
+            echo "  ✅ 'Add lodash dependency for array utilities'"
+            echo "  ✅ 'Create auth service with JWT token handling'"
+            echo "  ✅ 'Add user profile page that consumes auth service'"
+            echo ""
+            echo "Examples of unclear commit messages:"
+            echo "  ❌ 'Update config'"
+            echo "  ❌ 'Add stuff'"
+            echo "  ❌ 'WIP'"
+            exit 1
+          fi
+
+      - name: Execute PR plan
+        if: steps.check.outputs.analysis_needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          chmod +x .github/scripts/pr-split-execute.sh
+          .github/scripts/pr-split-execute.sh \
+            "${{ steps.context.outputs.user }}"
+
+      - name: Update umbrella PR
+        if: steps.check.outputs.analysis_needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          chmod +x .github/scripts/pr-split-umbrella.sh
+          .github/scripts/pr-split-umbrella.sh \
+            "${{ steps.context.outputs.branch }}" \
+            "${{ steps.context.outputs.user }}"
+
+      - name: Save cache
+        if: steps.check.outputs.analysis_needed == 'true'
+        run: |
+          mkdir -p .github/pr-split-cache
+          git log main..${{ steps.context.outputs.branch }} --format="%H" | sort > .github/pr-split-cache/commits.txt
+          date > .github/pr-split-cache/last-run.txt
+          echo "💾 Cache saved"
+
+      - name: Summary
+        if: steps.check.outputs.analysis_needed == 'true'
+        run: |
+          echo "## 🎉 PR Splitter Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch analyzed:** \`${{ steps.context.outputs.branch }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f pr-plan.json ]; then
+            echo "**PRs created/updated:**" >> $GITHUB_STEP_SUMMARY
+            jq -r '.prs[] | "- **\(.title)** (\(.action)) - `\(.branch)`"' pr-plan.json >> $GITHUB_STEP_SUMMARY
+          fi
