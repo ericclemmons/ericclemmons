@@ -75,5 +75,5 @@ fi
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "☂️  Umbrella PR: https://github.com/${{ github.repository }}/pull/$UMBRELLA_PR"
+echo "☂️  Umbrella PR #$UMBRELLA_PR"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
