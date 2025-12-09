@@ -162,23 +162,24 @@ process_pr() {
     else
       # Create new PR (don't exit on failure)
       set +e
-      PR_NUMBER=$(gh pr create \
+      PR_URL=$(gh pr create \
         --draft \
         --assignee "$USER" \
         --base "$BASE_BRANCH" \
         --head "$branch" \
         --title "$TITLE" \
-        --body "" \
-        --json number \
-        --jq '.number' 2>&1)
+        --body "" 2>&1)
       PR_CREATE_EXIT=$?
       set -e
       
-      if [ $PR_CREATE_EXIT -eq 0 ] && [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+      if [ $PR_CREATE_EXIT -eq 0 ]; then
+        # Extract PR number from URL (https://github.com/owner/repo/pull/123)
+        PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
         echo "  ✅ Created PR #$PR_NUMBER"
+        echo "  URL: $PR_URL"
       else
         echo "  ❌ Failed to create PR (exit code: $PR_CREATE_EXIT)"
-        echo "  Error output: $PR_NUMBER"
+        echo "  Error output: $PR_URL"
         PR_NUMBER=""
       fi
     fi

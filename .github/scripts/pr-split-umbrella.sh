@@ -49,19 +49,19 @@ if [ -z "$UMBRELLA_PR" ]; then
   git push origin "$BRANCH" 2>/dev/null || true
   
   # Create PR
-  UMBRELLA_PR=$(gh pr create \
+  PR_URL=$(gh pr create \
     --draft \
     --head "$BRANCH" \
     --base main \
     --title "[WIP] ☂️ $USER" \
-    --body "$BODY" \
-    --json number \
-    --jq '.number' 2>&1)
+    --body "$BODY" 2>&1)
   
-  if [[ "$UMBRELLA_PR" =~ ^[0-9]+$ ]]; then
+  if [ $? -eq 0 ]; then
+    # Extract PR number from URL
+    UMBRELLA_PR=$(echo "$PR_URL" | grep -oE '[0-9]+$')
     echo "✅ Created umbrella PR #$UMBRELLA_PR"
   else
-    echo "❌ Failed to create umbrella PR: $UMBRELLA_PR"
+    echo "❌ Failed to create umbrella PR: $PR_URL"
     exit 1
   fi
 else
