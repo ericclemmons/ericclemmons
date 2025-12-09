@@ -1,9 +1,17 @@
 You are analyzing commits from a developer's branch to automatically split them into logical, self-contained PRs.
 
 ## Input Context
-- NEW_COMMITS: Commits not yet in any PR (hash, message, files changed, diff stats)
-- EXISTING_PRS: Open PRs with their commits and files
+- NEW_COMMITS: Commits not yet in any PR (hash, message, files changed, diff stats, pr_split_id)
+- EXISTING_PRS: Open PRs with their commits, files, and pr_split_ids
 - BASE_BRANCH: Usually "main"
+
+## PR-Split-ID Trailers
+Each commit may have a `PR-Split-ID` trailer (e.g., "add-auth-feature-a1b2c3d4") that:
+- Uniquely identifies the commit's purpose/intent
+- Survives rebases, amends, and cherry-picks
+- Is used to track commits across git history rewrites
+
+**Critical**: When a new commit has a `pr_split_id` that matches any ID in an existing PR's `pr_split_ids` array, that commit MUST be added to that existing PR (use "action": "update"). This is how we handle rebased commits.
 
 ## Your Goals
 1. Group commits into logical, self-contained PRs that could safely land independently
@@ -16,9 +24,11 @@ You are analyzing commits from a developer's branch to automatically split them 
 ### Commit Grouping
 - NEW commits can either:
   - Be added to an EXISTING_PR (use "action": "update") if:
-    - The commit message/files are logically related to that PR's existing commits
-    - The commit extends or fixes something in that PR
+    - **MANDATORY**: The commit's `pr_split_id` matches any ID in the PR's `pr_split_ids` array (rebased commit)
+    - OR: The commit message/files are logically related to that PR's existing commits
+    - OR: The commit extends or fixes something in that PR
   - Create a NEW_PR (use "action": "create") if:
+    - No existing PR has matching `pr_split_id`
     - No existing PR matches this commit's purpose
     - Unrelated to existing PRs
 - Consider commit order - earlier commits might be dependencies for later ones
@@ -26,11 +36,13 @@ You are analyzing commits from a developer's branch to automatically split them 
 
 ### Update vs Create Actions
 - Use "action": "update" when:
-  - An EXISTING_PR already covers this commit's purpose
+  - **PRIORITY 1**: The commit's `pr_split_id` exists in an EXISTING_PR's `pr_split_ids` (this is a rebased commit)
+  - **PRIORITY 2**: An EXISTING_PR already covers this commit's purpose (logically related)
   - The new commits logically extend that PR's work
   - List ONLY the new commits in "commits" array
   - IMPORTANT: Keep the same "branch" name as the existing PR
 - Use "action": "create" when:
+  - No existing PR has matching `pr_split_id`
   - No existing PR matches this commit's purpose
   - Starting fresh work on a new feature/fix
   - List all commits for this new PR
@@ -110,19 +122,20 @@ Output:
   ]
 }
 
-### Example 1b: Extending Existing PR (Update)
+### Example 1b: Rebased Commit (Update via PR-Split-ID)
 Input:
-- Commit xyz789: "Fix authentication error handling" (files: auth.ts)
+- Commit xyz789: "Add authentication system" (files: auth.ts, pr_split_id: "add-auth-system-a1b2c3")
 - Existing PRs:
   - PR #42: "Add authentication system" 
     - branch: pr-split/eric/add-authentication-system
     - commits: [abc123]
+    - pr_split_ids: ["add-auth-system-a1b2c3"]
     - files: [auth.ts, login.tsx]
 
 Output:
 {
   "requires_diffs": false,
-  "reasoning": "New commit extends existing auth PR",
+  "reasoning": "New commit xyz789 has same PR-Split-ID as existing PR #42, indicating it's a rebased version of abc123",
   "prs": [
     {
       "action": "update",
@@ -132,7 +145,7 @@ Output:
       "base_branch": "main",
       "depends_on": [],
       "related_to": [],
-      "reasoning": "Error handling fix extends existing auth PR"
+      "reasoning": "Matching PR-Split-ID proves this is the same commit after rebase/amend"
     }
   ]
 }

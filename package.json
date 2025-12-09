@@ -8,7 +8,8 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=22.x"
@@ -38,6 +39,7 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@types/three": "^0.164.0",
+    "husky": "^9.1.7",
     "prettier-plugin-tailwindcss": "^0.5.14"
   }
 }

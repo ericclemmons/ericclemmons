@@ -1,0 +1,38 @@
+#!/bin/bash
+# Automatically add PR-Split-ID trailer to commits
+# This helps the PR splitter track commits across rebases
+
+COMMIT_MSG_FILE=$1
+COMMIT_SOURCE=$2
+SHA1=$3
+
+# Skip if this is an amend, merge, squash, or rebase in progress
+# We only want to add trailers to NEW commits
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "squash" ] || [ "$COMMIT_SOURCE" = "commit" ]; then
+  exit 0
+fi
+
+# Skip if trailer already exists
+if grep -q "^PR-Split-ID:" "$COMMIT_MSG_FILE"; then
+  exit 0
+fi
+
+# Generate a stable ID based on timestamp and random component
+# Format: feature-description-8char (e.g., add-auth-a1b2c3d4)
+TIMESTAMP=$(date +%s)
+RANDOM_ID=$(echo "$TIMESTAMP-$$-$RANDOM" | shasum | cut -c1-8)
+
+# Extract a slug from the commit message first line
+COMMIT_SUBJECT=$(head -n1 "$COMMIT_MSG_FILE")
+SLUG=$(echo "$COMMIT_SUBJECT" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//' | cut -c1-30)
+
+# If slug is too short, use generic
+if [ ${#SLUG} -lt 3 ]; then
+  SLUG="commit"
+fi
+
+PR_SPLIT_ID="${SLUG}-${RANDOM_ID}"
+
+# Add trailer using git interpret-trailers
+# This properly formats it according to git conventions
+git interpret-trailers --in-place --trailer "PR-Split-ID: $PR_SPLIT_ID" "$COMMIT_MSG_FILE"

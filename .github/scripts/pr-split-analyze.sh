@@ -116,6 +116,9 @@ for commit in "${NEW_COMMITS[@]}"; do
   COMMIT_SUBJECT=$(git log -1 --format="%s" $commit)
   COMMIT_BODY=$(git log -1 --format="%b" $commit)
   
+  # Extract PR-Split-ID trailer if present
+  PR_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit | tr -d '\n')
+  
   # Get files changed
   FILES_CHANGED=$(git diff-tree --no-commit-id --name-only -r $commit)
   
@@ -151,6 +154,7 @@ for commit in "${NEW_COMMITS[@]}"; do
       "hash": "$commit",
       "subject": $(echo "$COMMIT_SUBJECT" | jq -Rs .),
       "body": $(echo "$COMMIT_BODY" | jq -Rs .),
+      "pr_split_id": $(echo "$PR_SPLIT_ID" | jq -Rs .),
       "files": $FILES_JSON
     }
 COMMIT_EOF
@@ -174,21 +178,36 @@ for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
   PR_BRANCH=$(echo "$EXISTING_PRS_JSON" | jq -r ".[] | select(.number == $pr_number) | .headRefName")
   PR_BASE=$(echo "$EXISTING_PRS_JSON" | jq -r ".[] | select(.number == $pr_number) | .baseRefName")
   
-  # Get commits in this PR
+  # Get commits in this PR with their trailers
   PR_COMMITS=$(gh pr view $pr_number --json commits --jq '.commits[].oid' 2>/dev/null || echo "")
   PR_COMMITS_JSON="["
+  PR_SPLIT_IDS_JSON="["
   commits_first=true
+  ids_first=true
   while IFS= read -r commit_hash; do
     if [ -z "$commit_hash" ]; then
       continue
     fi
+    
+    # Add commit hash
     if [ "$commits_first" = false ]; then
       PR_COMMITS_JSON="$PR_COMMITS_JSON,"
     fi
     commits_first=false
     PR_COMMITS_JSON="$PR_COMMITS_JSON\"$commit_hash\""
+    
+    # Extract PR-Split-ID trailer
+    COMMIT_PR_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit_hash 2>/dev/null | tr -d '\n')
+    if [ -n "$COMMIT_PR_SPLIT_ID" ]; then
+      if [ "$ids_first" = false ]; then
+        PR_SPLIT_IDS_JSON="$PR_SPLIT_IDS_JSON,"
+      fi
+      ids_first=false
+      PR_SPLIT_IDS_JSON="$PR_SPLIT_IDS_JSON$(echo "$COMMIT_PR_SPLIT_ID" | jq -Rs .)"
+    fi
   done <<< "$PR_COMMITS"
   PR_COMMITS_JSON="$PR_COMMITS_JSON]"
+  PR_SPLIT_IDS_JSON="$PR_SPLIT_IDS_JSON]"
   
   # Get files in this PR
   PR_FILES=$(gh pr view $pr_number --json files --jq '.files[].path' 2>/dev/null || echo "")
@@ -213,6 +232,7 @@ for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
       "branch": $(echo "$PR_BRANCH" | jq -Rs .),
       "base_branch": $(echo "$PR_BASE" | jq -Rs .),
       "commits": $PR_COMMITS_JSON,
+      "pr_split_ids": $PR_SPLIT_IDS_JSON,
       "files": $PR_FILES_JSON
     }
 PR_EOF
