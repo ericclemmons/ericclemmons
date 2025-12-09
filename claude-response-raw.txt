@@ -1,0 +1,47 @@
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Identified 2 distinct features, 1 dependency PR for lodash, and logical stacking",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "title": "Add lodash dependency for utility functions",
+      "commits": ["155a5f73a5c886b8839c4ea098b604f7e30466a7"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Shared dependency that can land independently"
+    },
+    {
+      "action": "create", 
+      "branch": "pr-split/ericclemmons/add-utility-functions",
+      "title": "Add utility functions using lodash",
+      "commits": ["8d0036e67b02820eed1d7c2909ef2d614fa05ecd"],
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "depends_on": ["pr-split/ericclemmons/add-lodash-dependency"],
+      "related_to": [],
+      "reasoning": "Depends on lodash package for utility functions"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-feature-a",
+      "title": "Add Feature A component",
+      "commits": ["9861d497110d27bac6a3ac43295a6108f223b4d6"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent feature component"
+    },
+    {
+      "action": "create", 
+      "branch": "pr-split/ericclemmons/add-feature-b",
+      "title": "Add Feature B component",
+      "commits": ["42a38c24ee7c693cdb5420e987122b5c91bcd92f"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent feature component"
+    }
+  ]
+}

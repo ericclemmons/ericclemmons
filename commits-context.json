@@ -1,0 +1,38 @@
+{
+  "base_branch": "main",
+  "user_branch": "dev/ericclemmons",
+  "user": "ericclemmons",
+  "new_commits": [
+    {
+      "hash": "8d0036e67b02820eed1d7c2909ef2d614fa05ecd",
+      "subject": "Add utility functions using lodash\n",
+      "body": "These utility functions depend on the lodash package.\nThis feature should be stacked on top of the lodash dependency PR.\n",
+      "files": [{"path":"src/lib/utils.ts\n","added":18,"deleted":0}]
+    }
+,
+    {
+      "hash": "155a5f73a5c886b8839c4ea098b604f7e30466a7",
+      "subject": "Add lodash dependency for utility functions\n",
+      "body": "This shared dependency will be used by future features.\nIt can safely land on its own without breaking main.\n",
+      "files": [{"path":"package.json\n","added":2,"deleted":1}]
+    }
+,
+    {
+      "hash": "42a38c24ee7c693cdb5420e987122b5c91bcd92f",
+      "subject": "Add Feature B component\n",
+      "body": "This is another independent feature that is unrelated to Feature A.\nIt should be in a separate PR that can land independently.\n",
+      "files": [{"path":"src/components/FeatureB.astro\n","added":15,"deleted":0}]
+    }
+,
+    {
+      "hash": "9861d497110d27bac6a3ac43295a6108f223b4d6",
+      "subject": "Add Feature A component\n",
+      "body": "This is an independent feature that adds a new reusable component.\nIt can safely land on main without breaking anything.\n",
+      "files": [{"path":"src/components/FeatureA.astro\n","added":15,"deleted":0}]
+    }
+
+  ],
+  "existing_prs": [
+
+  ]
+}
