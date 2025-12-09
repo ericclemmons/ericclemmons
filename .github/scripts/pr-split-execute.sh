@@ -168,23 +168,13 @@ process_pr() {
     else
       # Create new PR (don't exit on failure)
       set +e
-      # Try to assign to commit author if available
-      if [ -n "$COMMIT_AUTHOR" ]; then
-        PR_URL=$(gh pr create \
-          --draft \
-          --assignee "$COMMIT_AUTHOR" \
-          --base "$BASE_BRANCH" \
-          --head "$branch" \
-          --title "$TITLE" \
-          --body "" 2>&1)
-      else
-        PR_URL=$(gh pr create \
-          --draft \
-          --base "$BASE_BRANCH" \
-          --head "$branch" \
-          --title "$TITLE" \
-          --body "" 2>&1)
-      fi
+      # Try to create PR (skip assignee for now since email != GitHub username)
+      PR_URL=$(gh pr create \
+        --draft \
+        --base "$BASE_BRANCH" \
+        --head "$branch" \
+        --title "$TITLE" \
+        --body "" 2>&1)
       PR_CREATE_EXIT=$?
       set -e
       
