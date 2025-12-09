@@ -2,9 +2,9 @@
 set -e
 
 BRANCH="$1"
-USER="$2"
+USERNAME="$2"
 
-echo "☂️  Managing umbrella PR for branch: $BRANCH"
+echo "☂️  Managing umbrella PR for branch: $BRANCH (user: $USERNAME)"
 
 # Check if umbrella PR exists
 UMBRELLA_PR=$(gh pr list \
@@ -16,7 +16,7 @@ UMBRELLA_PR=$(gh pr list \
 # Query all child PRs
 echo "🔎 Querying child PRs..."
 CHILD_PRS_JSON=$(gh pr list \
-  --search "head:pr-split/$USER/* is:open" \
+  --search "head:pr-split/$USERNAME/* is:open" \
   --json number,title,url \
   --limit 100 2>/dev/null || echo "[]")
 
@@ -53,7 +53,7 @@ if [ -z "$UMBRELLA_PR" ]; then
     --draft \
     --head "$BRANCH" \
     --base main \
-    --title "[WIP] ☂️ $USER" \
+    --title "[WIP] ☂️ $USERNAME" \
     --body "$BODY" 2>&1)
   
   if [ $? -eq 0 ]; then
