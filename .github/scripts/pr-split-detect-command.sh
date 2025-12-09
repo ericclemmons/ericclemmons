@@ -25,8 +25,8 @@ else
   echo "branch=dev/$USER" >> $GITHUB_OUTPUT
 fi
 
-# Extract instruction (everything after @splitter)
-INSTRUCTION=$(echo "$COMMENT_BODY" | sed -n 's/.*@splitter[[:space:]]*\(.*\)/\1/p' | tr '\n' ' ')
+# Extract instruction (everything after 🔀)
+INSTRUCTION=$(echo "$COMMENT_BODY" | sed -n 's/.*🔀[[:space:]]*\(.*\)/\1/p' | tr '\n' ' ')
 echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
 
 echo "🔍 Detected branch: $BRANCH"

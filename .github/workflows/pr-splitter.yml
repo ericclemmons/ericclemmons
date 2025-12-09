@@ -18,8 +18,8 @@ on:
 jobs:
   detect-command:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@splitter')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@splitter'))
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '🔀')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '🔀'))
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
