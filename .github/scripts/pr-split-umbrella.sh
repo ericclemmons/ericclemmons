@@ -71,11 +71,11 @@ else
         if [ "$indent" = "" ]; then
           # Top-level PR (merges to main)
           BODY="$BODY
-- **#$pr_number: $title** → \`main\`"
+- #$pr_number"
         else
           # Nested PR (stacked dependency)
           BODY="$BODY
-${indent}${counter}. #$pr_number: $title"
+${indent}${counter}. #$pr_number"
         fi
         
         # Find child PRs that depend on this PR
