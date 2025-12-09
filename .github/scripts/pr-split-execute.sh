@@ -148,12 +148,14 @@ process_pr() {
     EXISTING_PR=$(gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null || echo "")
     
     if [ -n "$EXISTING_PR" ]; then
-      echo "  ℹ️  PR already exists: #$EXISTING_PR"
+      echo "  ℹ️  PR already exists: #$EXISTING_PR (skipping creation)"
       PR_NUMBER=$EXISTING_PR
     else
       # Create new PR (don't exit on failure)
       set +e
       # Try to create PR and assign to the user from the branch name
+      # Note: gh pr create will fail with permission error if trying to update existing PR
+      # created by a different user
       PR_URL=$(gh pr create \
         --draft \
         --assignee "$USER" \
@@ -170,9 +172,22 @@ process_pr() {
         echo "  ✅ Created PR #$PR_NUMBER"
         echo "  URL: $PR_URL"
       else
-        echo "  ❌ Failed to create PR (exit code: $PR_CREATE_EXIT)"
-        echo "  Error output: $PR_URL"
-        PR_NUMBER=""
+        # Check if error is because PR already exists (permission denied on update)
+        if echo "$PR_URL" | grep -q "does not have permission to update"; then
+          echo "  ℹ️  PR exists but created by different user, extracting PR number..."
+          # Try to get PR number from error message or by listing again
+          PR_NUMBER=$(echo "$PR_URL" | grep -oE 'pull/[0-9]+' | grep -oE '[0-9]+' || \
+                      gh pr list --head "$branch" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -n "$PR_NUMBER" ]; then
+            echo "  ✅ Found existing PR #$PR_NUMBER"
+          else
+            echo "  ❌ Could not determine PR number"
+          fi
+        else
+          echo "  ❌ Failed to create PR (exit code: $PR_CREATE_EXIT)"
+          echo "  Error output: $PR_URL"
+          PR_NUMBER=""
+        fi
       fi
     fi
     
