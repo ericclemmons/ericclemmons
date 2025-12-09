@@ -106,48 +106,33 @@ process_pr() {
       COMMIT_AUTHOR=$(git log -1 --format='%ae' $commit)
     fi
     
-    echo "  📌 Cherry-picking $commit..."
+    echo "  📌 Applying commit $commit..."
     
-    if git cherry-pick "$commit" >/dev/null 2>&1; then
-      echo "    ✅ Success"
+    # Get commit message and author
+    COMMIT_MSG=$(git log -1 --format=%s "$commit")
+    COMMIT_AUTHOR_NAME=$(git log -1 --format=%an "$commit")
+    COMMIT_AUTHOR_EMAIL=$(git log -1 --format=%ae "$commit")
+    
+    # Apply the commit's changes directly
+    if git cherry-pick "$commit" 2>&1; then
+      echo "    ✅ Successfully applied"
     else
-      # Conflict occurred
-      echo "    ⚠️  Conflict detected"
+      echo "    ⚠️  Cherry-pick had issues, trying direct file checkout..."
       
-      # Try automatic resolution with --ours strategy
-      echo "    🔧 Attempting auto-resolution with --ours strategy..."
+      # Abort the failed cherry-pick
+      git cherry-pick --abort 2>/dev/null || true
       
-      # Get list of conflicted files
-      CONFLICTED_FILES=$(git diff --name-only --diff-filter=U)
+      # Directly checkout all files from the commit
+      git checkout "$commit" -- . 2>&1
       
-      if [ -n "$CONFLICTED_FILES" ]; then
-        # Resolve conflicts by taking theirs (the commit being cherry-picked)
-        while IFS= read -r file; do
-          echo "      📄 Resolving $file (using incoming changes)"
-          git checkout --theirs "$file"
-          git add "$file"
-        done <<< "$CONFLICTED_FILES"
-        
-        # Continue cherry-pick
-        if git cherry-pick --continue >/dev/null 2>&1; then
-          echo "    ✅ Auto-resolved successfully"
-          CONFLICT_OCCURRED=true
-        else
-          # Still failed, try creating new commit
-          echo "    ⚠️  Auto-resolution failed, creating new commit..."
-          git cherry-pick --abort
-          
-          # Checkout files from the commit
-          git checkout "$commit" -- . 2>/dev/null || true
-          
-          # Create new commit with modified message
-          COMMIT_MSG=$(git log -1 --format=%s "$commit")
-          git commit -m "$COMMIT_MSG (rebased with conflict resolution)" --no-verify 2>/dev/null || true
-          
-          echo "    ✅ Created new commit with changes from $commit"
-          CONFLICT_OCCURRED=true
-        fi
-      fi
+      # Stage all changes
+      git add -A
+      
+      # Create commit
+      git commit -m "$COMMIT_MSG" --author="$COMMIT_AUTHOR_NAME <$COMMIT_AUTHOR_EMAIL>" --no-verify 2>&1 || true
+      
+      echo "    ✅ Applied via direct checkout"
+      CONFLICT_OCCURRED=true
     fi
   done
   
