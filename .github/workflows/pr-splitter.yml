@@ -10,11 +10,6 @@ on:
         description: 'Branch to split (e.g., dev/eric)'
         required: true
         type: string
-      force:
-        description: 'Force re-analysis (ignore cache)'
-        required: false
-        type: boolean
-        default: false
   issue_comment:
     types: [created]
   pull_request_review_comment:
@@ -115,60 +110,12 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "user=$USER" >> $GITHUB_OUTPUT
           echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
-          echo "force=${{ github.event.inputs.force || 'false' }}" >> $GITHUB_OUTPUT
           
           echo "🌿 Branch: $BRANCH"
           echo "👤 User: $USER"
           echo "📝 Instruction: $INSTRUCTION"
 
-      - name: Generate cache key
-        id: cache-key
-        run: |
-          BRANCH="${{ steps.context.outputs.branch }}"
-          
-          # Get all commit hashes in branch
-          COMMITS=$(git log main..$BRANCH --format="%H" 2>/dev/null | sort || echo "")
-          
-          if [ -z "$COMMITS" ]; then
-            echo "No commits found in $BRANCH ahead of main"
-            echo "cache_key=pr-split-empty" >> $GITHUB_OUTPUT
-            echo "has_commits=false" >> $GITHUB_OUTPUT
-          else
-            # Generate hash of all commits
-            CACHE_KEY=$(echo "$COMMITS" | sha256sum | cut -d' ' -f1)
-            echo "cache_key=pr-split-$CACHE_KEY" >> $GITHUB_OUTPUT
-            echo "has_commits=true" >> $GITHUB_OUTPUT
-            echo "📦 Cache key: pr-split-$CACHE_KEY"
-          fi
-
-      - name: Restore cache
-        if: steps.cache-key.outputs.has_commits == 'true'
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: .github/pr-split-cache/
-          key: ${{ steps.cache-key.outputs.cache_key }}
-
-      - name: Check if analysis needed
-        id: check
-        run: |
-          HAS_COMMITS="${{ steps.cache-key.outputs.has_commits }}"
-          CACHE_HIT="${{ steps.cache.outputs.cache-hit }}"
-          FORCE="${{ steps.context.outputs.force }}"
-          
-          if [ "$HAS_COMMITS" = "false" ]; then
-            echo "❌ No commits to analyze"
-            echo "analysis_needed=false" >> $GITHUB_OUTPUT
-          elif [ "$CACHE_HIT" = "true" ] && [ "$FORCE" = "false" ]; then
-            echo "✅ Cache hit, no new commits"
-            echo "analysis_needed=false" >> $GITHUB_OUTPUT
-          else
-            echo "🔍 New commits detected or force=true"
-            echo "analysis_needed=true" >> $GITHUB_OUTPUT
-          fi
-
       - name: Analyze commits
-        if: steps.check.outputs.analysis_needed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -178,7 +125,7 @@ jobs:
             "${{ steps.context.outputs.user }}"
 
       - name: Call Claude API
-        if: steps.check.outputs.analysis_needed == 'true'
+        
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -245,7 +192,7 @@ jobs:
           cat pr-plan.json
 
       - name: Check if diffs required
-        if: steps.check.outputs.analysis_needed == 'true'
+        
         run: |
           NEEDS_DIFFS=$(jq -r '.requires_diffs' pr-plan.json)
           
@@ -274,7 +221,7 @@ jobs:
           fi
 
       - name: Execute PR plan
-        if: steps.check.outputs.analysis_needed == 'true'
+        
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -283,7 +230,7 @@ jobs:
             "${{ steps.context.outputs.user }}"
 
       - name: Update umbrella PR
-        if: steps.check.outputs.analysis_needed == 'true'
+        
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -292,16 +239,8 @@ jobs:
             "${{ steps.context.outputs.branch }}" \
             "${{ steps.context.outputs.user }}"
 
-      - name: Save cache
-        if: steps.check.outputs.analysis_needed == 'true'
-        run: |
-          mkdir -p .github/pr-split-cache
-          git log main..${{ steps.context.outputs.branch }} --format="%H" | sort > .github/pr-split-cache/commits.txt
-          date > .github/pr-split-cache/last-run.txt
-          echo "💾 Cache saved"
-
       - name: Summary
-        if: steps.check.outputs.analysis_needed == 'true'
+        
         run: |
           echo "## 🎉 PR Splitter Complete!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
