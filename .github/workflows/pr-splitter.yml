@@ -91,7 +91,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           
           # Ensure main branch exists locally
-          git fetch origin main:main 2>/dev/null || true
+          git fetch origin main:main 2>/dev/null || git branch main origin/main
 
       - name: Determine branch and context
         id: context
@@ -100,15 +100,12 @@ jobs:
           if [ "${{ github.event_name }}" = "push" ]; then
             BRANCH="${{ github.ref_name }}"
             INSTRUCTION=""
-            MODE="incremental"
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             BRANCH="${{ github.event.inputs.branch }}"
             INSTRUCTION=""
-            MODE="full"
           else
             BRANCH="${{ needs.detect-command.outputs.branch }}"
             INSTRUCTION="${{ needs.detect-command.outputs.instruction }}"
-            MODE="incremental"
           fi
           
           # Use GitHub actor as username
@@ -117,12 +114,10 @@ jobs:
           echo "branch=$BRANCH" >> $GITHUB_OUTPUT
           echo "user=$USER" >> $GITHUB_OUTPUT
           echo "instruction=$INSTRUCTION" >> $GITHUB_OUTPUT
-          echo "mode=$MODE" >> $GITHUB_OUTPUT
           
           echo "🌿 Branch: $BRANCH"
           echo "👤 User: $USER"
           echo "📝 Instruction: $INSTRUCTION"
-          echo "🔄 Mode: $MODE"
 
       - name: Analyze commits
         env:
@@ -131,8 +126,7 @@ jobs:
           chmod +x .github/scripts/pr-split-analyze.sh
           .github/scripts/pr-split-analyze.sh \
             "${{ steps.context.outputs.branch }}" \
-            "${{ steps.context.outputs.user }}" \
-            "${{ steps.context.outputs.mode }}"
+            "${{ steps.context.outputs.user }}"
 
       - name: Call Claude API
         

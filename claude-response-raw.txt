@@ -1,0 +1,37 @@
+{
+  "requires_diffs": false,
+  "files_needing_review": [],
+  "reasoning": "Analyzing new commits and existing PRs to create logical, independent PRs",
+  "prs": [
+    {
+      "action": "create", 
+      "branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "title": "Add lodash dependency",
+      "commits": ["7cd71bc716239c9ffb21a76081785b9475a55dc8"],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Shared dependency that can safely land on its own"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-utility-functions", 
+      "title": "Add utility functions using lodash",
+      "commits": ["cc750f6b2c20b8b611e05f6e359fccf03a3d9ac3"],
+      "base_branch": "pr-split/ericclemmons/add-lodash-dependency",
+      "depends_on": ["pr-split/ericclemmons/add-lodash-dependency"],
+      "related_to": [],
+      "reasoning": "Utility functions depend on lodash package"
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/update-umbrella-hierarchy",
+      "title": "Update umbrella with hierarchy",
+      "commits": ["bcd1a4bd4f16a92f189b949d52df9e74479b5222"],
+      "base_branch": "main", 
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent commit with no specific dependencies"
+    }
+  ]
+}
