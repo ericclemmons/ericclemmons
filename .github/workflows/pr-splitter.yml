@@ -142,9 +142,11 @@ jobs:
             }'
       
       - name: Save Claude response
+        env:
+          CLAUDE_OUTPUT: ${{ steps.claude.outputs.structured_output }}
         run: |
-          # Extract structured output
-          echo '${{ steps.claude.outputs.structured_output }}' > pr-plan.json
+          # Extract structured output from environment variable to avoid bash interpretation issues
+          echo "$CLAUDE_OUTPUT" > pr-plan.json
           
           # Validate JSON
           if ! jq empty pr-plan.json 2>/dev/null; then
