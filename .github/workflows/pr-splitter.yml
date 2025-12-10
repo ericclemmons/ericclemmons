@@ -78,8 +78,7 @@ jobs:
       - name: Setup git branches
         run: .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
 
-      - name: Install Claude CLI
-        run: npm install -g @anthropic-ai/claude-code
+
 
       - name: Analyze commits
         env:
@@ -93,7 +92,6 @@ jobs:
       - name: Call Claude API
         env:
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: .github/scripts/pr-split-claude.sh
 
       - name: Check if diffs required

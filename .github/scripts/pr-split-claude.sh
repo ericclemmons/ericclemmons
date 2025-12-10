@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
 
-# Requires CLAUDE_CODE_OAUTH_TOKEN environment variable
-
-echo "🤖 Calling Claude CLI for commit analysis..."
+echo "🤖 Calling Claude API with OAuth token..."
 
 # Check for token
 if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
@@ -17,7 +15,7 @@ PROMPT=$(cat .github/scripts/pr-split-prompt.md)
 # Read the commits context
 COMMITS_JSON=$(cat commits-context.json)
 
-# Combine prompt with data
+# Combine prompt with data into a temp file to avoid YAML escaping issues
 cat > full-prompt.txt <<PROMPT_EOF
 $PROMPT
 
@@ -26,21 +24,37 @@ $COMMITS_JSON
 Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON.
 PROMPT_EOF
 
-# Call Claude CLI with --print for non-interactive mode
-# The CLI will use CLAUDE_CODE_OAUTH_TOKEN automatically
-echo "  Running: npx claude -p --output-format json"
-RESPONSE=$(npx claude -p --output-format json < full-prompt.txt 2>&1)
+FULL_PROMPT=$(cat full-prompt.txt)
 
-# Check if command succeeded
-if [ $? -ne 0 ]; then
-  echo "❌ Claude CLI Error:"
-  echo "$RESPONSE"
+# Build JSON payload
+CONTENT_JSON=$(echo "$FULL_PROMPT" | jq -Rs .)
+cat > api-request.json <<API_EOF
+{
+  "model": "claude-3-5-haiku-20241022",
+  "max_tokens": 4096,
+  "messages": [{
+    "role": "user",
+    "content": $CONTENT_JSON
+  }]
+}
+API_EOF
+
+# Call Claude API with OAuth Bearer token
+RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
+  -H "Authorization: Bearer $CLAUDE_CODE_OAUTH_TOKEN" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d @api-request.json)
+
+# Check for API errors
+if echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
+  ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message')
+  echo "❌ Claude API Error: $ERROR_MSG"
   exit 1
 fi
 
-# The CLI returns JSON with structure: {"type":"result","result":"<actual response>"}
-# Extract the actual result
-echo "$RESPONSE" | jq -r '.result' > claude-response-raw.txt
+# Extract JSON response
+echo "$RESPONSE" | jq -r '.content[0].text' > claude-response-raw.txt
 
 # Validate JSON
 if ! jq empty claude-response-raw.txt 2>/dev/null; then
