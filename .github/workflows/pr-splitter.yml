@@ -79,9 +79,7 @@ jobs:
         run: .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
 
       - name: Install Claude CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/Anthropic/claude-code/main/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+        run: npm install -g @anthropic-ai/claude-code
 
       - name: Analyze commits
         env:
