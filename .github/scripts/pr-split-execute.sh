@@ -142,7 +142,11 @@ process_pr() {
   
   # Push branch
   echo "📤 Pushing branch to origin..."
+  # Configure git to use GH_TOKEN for authentication
+  git config --local http.https://github.com/.extraheader "AUTHORIZATION: basic $(echo -n x-access-token:${GH_TOKEN} | base64)"
   git push -f origin "$branch"
+  # Clean up the token from git config
+  git config --local --unset http.https://github.com/.extraheader || true
   
   # Wait a moment for GitHub to process the push
   sleep 2
