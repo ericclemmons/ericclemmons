@@ -78,6 +78,11 @@ jobs:
       - name: Setup git branches
         run: .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
 
+      - name: Install Claude CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/Anthropic/claude-code/main/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
       - name: Analyze commits
         env:
           GH_TOKEN: ${{ github.token }}
@@ -89,7 +94,7 @@ jobs:
 
       - name: Call Claude API
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
         run: .github/scripts/pr-split-claude.sh
 
       - name: Check if diffs required

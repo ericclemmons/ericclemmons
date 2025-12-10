@@ -1,9 +1,15 @@
 #!/bin/bash
 set -e
 
-# Requires ANTHROPIC_API_KEY environment variable
+# Requires CLAUDE_CODE_OAUTH_TOKEN environment variable
 
-echo "🤖 Calling Claude API for commit analysis..."
+echo "🤖 Calling Claude CLI for commit analysis..."
+
+# Check for token
+if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+  echo "❌ Error: CLAUDE_CODE_OAUTH_TOKEN is not set"
+  exit 1
+fi
 
 # Read the prompt from file
 PROMPT=$(cat .github/scripts/pr-split-prompt.md)
@@ -11,7 +17,7 @@ PROMPT=$(cat .github/scripts/pr-split-prompt.md)
 # Read the commits context
 COMMITS_JSON=$(cat commits-context.json)
 
-# Combine prompt with data into a temp file to avoid YAML escaping issues
+# Combine prompt with data
 cat > full-prompt.txt <<PROMPT_EOF
 $PROMPT
 
@@ -20,37 +26,21 @@ $COMMITS_JSON
 Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON.
 PROMPT_EOF
 
-FULL_PROMPT=$(cat full-prompt.txt)
+# Call Claude CLI with --print for non-interactive mode
+# The CLI will use CLAUDE_CODE_OAUTH_TOKEN automatically
+echo "  Calling claude CLI..."
+RESPONSE=$(claude --print --output-format json < full-prompt.txt 2>&1)
 
-# Build JSON payload
-CONTENT_JSON=$(echo "$FULL_PROMPT" | jq -Rs .)
-cat > api-request.json <<API_EOF
-{
-  "model": "claude-3-5-haiku-20241022",
-  "max_tokens": 4096,
-  "messages": [{
-    "role": "user",
-    "content": $CONTENT_JSON
-  }]
-}
-API_EOF
-
-# Call Claude API
-RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-  -H "x-api-key: $ANTHROPIC_API_KEY" \
-  -H "anthropic-version: 2023-06-01" \
-  -H "content-type: application/json" \
-  -d @api-request.json)
-
-# Check for API errors
-if echo "$RESPONSE" | jq -e '.error' >/dev/null 2>&1; then
-  ERROR_MSG=$(echo "$RESPONSE" | jq -r '.error.message')
-  echo "❌ Claude API Error: $ERROR_MSG"
+# Check if command succeeded
+if [ $? -ne 0 ]; then
+  echo "❌ Claude CLI Error:"
+  echo "$RESPONSE"
   exit 1
 fi
 
-# Extract JSON response
-echo "$RESPONSE" | jq -r '.content[0].text' > claude-response-raw.txt
+# The CLI returns JSON with structure: {"type":"result","result":"<actual response>"}
+# Extract the actual result
+echo "$RESPONSE" | jq -r '.result' > claude-response-raw.txt
 
 # Validate JSON
 if ! jq empty claude-response-raw.txt 2>/dev/null; then
