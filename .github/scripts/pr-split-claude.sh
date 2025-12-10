@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-echo "🤖 Calling Claude API with OAuth token..."
+echo "🤖 Calling Claude API..."
 
-# Check for token
-if [ -z "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
-  echo "❌ Error: CLAUDE_CODE_OAUTH_TOKEN is not set"
+# Check for API key
+if [ -z "$ANTHROPIC_API_KEY" ]; then
+  echo "❌ Error: ANTHROPIC_API_KEY is not set"
   exit 1
 fi
 
@@ -39,9 +39,9 @@ cat > api-request.json <<API_EOF
 }
 API_EOF
 
-# Call Claude API with OAuth Bearer token
+# Call Claude API with API key
 RESPONSE=$(curl -s https://api.anthropic.com/v1/messages \
-  -H "Authorization: Bearer $CLAUDE_CODE_OAUTH_TOKEN" \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
   -H "anthropic-version: 2023-06-01" \
   -H "content-type: application/json" \
   -d @api-request.json)
