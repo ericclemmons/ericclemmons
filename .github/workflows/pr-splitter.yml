@@ -89,10 +89,71 @@ jobs:
             "${{ steps.context.outputs.user }}" \
             "${{ steps.context.outputs.mode }}"
 
-      - name: Call Claude API
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: .github/scripts/pr-split-claude.sh
+      - name: Build prompt with context
+        id: build_prompt
+        run: |
+          # Combine the prompt template with actual commit data
+          {
+            cat .github/scripts/pr-split-prompt.md
+            echo ""
+            echo ""
+            cat commits-context.json
+            echo ""
+            echo ""
+            echo "Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON."
+          } > full-prompt.txt
+          
+          echo "✅ Built full prompt"
+
+      - name: Call Claude via OAuth
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            $(cat full-prompt.txt)
+          claude_args: |
+            --json-schema '{
+              "type": "object",
+              "properties": {
+                "requires_diffs": {"type": "boolean"},
+                "files_needing_review": {"type": "array", "items": {"type": "string"}},
+                "reasoning": {"type": "string"},
+                "prs": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "action": {"type": "string", "enum": ["create", "update"]},
+                      "branch": {"type": "string"},
+                      "title": {"type": "string"},
+                      "commits": {"type": "array", "items": {"type": "string"}},
+                      "base_branch": {"type": "string"},
+                      "depends_on": {"type": "array", "items": {"type": "string"}},
+                      "related_to": {"type": "array", "items": {"type": "string"}},
+                      "reasoning": {"type": "string"}
+                    },
+                    "required": ["action", "branch", "title", "commits", "base_branch"]
+                  }
+                }
+              },
+              "required": ["requires_diffs", "reasoning", "prs"]
+            }'
+      
+      - name: Save Claude response
+        run: |
+          # Extract structured output
+          echo '${{ steps.claude.outputs.structured_output }}' > pr-plan.json
+          
+          # Validate JSON
+          if ! jq empty pr-plan.json 2>/dev/null; then
+            echo "❌ Claude returned invalid JSON:"
+            cat pr-plan.json
+            exit 1
+          fi
+          
+          echo "✅ Claude analysis complete"
+          cat pr-plan.json
 
       - name: Check if diffs required
         run: .github/scripts/pr-split-check-diffs.sh
