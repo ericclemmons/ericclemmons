@@ -28,8 +28,8 @@ PROMPT_EOF
 
 # Call Claude CLI with --print for non-interactive mode
 # The CLI will use CLAUDE_CODE_OAUTH_TOKEN automatically
-echo "  Calling claude CLI..."
-RESPONSE=$(claude --print --output-format json < full-prompt.txt 2>&1)
+echo "  Running: npx claude -p --output-format json"
+RESPONSE=$(npx claude -p --output-format json < full-prompt.txt 2>&1)
 
 # Check if command succeeded
 if [ $? -ne 0 ]; then
