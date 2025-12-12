@@ -176,7 +176,9 @@ process_pr() {
     
     # If we didn't reopen, check for open PR or create new
     if [ -z "$PR_NUMBER" ]; then
+      echo "  🔍 Checking for existing open PRs on branch $branch..."
       EXISTING_PR_NOW=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+      echo "  🔍 Found: '$EXISTING_PR_NOW'"
       
       if [ -n "$EXISTING_PR_NOW" ]; then
         echo "  ✅ PR already exists: #$EXISTING_PR_NOW (skipping creation)"
