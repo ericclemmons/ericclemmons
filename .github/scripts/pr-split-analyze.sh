@@ -60,50 +60,59 @@ else
   done
   
   # Check existing PRs and close orphaned ones
-  # Use PR-Split-ID trailers to track commits across rebases/merges
+  # Use PR-Split-ID trailers (preferred) or patch-id (fallback) to track commits across rebases/merges
   KNOWN_COMMITS=()
   for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
     echo "  Checking PR #$pr_number..."
     PR_COMMITS=$(gh pr view $pr_number --json commits --jq '.commits[].oid' 2>/dev/null || echo "")
     
     if [ -n "$PR_COMMITS" ]; then
-      # Build array of PR-Split-IDs from the PR's commits
-      PR_SPLIT_IDS=()
+      # Build array of identifiers from the PR's commits (PR-Split-ID or patch-id)
+      declare -A PR_IDENTIFIERS  # hash -> commit
       while IFS= read -r commit; do
+        # Try PR-Split-ID first (preferred)
         PR_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit 2>/dev/null | tr -d '\n')
         if [ -n "$PR_SPLIT_ID" ]; then
-          PR_SPLIT_IDS+=("$PR_SPLIT_ID")
+          PR_IDENTIFIERS["$PR_SPLIT_ID"]="$commit"
+        else
+          # Fallback to patch-id (deterministic hash based on diff content)
+          PATCH_ID=$(git show $commit 2>/dev/null | git patch-id --stable 2>/dev/null | awk '{print $1}')
+          if [ -n "$PATCH_ID" ]; then
+            PR_IDENTIFIERS["patch:$PATCH_ID"]="$commit"
+          fi
         fi
       done <<< "$PR_COMMITS"
       
-      # Build array of PR-Split-IDs from branch commits
-      BRANCH_SPLIT_IDS=()
+      # Build array of identifiers from branch commits
+      declare -A BRANCH_IDENTIFIERS  # hash -> commit
       for commit in "${BRANCH_COMMITS[@]}"; do
+        # Try PR-Split-ID first
         BRANCH_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit 2>/dev/null | tr -d '\n')
         if [ -n "$BRANCH_SPLIT_ID" ]; then
-          BRANCH_SPLIT_IDS+=("$BRANCH_SPLIT_ID")
+          BRANCH_IDENTIFIERS["$BRANCH_SPLIT_ID"]="$commit"
+        else
+          # Fallback to patch-id
+          PATCH_ID=$(git show $commit 2>/dev/null | git patch-id --stable 2>/dev/null | awk '{print $1}')
+          if [ -n "$PATCH_ID" ]; then
+            BRANCH_IDENTIFIERS["patch:$PATCH_ID"]="$commit"
+          fi
         fi
       done
       
-      # Check if ANY PR-Split-ID from this PR still exists on the branch
+      # Check if ANY identifier from this PR still exists on the branch
       PR_IS_ORPHANED=true
-      for pr_id in "${PR_SPLIT_IDS[@]}"; do
-        if [[ " ${BRANCH_SPLIT_IDS[@]} " =~ " ${pr_id} " ]]; then
-          # At least one PR-Split-ID still exists on branch
+      for identifier in "${!PR_IDENTIFIERS[@]}"; do
+        if [ -n "${BRANCH_IDENTIFIERS[$identifier]}" ]; then
+          # At least one matching identifier found
           PR_IS_ORPHANED=false
-          # Find the current commit with this PR-Split-ID and mark as known
-          for commit in "${BRANCH_COMMITS[@]}"; do
-            COMMIT_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit 2>/dev/null | tr -d '\n')
-            if [ "$COMMIT_SPLIT_ID" = "$pr_id" ]; then
-              KNOWN_COMMITS+=("$commit")
-            fi
-          done
+          # Mark the current commit with this identifier as known
+          KNOWN_COMMITS+=("${BRANCH_IDENTIFIERS[$identifier]}")
         fi
       done
       
-      # Close orphaned PRs (only if they have NO matching PR-Split-IDs on branch)
+      # Close orphaned PRs (only if they have NO matching identifiers on branch)
       if [ "$PR_IS_ORPHANED" = true ]; then
-        echo "  🗑️  Closing orphaned PR #$pr_number (no matching PR-Split-IDs on branch)..."
+        echo "  🗑️  Closing orphaned PR #$pr_number (no matching commits on branch)..."
         gh pr close $pr_number --comment "Closing: commits no longer exist on $BRANCH" 2>/dev/null || true
       fi
     fi
