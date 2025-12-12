@@ -117,6 +117,7 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: ${{ steps.build_prompt.outputs.prompt }}
+          show_full_output: true
       
       - name: Save Claude response
         run: |
