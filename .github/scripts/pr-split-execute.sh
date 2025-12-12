@@ -163,10 +163,14 @@ process_pr() {
       AGE=$((NOW_TIMESTAMP - CLOSED_TIMESTAMP))
       
       if [ "$AGE" -lt 300 ]; then
-        echo "  🔄 Reopening recently closed PR #$EXISTING_CLOSED_PR (closed ${AGE}s ago)"
-        gh pr reopen "$EXISTING_CLOSED_PR" 2>/dev/null || true
-        sleep 1
-        PR_NUMBER=$EXISTING_CLOSED_PR
+        echo "  🔄 Attempting to reopen recently closed PR #$EXISTING_CLOSED_PR (closed ${AGE}s ago)"
+        if gh pr reopen "$EXISTING_CLOSED_PR" 2>/dev/null; then
+          sleep 1
+          PR_NUMBER=$EXISTING_CLOSED_PR
+          echo "  ✅ Successfully reopened PR #$PR_NUMBER"
+        else
+          echo "  ⚠️  Failed to reopen PR #$EXISTING_CLOSED_PR (may have been force-push closed)"
+        fi
       fi
     fi
     
