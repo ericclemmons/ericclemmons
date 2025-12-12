@@ -114,7 +114,8 @@ if [ -z "$UMBRELLA_PR" ]; then
   # Ensure branch is pushed
   git push origin "$BRANCH" 2>/dev/null || true
   
-  # Create PR
+  # Create PR (temporarily disable set -e to capture errors)
+  set +e
   PR_URL=$(gh pr create \
     --draft \
     --assignee "$USERNAME" \
@@ -122,14 +123,25 @@ if [ -z "$UMBRELLA_PR" ]; then
     --base main \
     --title "[WIP] ☂️ $USERNAME" \
     --body "$BODY" 2>&1)
+  CREATE_EXIT=$?
+  set -e
   
-  if [ $? -eq 0 ]; then
+  if [ $CREATE_EXIT -eq 0 ]; then
     # Extract PR number from URL
     UMBRELLA_PR=$(echo "$PR_URL" | grep -oE '[0-9]+$')
     echo "✅ Created umbrella PR #$UMBRELLA_PR"
   else
-    echo "❌ Failed to create umbrella PR: $PR_URL"
-    exit 1
+    echo "❌ Failed to create umbrella PR (exit code: $CREATE_EXIT)"
+    echo "Error output: $PR_URL"
+    
+    # Check if PR already exists
+    EXISTING_PR=$(gh pr list --head "$BRANCH" --base main --json number --jq '.[0].number' 2>/dev/null || echo "")
+    if [ -n "$EXISTING_PR" ]; then
+      echo "  ✅ Found existing umbrella PR #$EXISTING_PR"
+      UMBRELLA_PR=$EXISTING_PR
+    else
+      exit 1
+    fi
   fi
 else
   echo "🔄 Updating umbrella PR #$UMBRELLA_PR..."

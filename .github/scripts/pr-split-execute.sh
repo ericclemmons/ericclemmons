@@ -38,6 +38,7 @@ done
 process_pr() {
   local index=$1
   local branch=$(jq -r ".prs[$index].branch" pr-plan.json)
+  local PR_NUMBER=""  # Reset for each PR
   
   # Skip if already processed
   if [ "${processed[$branch]}" = "true" ]; then
@@ -163,16 +164,22 @@ process_pr() {
       AGE=$((NOW_TIMESTAMP - CLOSED_TIMESTAMP))
       
       if [ "$AGE" -lt 300 ]; then
-        echo "  🔄 Reopening recently closed PR #$EXISTING_CLOSED_PR (closed ${AGE}s ago)"
-        gh pr reopen "$EXISTING_CLOSED_PR" 2>/dev/null || true
-        sleep 1
-        PR_NUMBER=$EXISTING_CLOSED_PR
+        echo "  🔄 Attempting to reopen recently closed PR #$EXISTING_CLOSED_PR (closed ${AGE}s ago)"
+        if gh pr reopen "$EXISTING_CLOSED_PR" 2>/dev/null; then
+          sleep 1
+          PR_NUMBER=$EXISTING_CLOSED_PR
+          echo "  ✅ Successfully reopened PR #$PR_NUMBER"
+        else
+          echo "  ⚠️  Failed to reopen PR #$EXISTING_CLOSED_PR (may have been force-push closed)"
+        fi
       fi
     fi
     
     # If we didn't reopen, check for open PR or create new
     if [ -z "$PR_NUMBER" ]; then
+      echo "  🔍 Checking for existing open PRs on branch $branch..."
       EXISTING_PR_NOW=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number' 2>/dev/null || echo "")
+      echo "  🔍 Found: '$EXISTING_PR_NOW'"
       
       if [ -n "$EXISTING_PR_NOW" ]; then
         echo "  ✅ PR already exists: #$EXISTING_PR_NOW (skipping creation)"
