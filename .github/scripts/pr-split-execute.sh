@@ -211,8 +211,19 @@ $REASONING" 2>&1)
         if [ $PR_CREATE_EXIT -eq 0 ]; then
           # Extract PR number from URL (https://github.com/owner/repo/pull/123)
           PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
-          echo "  ✅ Created PR #$PR_NUMBER"
-          echo "  URL: $PR_URL"
+          if [ -n "$PR_NUMBER" ]; then
+            echo "  ✅ Created PR #$PR_NUMBER"
+            echo "  URL: $PR_URL"
+          else
+            echo "  ⚠️  gh pr create succeeded but didn't return PR number"
+            echo "  Output: $PR_URL"
+            # Try to find the PR anyway
+            sleep 2
+            PR_NUMBER=$(gh pr list --head "$branch" --state all --json number --jq '.[0].number' 2>/dev/null || echo "")
+            if [ -n "$PR_NUMBER" ]; then
+              echo "  ✅ Found PR #$PR_NUMBER"
+            fi
+          fi
         elif [ $PR_CREATE_EXIT -eq 124 ]; then
           # Timeout occurred
           echo "  ⚠️  PR creation timed out after 30s"
