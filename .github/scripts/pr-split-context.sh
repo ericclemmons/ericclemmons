@@ -22,9 +22,9 @@ if [ -n "$DETECTED_BRANCH" ]; then
   BRANCH="$DETECTED_BRANCH"
   MODE="incremental"
 elif [ -n "$INPUT_BRANCH" ]; then
-  # From workflow_dispatch input
+  # From workflow_dispatch input - ALWAYS do full re-evaluation
   BRANCH="$INPUT_BRANCH"
-  MODE="incremental"
+  MODE="full"
 elif [ "$EVENT_NAME" = "pull_request" ]; then
   # From PR ready_for_review or synchronize event
   # Get the head branch from the PR

@@ -1,9 +1,15 @@
 You are analyzing commits from a developer's branch to automatically split them into logical, self-contained PRs.
 
 ## Input Context
-- NEW_COMMITS: Commits not yet in any PR (hash, message, files changed, diff stats, pr_split_id)
-- EXISTING_PRS: Open PRs with their commits, files, and pr_split_ids
+- NEW_COMMITS: Commits not yet in any OPEN PR (hash, message, files changed, diff stats, pr_split_id)
+  - These commits either:
+    - Have never been in a PR
+    - Were in a PR that was closed/merged
+    - Need to be organized into PRs
+- EXISTING_PRS: Currently OPEN PRs with their commits, files, and pr_split_ids
 - BASE_BRANCH: Usually "main"
+
+**CRITICAL**: If `new_commits` is NOT empty, you MUST create or update PRs for ALL those commits. An empty `prs` array is only valid when `new_commits` is also empty.
 
 ## PR-Split-ID Trailers
 Each commit may have a `PR-Split-ID` trailer (e.g., "add-auth-feature-a1b2c3d4") that:
@@ -228,6 +234,30 @@ Output:
     }
   ]
 }
+
+## Special Cases
+
+### No New Commits
+If `new_commits` is empty AND `existing_prs` is empty, return:
+```json
+{
+  "requires_diffs": false,
+  "reasoning": "No commits to analyze",
+  "prs": []
+}
+```
+
+If `new_commits` is empty BUT `existing_prs` has PRs, return:
+```json
+{
+  "requires_diffs": false,
+  "reasoning": "No new commits to analyze and existing PRs are up to date",
+  "prs": []
+}
+```
+
+### New Commits Present
+**CRITICAL**: If `new_commits` contains ANY commits, you MUST organize them into PRs. An empty `prs` array is NEVER valid when `new_commits` is not empty. Every commit must be assigned to a PR (either a new PR or updating an existing one).
 
 ## Now Analyze
 
