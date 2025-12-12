@@ -117,40 +117,29 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: ${{ steps.build_prompt.outputs.prompt }}
-          claude_args: |
-            --json-schema '{
-              "type": "object",
-              "properties": {
-                "requires_diffs": {"type": "boolean"},
-                "files_needing_review": {"type": "array", "items": {"type": "string"}},
-                "reasoning": {"type": "string"},
-                "prs": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "action": {"type": "string", "enum": ["create", "update"]},
-                      "branch": {"type": "string"},
-                      "title": {"type": "string"},
-                      "commits": {"type": "array", "items": {"type": "string"}},
-                      "base_branch": {"type": "string"},
-                      "depends_on": {"type": "array", "items": {"type": "string"}},
-                      "related_to": {"type": "array", "items": {"type": "string"}},
-                      "reasoning": {"type": "string"}
-                    },
-                    "required": ["action", "branch", "title", "commits", "base_branch"]
-                  }
-                }
-              },
-              "required": ["requires_diffs", "reasoning", "prs"]
-            }'
       
       - name: Save Claude response
-        env:
-          CLAUDE_OUTPUT: ${{ steps.claude.outputs.structured_output }}
         run: |
-          # Extract structured output from environment variable to avoid bash interpretation issues
-          echo "$CLAUDE_OUTPUT" > pr-plan.json
+          # Extract JSON from Claude's execution output file
+          # The action outputs the full execution log to a file
+          EXECUTION_FILE="${{ steps.claude.outputs.execution_file }}"
+          
+          if [ -f "$EXECUTION_FILE" ]; then
+            # Extract the last assistant message which contains the JSON
+            jq -r '.messages[] | select(.role == "assistant") | .content[0].text' "$EXECUTION_FILE" | tail -1 > claude-response-raw.txt
+          else
+            echo "❌ Execution file not found: $EXECUTION_FILE"
+            exit 1
+          fi
+          
+          # Clean up any markdown code blocks if present
+          if grep -q '```json' claude-response-raw.txt; then
+            sed -n '/```json/,/```/p' claude-response-raw.txt | sed '1d;$d' > pr-plan.json
+          elif grep -q '```' claude-response-raw.txt; then
+            sed -n '/```/,/```/p' claude-response-raw.txt | sed '1d;$d' > pr-plan.json
+          else
+            cp claude-response-raw.txt pr-plan.json
+          fi
           
           # Validate JSON
           if ! jq empty pr-plan.json 2>/dev/null; then
