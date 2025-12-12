@@ -122,12 +122,12 @@ jobs:
       - name: Save Claude response
         run: |
           # Extract JSON from Claude's execution output file
-          # The action outputs the full execution log to a file
+          # The action outputs streaming events as a JSON array
           EXECUTION_FILE="${{ steps.claude.outputs.execution_file }}"
           
           if [ -f "$EXECUTION_FILE" ]; then
-            # Extract the last assistant message which contains the JSON
-            jq -r '.messages[] | select(.role == "assistant") | .content[0].text' "$EXECUTION_FILE" | tail -1 > claude-response-raw.txt
+            # Extract the result field from the last event which contains Claude's response
+            jq -r '.[] | select(.type == "result") | .result' "$EXECUTION_FILE" > claude-response-raw.txt
           else
             echo "❌ Execution file not found: $EXECUTION_FILE"
             exit 1
