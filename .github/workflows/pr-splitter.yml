@@ -94,13 +94,20 @@ jobs:
         id: build_prompt
         run: |
           # Combine the prompt template with actual commit data
-          cat .github/scripts/pr-split-prompt.md > full-prompt.txt
-          echo "" >> full-prompt.txt
-          echo "" >> full-prompt.txt
-          cat commits-context.json >> full-prompt.txt
-          echo "" >> full-prompt.txt
-          echo "" >> full-prompt.txt
-          echo "Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON." >> full-prompt.txt
+          {
+            cat .github/scripts/pr-split-prompt.md
+            echo ""
+            echo ""
+            cat commits-context.json
+            echo ""
+            echo ""
+            echo "Respond with ONLY valid JSON matching the output schema above. No markdown, no explanation outside JSON."
+          } > full-prompt.txt
+          
+          # Set output for next step
+          echo "prompt<<EOF" >> $GITHUB_OUTPUT
+          cat full-prompt.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           
           echo "✅ Built full prompt"
 
@@ -109,10 +116,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          settings: |
-            {
-              "prompt_file": "full-prompt.txt"
-            }
+          prompt: ${{ steps.build_prompt.outputs.prompt }}
           claude_args: |
             --json-schema '{
               "type": "object",
