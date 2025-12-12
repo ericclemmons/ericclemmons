@@ -40,6 +40,9 @@ if [ "$MODE" = "full" ]; then
     gh pr close $pr_number --comment "Closing for full re-evaluation" 2>/dev/null || true
   done
   
+  # Clear existing PRs list since we closed them all
+  EXISTING_PRS_JSON="[]"
+  
   # Analyze all commits
   NEW_COMMITS=()
   for commit in $ALL_COMMITS; do
