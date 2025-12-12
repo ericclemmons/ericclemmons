@@ -67,6 +67,8 @@ jobs:
 
       - name: Determine branch and context
         id: context
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           .github/scripts/pr-split-context.sh \
             "${{ github.event_name }}" \
@@ -74,7 +76,8 @@ jobs:
             "${{ github.event.inputs.branch }}" \
             "${{ needs.detect-command.outputs.branch }}" \
             "${{ needs.detect-command.outputs.instruction }}" \
-            "${{ github.actor }}"
+            "${{ github.actor }}" \
+            "${{ github.event.pull_request.number }}"
 
       - name: Setup git branches
         run: .github/scripts/pr-split-setup.sh "${{ steps.context.outputs.user }}"
