@@ -38,6 +38,7 @@ done
 process_pr() {
   local index=$1
   local branch=$(jq -r ".prs[$index].branch" pr-plan.json)
+  local PR_NUMBER=""  # Reset for each PR
   
   # Skip if already processed
   if [ "${processed[$branch]}" = "true" ]; then
