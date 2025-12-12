@@ -60,25 +60,50 @@ else
   done
   
   # Check existing PRs and close orphaned ones
+  # Use PR-Split-ID trailers to track commits across rebases/merges
   KNOWN_COMMITS=()
   for pr_number in $(echo "$EXISTING_PRS_JSON" | jq -r '.[].number'); do
     echo "  Checking PR #$pr_number..."
     PR_COMMITS=$(gh pr view $pr_number --json commits --jq '.commits[].oid' 2>/dev/null || echo "")
     
     if [ -n "$PR_COMMITS" ]; then
-      # Check if ANY commit from this PR still exists on the branch
-      PR_IS_ORPHANED=true
+      # Build array of PR-Split-IDs from the PR's commits
+      PR_SPLIT_IDS=()
       while IFS= read -r commit; do
-        if [[ " ${BRANCH_COMMITS[@]} " =~ " ${commit} " ]]; then
-          # At least one commit still exists on branch
-          PR_IS_ORPHANED=false
-          KNOWN_COMMITS+=("$commit")
+        PR_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit 2>/dev/null | tr -d '\n')
+        if [ -n "$PR_SPLIT_ID" ]; then
+          PR_SPLIT_IDS+=("$PR_SPLIT_ID")
         fi
       done <<< "$PR_COMMITS"
       
-      # Close orphaned PRs
+      # Build array of PR-Split-IDs from branch commits
+      BRANCH_SPLIT_IDS=()
+      for commit in "${BRANCH_COMMITS[@]}"; do
+        BRANCH_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit 2>/dev/null | tr -d '\n')
+        if [ -n "$BRANCH_SPLIT_ID" ]; then
+          BRANCH_SPLIT_IDS+=("$BRANCH_SPLIT_ID")
+        fi
+      done
+      
+      # Check if ANY PR-Split-ID from this PR still exists on the branch
+      PR_IS_ORPHANED=true
+      for pr_id in "${PR_SPLIT_IDS[@]}"; do
+        if [[ " ${BRANCH_SPLIT_IDS[@]} " =~ " ${pr_id} " ]]; then
+          # At least one PR-Split-ID still exists on branch
+          PR_IS_ORPHANED=false
+          # Find the current commit with this PR-Split-ID and mark as known
+          for commit in "${BRANCH_COMMITS[@]}"; do
+            COMMIT_SPLIT_ID=$(git log -1 --format="%(trailers:key=PR-Split-ID,valueonly)" $commit 2>/dev/null | tr -d '\n')
+            if [ "$COMMIT_SPLIT_ID" = "$pr_id" ]; then
+              KNOWN_COMMITS+=("$commit")
+            fi
+          done
+        fi
+      done
+      
+      # Close orphaned PRs (only if they have NO matching PR-Split-IDs on branch)
       if [ "$PR_IS_ORPHANED" = true ]; then
-        echo "  🗑️  Closing orphaned PR #$pr_number (commits no longer on branch)..."
+        echo "  🗑️  Closing orphaned PR #$pr_number (no matching PR-Split-IDs on branch)..."
         gh pr close $pr_number --comment "Closing: commits no longer exist on $BRANCH" 2>/dev/null || true
       fi
     fi
