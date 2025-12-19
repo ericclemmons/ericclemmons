@@ -80,3 +80,109 @@ Installation is a simple:
 ```shell
 brew install magus/git-stack/git-stack
 ```
+
+Then, I had to make sure that my `origin` references were correct.
+Otherwise, I had a stale reference to `origin/main` that had HUNDREDS of invalid commits!
+
+```shell
+git remote prune origin
+```
+
+Finally, I was ready for my first stack:
+
+```shell
+$ git stack
+
+⭑ NEW   0/26   Unassigned
+
+
+👋 Welcome to git stack!
+Press c to (c)reate a new PR
+
+◯ Prettier
+◯ Move opencode workaround to post-commit hook
+◯ Add test file 15
+◯ Refactor prepare-commit-msg hook for streamlined commit generation
+◯ Add test-file14.txt
+◯ Test 13
+◯ Only test-file12.txt is staged
+◯ Manual message for test-file11.
+◯ Add test-file8.txt
+◯ Add test-file7.txt
+◯ Add test-file6.txt
+◯ Manual test-file4 commit to see if opencode is doing `git add .`
+◯ chore: test commit
+◯ Add test-file2.txt
+◯ Add test file
+◯ Update opencode permissions in prepare-commit-msg hook
+◯ Add rule against tool calls and git operations in prepare-commit-msg
+◯ Draft git-stack
+◯ Remove PR Splitter feature
+◯ Remove Husky pre-commit hook
+◯ Update opencode permission defaults to boolean false
+◯ Add prepare-commit-msg section to auto-commit blog post
+◯ Update opencode permission key from edit to write
+◯ Add blog post on auto-commit messages with OpenCode
+◯ Integrate opencode for automatic commit message generation
+◯ Add Flox blog post
+
+26 unassigned commits
+Press c to (c)reate a new PR
+Press ← and → to view PRs
+Press Enter to toggle commit selection
+```
+
+After <kbd>c</kbd>, `Add Flox blog post` was automatically prefilled as a PR title.
+
+<kbd>s</kbd> then synced this to GitHub as [Add Flox blog post](https://github.com/ericclemmons/ericclemmons/pull/99):
+
+```shell
+⭑ NEW   0/26   Unassigned
+
+Created new PR [Add Flox blog post] (eric---4h5sg2pldxtz8-)
+
+⭑ NEW      0/25   Unassigned
+✔ SYNCED   1/1    Add Flox blog post   https://github.com/ericclemmons/ericclemmons/pull/99
+```
+
+Now that I've figured out the flow for one of them, I learned that the workflow is basically:
+
+1. <kbd>c</kbd> to create a new PR (if you don't have one already)
+1. <kbd>↑</kbd> and <kbd>↓</kbd> to highlight a commit and <kbd>Enter</kbd> to *Assign**
+   it to the current PR
+1. <kbd>←</kbd> and <kbd>→</kbd> to navigate between available PRs{' '}
+1. Finally, <kbd>s</kbd> to sync the PRs to GitHub:
+
+```shell
+$ git stack
+📦 Changes saved to stash
+
+⭑ NEW      0/25   Unassigned
+✔ SYNCED   1/1    Add Flox blog post   https://github.com/ericclemmons/ericclemmons/pull/99
+
+Created new PR [Test Commits] (eric---4h5shgjoil6oxc)
+Created new PR [Automatic git commit messages] (eric---4h5shr5o793bv8)
+Created new PR [Draft git-stack] (eric---4h5si6up1575bl)
+Created new PR [Remove PR Splitter feature] (eric---4h5si9vt4e_lz_)
+
+⭑ NEW      0/1     Unassigned
+✔ SYNCED   12/12   Test Commits                    https://github.com/ericclemmons/ericclemmons/pull/100
+✔ SYNCED   1/1     Draft git-stack                 https://github.com/ericclemmons/ericclemmons/pull/101
+✔ SYNCED   2/2     Remove PR Splitter feature      https://github.com/ericclemmons/ericclemmons/pull/103
+✔ SYNCED   9/9     Automatic git commit messages   https://github.com/ericclemmons/ericclemmons/pull/102
+✔ SYNCED   1/1     Add Flox blog post              https://github.com/ericclemmons/ericclemmons/pull/99
+✅ Everything up to date.
+✅ Changes restored from stash
+```
+
+Now, I realize my mistake – **this works best for a _stack_ of dependent PRs, not for independent PRs** like I wanted with my AI experiment.
+
+I could be wrong, but this **seems best when you need to split a large PR into smaller changes for review.**
+
+## Conclusion
+
+I want the best of ~~both~~ three worlds:
+
+1. Single-branch experience like [GitButler](https://gitbutler.com/) (they use `git worktrees` to achieve this internally) so I don't have to `git switch` or `git stash` constantly.
+1. Easy way to split changes between dependent PRs like [git-stack-cli](https://github.com/magusnn/git-stack-cli), but still have independent PRs that aren't stacked like [GitButler](https://gitbutler.com/).
+1. Do less "book keeping" with AI, and only have human intervention when AI gets it wrong.
