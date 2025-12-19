@@ -1,0 +1,80 @@
+---
+date: 2025-12-18
+summary: My failed attempt to replace Devbox with Flox as my development environment.
+tags: [flox, development, environment]
+title: Flox
+---
+
+After coming across PostHog's [Isolated Development with Flox](https://posthog.com/handbook/engineering/flox-multi-instance-workflow),
+I wanted to see how to compared to [devbox](https://www.jetify.com/devbox), my go-to for managing my development environment.
+
+## TL;DR
+
+Flox, like [devenv](https://devenv.sh/) and [devbox](https://www.jetify.com/devbox) is a nix-wrapper for managing development environments.
+Devbox feels akin to `npm install`, but for binaries. I recommend using it instead of Flox.
+
+---
+
+## Installation
+
+Don't use `brew install flox`. It installs a Cask that's failed to even run.
+
+Instead, [download the installer](https://flox.dev/docs/install-flox/install/#__tabbed_1_1).
+
+## Setup
+
+In my project, I started with a simple:
+
+```shell
+flox init
+```
+
+This craetes a `.flox` root directory, just like devbox does for `.devbox.d`.
+
+Since packages come from `nix`, setting up Node.js was as easy as:
+
+```shell
+flex search nodejs
+flex install nodejs_24
+```
+
+Finally, I needed to activate the shell:
+
+```shell
+flox activate
+```
+
+### Going Further
+
+It's easy to forget to activate the shell when switching between projects.
+
+I learned about [direnv](https://direnv.net/) previously whose utility is primarily auto-activating the shell when entering a project directory.
+
+Flox's blog has a guide titled [Auto Environment Activation with Direnv + Flox](https://flox.dev/popular-packages/auto-environment-activation-with-direnv-flox/)
+that's essentially:
+
+```shell
+echo 'eval "$(flox activate)"' > .envrc && direnv allow
+```
+
+### Stopping Point
+
+So far, my experience hasn't been great:
+
+1. `brew install flox` is just a Cask for the installer that's [buggy](https://github.com/flox/flox/issues?q=sudo%20brew).
+
+   I recommend removing that entirely to avoid the indrection and operational burden of supporting a wrapper.
+
+2. Layered environments aren't straightforward to use.
+
+  Just having `direnv` auto-activate wasn't clear enough, even with [this article](https://flox.dev/popular-packages/auto-environment-activation-with-direnv-flox/).
+  There are documented issues with the [PS1 prompt disappearing](https://flox.dev/popular-packages/%5Bslug%5D/#some-housekeeping-notes) (which is admittedly more of a `direnv` issue).
+
+  But the biggest turn-off was running `flox edit` to manage a `manifest.toml` file.
+
+  Devbox, at least, will update `devbox.json` for you automatically.
+
+
+
+
+
