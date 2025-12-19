@@ -3,16 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
     "dev": "astro dev",
-    "start": "astro dev",
     "build": "astro build",
     "preview": "wrangler dev",
     "astro": "astro",
     "prepare": "husky"
   },
   "engines": {
-    "node": ">=22.x"
+    "node": ">=22.21.1",
+    "pnpm": ">=10.0.0"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
