@@ -50,6 +50,7 @@ Rules:
 - Then a blank line.
 - Then an optional body in Markdown (bullets OK). Keep lines <= 72 chars when possible.
 - Output ONLY the commit message. Do not wrap in code fences.
+- **DO NOT MAKE ANY TOOL CALLS OR PERFORM ANY GIT OR FILE OPERATIONS**
 
 Context:
 Branch: $BRANCH
