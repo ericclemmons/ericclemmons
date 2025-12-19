@@ -18,10 +18,10 @@ up my changes across lanes.
 
 ## Let AI do it
 
-AI is great with nuance, non-deterministic decisions based on context.  The workflow I wanted was:
+AI is great with nuance, non-deterministic decisions based on context. The workflow I wanted was:
 
 1. `git switch -c $USER`
-  This is my equivalent of `main` that I **always** work on.
+   This is my equivalent of `main` that I **always** work on.
 1. Add Feature A
 1. `git add && git commit && git push`
 1. Add Feature B
@@ -43,7 +43,7 @@ In GitHub, I wanted to see:
   Similarly, AI creates a separate PR that's logically different from Feature A.
 
   - PR #4: Replace custom utils with `lodash` (`pr-split/eric/feature-b/refactor-lodash`)
-  AI creates a "stack" for this refactor that **depends on Feature B**, but can be reviewed independently.
+    AI creates a "stack" for this refactor that **depends on Feature B**, but can be reviewed independently.
 
 Claude Code cranked this out with fairly good success:
 
@@ -75,4 +75,8 @@ And this is why I tweet:
 
 <Tweet tweetLink="magusnn/status/1999929058868793668" />
 
+Installation is a simple:
 
+```shell
+brew install magus/git-stack/git-stack
+```
