@@ -12,10 +12,5 @@
   "observability": {
     "enabled": true
   },
-  "routes": [
-    {
-      "pattern": "ericclemmons.com/*",
-      "zone_name": "ericclemmons.com"
-    }
-  ]
+  "route": "ericclemmons.com/*"
 }
