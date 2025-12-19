@@ -71,8 +71,7 @@ if command -v opencode >/dev/null 2>&1; then
 
   # Prevent opencode from running any tools that could mutate the repo
   # (eg. staging additional changes during partial commits).
-  OPENCODE_PERMISSION_JSON="${OPENCODE_COMMIT_PERMISSION_JSON:-{\"bash\":false,\"edit\":false,\"write\":false,\"webfetch\":false,\"external_directory\":false}}"
-
+  OPENCODE_PERMISSION_JSON="${OPENCODE_COMMIT_PERMISSION_JSON:-{\"bash\":\"deny\",\"edit\":\"deny\",\"write\":\"deny\",\"webfetch\":\"deny\",\"external_directory\":\"deny\"}}"
   MESSAGE="$(OPENCODE_PERMISSION="$OPENCODE_PERMISSION_JSON" opencode run --model "$MODEL" "$PROMPT" 2>/dev/null || true)"
   MESSAGE="$(printf "%s" "$MESSAGE" | tr -d '\r')"
 else
