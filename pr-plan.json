@@ -1,0 +1,38 @@
+{
+  "requires_diffs": false,
+  "reasoning": "11 commits across two distinct features: (1) Git commit automation system with opencode integration (commits 64c69f2 through a74cdfc) all share git-stack-id 'eric---4h5shr5o793bv8' and modify .husky hooks or related blog post, (2) Flox blog post (commit e906ae0) has different git-stack-id 'eric---4h5sg2pldxtz8-' and is independent. One merge commit (38b0e83) should be excluded as it's a no-op merge from main. The opencode commits form a cohesive feature that evolved through iterations, while Flox post stands alone.",
+  "prs": [
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/auto-commit-messages-opencode",
+      "title": "Add automatic commit message generation with OpenCode",
+      "commits": [
+        "a74cdfc4c135321d75d4ceb66f186503f949ca91",
+        "18962650bd605868311d477bfb3b0385c60159a9",
+        "56e325a5d99beaa5ff2fa636a4acb7d00e8f440c",
+        "5cb5ea175122e44ef811f441c300db4b2cdd085a",
+        "a3edef1737858a588fb46f90f1cab0f48044b35e",
+        "4c8190d37123b6e484107c69cc9e2faa698a07a9",
+        "1653cdca25fbe7e146a693f9f7c522ba44816c0c",
+        "ba61385e00546886236926ca3331f6e9261f983c",
+        "64c69f223500e6f7eac687e337105dcdd18cdf70"
+      ],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Complete feature implementing automatic commit message generation using opencode. Includes prepare-commit-msg hook refactor, post-commit hook for git index cleanup, permission configuration iterations, and accompanying blog post documentation. All commits share git-stack-id 'eric---4h5shr5o793bv8' and form a cohesive evolution of the same feature."
+    },
+    {
+      "action": "create",
+      "branch": "pr-split/ericclemmons/add-flox-blog-post",
+      "title": "Add Flox blog post",
+      "commits": [
+        "e906ae0a360a23f0b7b690f38b18a069aad026fe"
+      ],
+      "base_branch": "main",
+      "depends_on": [],
+      "related_to": [],
+      "reasoning": "Independent blog post about Flox evaluation. Has distinct git-stack-id 'eric---4h5sg2pldxtz8-' and no overlap with opencode feature. Can land independently."
+    }
+  ]
+}
