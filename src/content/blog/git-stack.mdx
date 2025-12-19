@@ -1,0 +1,78 @@
+---
+date: 2025-12-19
+tags: [git, stack, pr]
+title: Git Stack
+---
+
+<Tweet tweetLink="ericclemmons/status/1998471917368430894" />
+
+I've been a big fan of [GitButler](https://gitbutler.com/) for a few years now –
+it let's me work on multiple changes at once, and then split them up into independent PRs.
+
+![GitButler Screenshot](https://gitbutler.com/images/app-preview-dark.png)
+
+What I've found lately is that there's been more ceremony (read: friction) with splitting
+up my changes across lanes.
+
+**What I wanted was a way to work in 1 branch, but break up logical chuncks into PRs that can be reviewed & land independently.**
+
+## Let AI do it
+
+AI is great with nuance, non-deterministic decisions based on context.  The workflow I wanted was:
+
+1. `git switch -c $USER`
+  This is my equivalent of `main` that I **always** work on.
+1. Add Feature A
+1. `git add && git commit && git push`
+1. Add Feature B
+1. `git add && git commit && git push`
+1. Add `lodash` to `package.json`
+1. Use `lodash` in Feature B
+1. `git add && git commit && git push`
+
+In GitHub, I wanted to see:
+
+- PR #1: ☂️ eric
+  This is an "umbrella" PR that can be used to review all changes in one place.
+  At the start of the week, there'll often be no changes.
+  At the end of the week, there'll be a lot of changes here but broken up into multiple PRs.
+
+- PR #2: Feature A (`pr-split/eric/feature-a`)
+  This PR is automatically created by AI based on changes in the ☂️ that AI determines can be landed independently to `main`.
+- PR #3: Feature B (`pr-split/eric/feature-b`)
+  Similarly, AI creates a separate PR that's logically different from Feature A.
+
+  - PR #4: Replace custom utils with `lodash` (`pr-split/eric/feature-b/refactor-lodash`)
+  AI creates a "stack" for this refactor that **depends on Feature B**, but can be reviewed independently.
+
+Claude Code cranked this out with fairly good success:
+
+- [.husky/pre-commit-msg](https://github.com/ericclemmons/ericclemmons/blob/e5a8a3e9549fd3ac1c21d163057773251b7edc45/.husky/prepare-commit-msg)
+- [.github/workflows/pr-splitter.yml](https://github.com/ericclemmons/ericclemmons/blob/main/.github/workflows/pr-splitter.yml)
+
+The **secret sauce** is using [Git Trailers](https://git-scm.com/docs/git-interpret-trailers) for metadata that survives rebasing.
+When rebasing the `$USER` branch against `main`, the commit hashes change!
+But I needed a deterministic way the original commit to avoid duplicative work.
+(Alternatively, I think the `git diff` would be a better hash since those are the contents that AI is considering!)
+
+I was able to make it **work**, but there would be a lot of tweaking to make it **work well**:
+
+- Optimized to use increasingly more powerful models based on the complexity of the changes
+- Optimize for _incremental_ commits
+- Only generate PRs when the ☂️ PR is "Ready for Review"
+
+What was nice is that AI could also listen to a PR Review Comment and adjust the PRs accordingly!
+
+> /pr-splitter This change should be on #3, not #4
+
+Or, if I wanted to re-run the script for whatever reason, I could manually trigger the workflow, or just comment:
+
+> 🔀
+
+## git-stack-cli
+
+And this is why I tweet:
+
+<Tweet tweetLink="magusnn/status/1999929058868793668" />
+
+
