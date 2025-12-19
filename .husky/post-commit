@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# WORKAROUND: opencode appears to stage files even with bash/edit/write denied
+# when run inside the prepare-commit-msg hook (but not when run manually).
+# This corrupts the git index, causing "invalid object" errors.
+# Nuclear fix: rebuild the index from HEAD to unstage any files opencode touched.
+#
+# 🚨 I've isolated this to **ONLY HAPPEN WHEN OPENCODE EXECUTES INSIDE THE GIT HOOK**
+# The exact same command with the same permissions works fine when run manually.
+#
+# This runs AFTER the commit is created, so it only cleans up extra staged files
+# without affecting the commit that was just made.
+
+if [ -f .git/index ]; then
+  rm -f .git/index
+  git reset --quiet 2>/dev/null || true
+fi
