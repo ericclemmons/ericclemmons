@@ -1,7 +1,7 @@
 # build output
 dist/
 .output/
-.vercel
+.wrangler
 
 # dependencies
 node_modules/

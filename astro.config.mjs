@@ -2,8 +2,8 @@ import mdx from '@astrojs/mdx'
 import preact from '@astrojs/preact'
 import sitemap from '@astrojs/sitemap'
 import tailwind from '@astrojs/tailwind'
-import vercel from '@astrojs/vercel/serverless'
 import { defineConfig } from 'astro/config'
+import cloudflare from '@astrojs/cloudflare'
 
 const site = process.env.PUBLIC_VERCEL_URL
   ? `https://${process.env.PUBLIC_VERCEL_URL}/`
@@ -61,8 +61,8 @@ export default defineConfig({
     preact({ compat: true }),
   ],
   output: 'server',
-  adapter: vercel({
-    imageService: false,
+  adapter: cloudflare({
+    imageService: 'cloudflare',
   }),
   vite: {
     plugins: [hexLoader],
