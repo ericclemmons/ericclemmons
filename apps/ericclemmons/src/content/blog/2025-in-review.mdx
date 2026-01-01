@@ -4,3 +4,241 @@ title: 2025 in Review
 summary: 2025, a year of ambitions, hopes, and failure.
 tags: [reflection, personal, review]
 ---
+
+2025 was a year of extreme highs & lows, but _mostly_ lows.
+
+If you want the highlights, scroll to the Timeline section.
+If you want to learn from my mistakes, read on.
+
+## Ambition is a Liability 
+
+This year began with the successful delivery of my final 2 projects as a  **Senior Staff Software Engineer** at [Honor](https://www.honorcare.com/)
+(Replacing human call operators with AI and a real-time task delivery system).
+
+Going into my 3rd year of [wartime mode](https://newsletter.pragmaticengineer.com/p/wartime-vs-peacetime), I was feeling burnout with **no outlet for my lofty ambition.**
+
+_(I've long-known that I struggle with being content.
+Accomplishing a goal is a temporary high as the feeling of the new status quo sets in.)_
+
+I re-evaluated what roles made sense for me ([Career Development: What it Really Means to be a Manager, Director, or VP](https://kellblog.com/2015/03/08/career-development-what-it-really-means-to-be-a-manager-director-or-vp/))
+and was missing the agency afforded to being a leader (i.e. the ability to fund initiatives).
+
+There were open positions, but they were external-only – even with [8 years of prior management experience](https://ericclemmons.notion.site/Eric-as-Senior-Engineering-Manager-1917e7655bfa80b0a0b6e74252596092?pvs=123), internal transfers only factored in on-site experience & not career.
+Despite wins in my [brag document](https://jvns.ca/blog/brag-documents/), opportunities to "define when product development means" were being unrealized.
+
+We all know that giving (let alone receiving!) feedback is difficult (see: [Balancing Care with Candor](https://www.maxwellleadership.com/co/for-leaders-balancing-care-with-candor/)),
+but I lost trust when I was told the truth – **my initiatives were never going to be funded, and were a carrot to placate my ambition.**
+
+Seeing my position simply as a vehicle to trade time for money, I left my team with shared success and warm regards:
+![Eric Clemmons' Kudoboard](/static/images/kudoboard.jpeg)
+
+Serendipitously, a mutual had reached out to me about joining [TestDriver.ai](https://testdriver.ai/) to scale & productionize the product for new enterprise customers.
+
+## Optimism !== Reality
+
+In May, I joined [TestDriver.ai](https://testdriver.ai/) as CTO.
+The opportunity to relive the best parts of my career again was too good to pass up.
+_(The proudest part of my career was my 8 years at HigherEducation.com, building remote teams, scaling applications, and creating revenue-generating levers.)_
+
+The [computer-use](https://testdriver.ai/computer-use) product had a huge opportunity to go from serviceable to best-in-class DX.
+
+> If you love what you do, you'll never work a day in your life.
+
+That's **false***. 
+When there are non-negotiables like _paying for a mortgage_, _having insurance_, or basically any proxy for financial stability, the luckiest of us get to do what we love and are paid for it.
+But, the (absence of) pay can tip the happiness scales into a deficit.
+
+I wasn't prepared for the long-term reality of a seed-stage startup.
+I wrongly believed I was picking up _where I left off in my career_.
+
+<Tweet tweetLink="https://x.com/nikunj/status/2000709550551245071" />
+
+Amidst a mad dash to survive the year, I solved several _Sales-Led-Growth (SLG)_ needs:
+
+- [x] [TestDriver for Playwright](https://docs.testdriver.ai/v6/getting-started/playwright)
+
+  A handful of customers had "computer-use" needs. Hundreds more struggled with QA velocity with "browser-use" testing.
+
+  I retrofitted our "computer-use" product to be **incrementally adoptable** within Playwright:
+
+  ```ts
+  // Before, programmatic usage & brittle selectors
+  test("get started link", async ({ page }) => {
+    await page.goto("https://playwright.dev/");
+    await page.getByRole("link", { name: "Get started" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Installation" }),
+    ).toBeVisible();
+  });
+
+  // After, with natural language
+  import { test } from "@testdriver.ai/playwright";
+
+  test.describe("get started link", () => {
+    test.beforeEach(async ({ page }) => page.goto("https://playwright.dev/"));
+    test.agent(`
+      - Click the 'Get started' link
+      - Verify the 'Installation' heading is visible
+    `);
+  });  
+  ```
+
+- [x] [Self-Hosting](https://docs.testdriver.ai/v6/getting-started/self-hosting)
+
+  > Do we want to be a testing company, or an infrastructure company?
+
+  The financial costs of operating both a testing product _and_ infrastructure was unsustainable.
+  Self-Hosting **eliminated major security risks** of running on a public cloud, gave customers
+  control of their runtime, and eliminated our biggest operational expense.
+
+- [x] [TestDriver Studio](https://studio.testdriver.ai/)
+
+  When I joined, the ecosystem was already heating up with [Browserbase](https://www.browserbase.com/),
+  [`playwright-mcp`](https://github.com/microsoft/playwright-mcp), [Browser Use](https://browser-use.com/) and countless others.
+
+  The computer-use [wedge](https://www.lennysnewsletter.com/p/wedge) wasn't growing, but all indicators were that browser-use was.
+
+  In **about 1 month**, I shipped [TestDriver Studio](https://studio.testdriver.ai/), a natural language interface for testing browser-use:
+
+  <Tweet tweetLink="https://x.com/ericclemmons/status/1989490376198242503" />
+
+  In a week, **there was more usage of TestDriver Studio than the previous version**.
+
+Our best efforts weren't enough.
+In December, the founder returned the business to a solo venture.
+
+## Being Visible
+
+[Aaron Francis](https://aaronfrancis.com/) is correct in saying that [Publishing your work increases your luck](https://github.com/readme/guides/publishing-your-work)
+
+<Tweet tweetLink="https://x.com/ericclemmons/status/2006448368210555117" />
+
+This year, I actively contributed to [Alchemy](https://alchemy.run/),
+[shared my work publicly](https://x.com/ericclemmons/status/1981436502765601143) (see more videos below),
+attended [React Conf 2025](https://conf.react.dev/) & [Cloudflare Connect 2025](https://events.cloudflare.com/connect/2025/),
+and grew relationships with people in the community I respect & admire.
+
+<Tweet tweetLink="https://x.com/ericclemmons/status/2006460297708503286" />
+
+Here's hoping **luck finds me in 2026**.
+
+---
+
+## Key Moments 
+
+### January 
+
+Flew to San Matteo for my first (and last) off-site with the team at [Honor](https://www.honorcare.com/).
+Built prototypes for Feature Flags ([LaunchDarkly](https://launchdarkly.com/)) and Durable Workflows ([Inngest](https://www.inngest.com/docs/learn/how-functions-are-executed)).
+
+_(I learned that they're finally trying out [Temporal](https://temporal.io/) now based on my design docs!)_
+
+### March
+
+Snowboarding in Colorado for the first time _in years_ to stave off burnout.  Couldn't have been happier 😊
+
+### April
+
+Entered a the 3rd year of [wartime mode](https://newsletter.pragmaticengineer.com/p/wartime-vs-peacetime).
+All opportunities for career growth & technical leadership are frozen.
+
+In search of an outlet, I rediscover my hobby – **coding**:
+
+<Tweet tweetLink="https://x.com/ericclemmons/status/1914840916973760607" />
+
+This leads me to [🧪 Alchemy](https://alchemy.run/), where I'm able to quickly whip up custom IaC resources like 
+[WorkerProject.ts](https://gist.github.com/ericclemmons/22151e28668cc3582a47ad349c4f53fd).
+
+### May
+
+Left [Honor](https://www.honorcare.com/) as Senior Staff Software Engineer.
+![Eric Clemmons' Kudoboard](/static/images/kudoboard.jpeg)
+
+Joined [TestDriver.ai](https://testdriver.ai/) as CTO to scale & productionize the product for new enterprise customers. 
+
+### June
+
+Onboarded & helped deliver a major upgrade to their [computer-use testing product](https://testdriver.ai/computer-use).
+
+### July
+
+Tons of feedback from prospective customers, but time (& money) was not on our side.
+Kept my skills sharp at night to be ready for growth.
+
+For example, validating durable workflows with [Inngest](https://www.inngest.com/docs/learn/how-functions-are-executed):
+<Tweet tweetLink="https://x.com/ericclemmons/status/1942470611961335860" />
+
+Creating [AutoRAG.ts](https://gist.github.com/ericclemmons/d939830c7375c2f143645906cfb3fa62) in [Alchemy](https://alchemy.run/) for [Cloudflare AI Search](https://developers.cloudflare.com/ai-search/):
+<Tweet tweetLink="https://x.com/ericclemmons/status/1942827651950866589" />
+
+### August
+
+Realized that **I've lost 40 pounds in a year**:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1953505389024067846" />
+
+Tested an alternative algorithm for the TestDriver computer-use product:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1956407264723488982" />
+For comparison, simple tests (e.g. "login & checkout") took **5 minutes to run**.
+In CI, due to the way the product required infrastructure, it took **45 minutes to run**.
+
+Prototyped an alternative CLI ("zero-config") to fix constant authentication issues with new users:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1956414463273300240" />
+
+Validated the idea of **selectorless E2E testing** with Playwright:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1961284062389149846" />
+
+### September
+
+More visibility in the Cloudflare community for Alchemy (via [AutoRAG.ts](https://gist.github.com/ericclemmons/d939830c7375c2f143645906cfb3fa62)):
+<Tweet tweetLink="https://x.com/sunglassesface/status/1964122155622293749" />
+
+
+Testing out [Convex](https://www.convex.dev/) for real-time sync: 
+<Tweet tweetLink="https://x.com/ericclemmons/status/1967603606967689620" />
+
+Shipped [`@testdriver.ai/playwright`](https://docs.testdriver.ai/v6/getting-started/playwright):
+<Tweet tweetLink="https://x.com/ericclemmons/status/1969064967509852499" />
+
+### October
+
+Drove to [React Conf 2025](https://conf.react.dev/) in Las Vegas, then made a pit-stop in San Francisco to visit friends:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1977251685509874107" />
+
+Prototyped [TestDriver Studio](https://studio.testdriver.ai/) with Cloudflare:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1976834823525482528" />
+
+Seeing some engagement, also tested out Playwright Test UI in the browser with containers:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1978326483585364425" />
+
+Getting excitement from the community & prospective customers with "30 seconds from prompt to test":
+<Tweet tweetLink="https://x.com/ericclemmons/status/1978527833199636620" />
+
+Met wonderful people at [Cloudflare Connect 2025](https://events.cloudflare.com/connect/2025/) that were engaging with my posts:
+<Tweet tweetLink="https://x.com/ericclemmons/status/2006460297708503286" />
+
+[TestDriver Studio](https://studio.testdriver.ai/) garnered 2k views (a lot for me) for "Playwright E2E test generator":
+<Tweet tweetLink="https://x.com/ericclemmons/status/1981436502765601143" />
+
+Traffic spikes, so we double-down on the product to get it to MVP:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1984028454476726290" />
+
+### November
+
+Went "viral" (33.4k) thanks to retweets and a pretty cool demo:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1989490376198242503" />
+
+**I'm extremely proud of what I accomplished in a month's time using Cloudflare.**
+
+The final feature I launched for Studio was scheduling, which got ~7k views:
+<Tweet tweetLink="https://x.com/ericclemmons/status/1994503692712607946" />
+
+At this point, the product was "feature complete" with no-code E2E testing, real-time in-browser testing, and scheduled tests (i.e. CI).
+
+### December
+
+TestDriver goes from 3 employees to 1. 😔
+
+I've heard some promising rumors for 2026, but 2025 has taught me to temper my optimism with evidence.
+
+
+## Thanks for reading, and have a happy new year!

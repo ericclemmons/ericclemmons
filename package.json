@@ -4,11 +4,15 @@
   "private": true,
   "packageManager": "pnpm@10.17.1",
   "scripts": {
+    "_predev": "zellij attach --create --create-background --force-run-commands dev",
+    "_dev": "zellij run --direction=down --name=dev -- turbo watch dev lint; zellij attach dev",
+    "_postdev": "zellij delete-session --force dev",
     "dev": "turbo dev",
     "build": "turbo build",
     "lint": "turbo lint",
     "preview": "turbo preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "watch": "stream-turbo watch dev lint"
   },
   "engines": {
     "node": ">=22.21.1",
@@ -16,6 +20,7 @@
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "turbo": "^2.7.0"
+    "stream-turbo": "workspace:*",
+    "turbo": "^2.7.1"
   }
 }
