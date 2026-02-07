@@ -1,127 +1,81 @@
 ---
-import Canvas from '@/components/Canvas.astro'
-import Container from '@/components/Container.astro'
-import HeroSocialLink from '@/components/HeroSocialLink.astro'
-import { GitHubIcon, LinkedInIcon, TwitterIcon } from '@/components/Icons'
-import Newsletter from '@/components/Newsletter.astro'
-import Photos from '@/components/Photos.astro'
-import Post from '@/components/Post.astro'
-import Resume from '@/components/Resume.astro'
+import { GitHubIcon, LinkedInIcon, MailIcon, TwitterIcon } from '@/components/Icons'
 import Layout from '@/layouts/Spotlight.astro'
-import { getCollection } from 'astro:content'
+import { formatDate } from '@/lib/formatDate'
+import { getPosts } from '@/lib/getPosts'
+import { Picture } from 'astro:assets'
 
-const posts = (await getCollection('blog'))
-  .sort((a, z) => z.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 4)
+const posts = (await getPosts()).slice(0, 4)
 ---
 
 <Layout>
-  <div
-    class="absolute -mt-16 h-[30rem] w-full bg-fuchsia-500 shadow-inner"
-    style={{
-      clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
-    }}
-  >
-    <Canvas />
+  <div class="px-6 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-2xl lg:max-w-3xl">
+      <!-- Hero -->
+      <div class="mt-16 sm:mt-24 text-center">
+        <div class="mb-8 flex justify-center">
+          <Picture
+            alt="Eric Clemmons"
+            class="h-40 w-40 rounded-full bg-stone-100 object-cover dark:bg-stone-800 grayscale"
+            sizes="160px"
+            src={import('@/images/portrait.jpg')}
+            widths={[160, 320]}
+          />
+        </div>
+        <h1 class="font-serif text-4xl sm:text-5xl font-normal tracking-tight text-stone-900 dark:text-stone-100">
+          Eric Clemmons
+        </h1>
+        <p class="mt-6 text-lg text-stone-600 dark:text-stone-400 leading-relaxed max-w-xl mx-auto">
+          Engineering leader and open-source developer specializing in
+          user-centered, remote teams. Based in Austin, TX.
+        </p>
+        <div class="mt-8 flex justify-center gap-6">
+          <a href="https://twitter.com/ericclemmons" class="group" aria-label="Follow on Twitter">
+            <TwitterIcon className="h-5 w-5 fill-stone-400 transition group-hover:fill-stone-600 dark:fill-stone-500 dark:group-hover:fill-stone-300" />
+          </a>
+          <a href="https://github.com/ericclemmons" class="group" aria-label="Follow on GitHub">
+            <GitHubIcon className="h-5 w-5 fill-stone-400 transition group-hover:fill-stone-600 dark:fill-stone-500 dark:group-hover:fill-stone-300" />
+          </a>
+          <a href="https://www.linkedin.com/in/ericclemmons" class="group" aria-label="Follow on LinkedIn">
+            <LinkedInIcon className="h-5 w-5 fill-stone-400 transition group-hover:fill-stone-600 dark:fill-stone-500 dark:group-hover:fill-stone-300" />
+          </a>
+          <a href="mailto:eric@smarterspam.com" class="group" aria-label="Email">
+            <MailIcon className="h-5 w-5 fill-stone-400 stroke-stone-400 transition group-hover:fill-stone-600 group-hover:stroke-stone-600 dark:fill-stone-500 dark:stroke-stone-500 dark:group-hover:fill-stone-300 dark:group-hover:stroke-stone-300" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="border-t border-stone-200 dark:border-stone-800 mt-16 sm:mt-20"></div>
+
+      <!-- Recent posts -->
+      <div class="mt-16 sm:mt-20">
+        <p class="text-xs font-medium uppercase tracking-widest text-stone-400 dark:text-stone-500">
+          Recent
+        </p>
+        <div class="mt-6">
+          {posts.map((post) => (
+            <article class="border-b border-stone-200 dark:border-stone-800 py-6 first:pt-0">
+              <a href={`/blog/${post.slug}`} class="group block">
+                <h2 class="font-serif text-xl sm:text-2xl font-normal text-stone-900 dark:text-stone-100 group-hover:text-stone-600 dark:group-hover:text-stone-300 transition">
+                  {post.data.title}
+                </h2>
+                <time
+                  datetime={formatDate(post.data.date)}
+                  class="mt-2 block text-sm text-stone-400 dark:text-stone-500"
+                >
+                  {post.data.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
+                </time>
+              </a>
+            </article>
+          ))}
+        </div>
+        <div class="mt-8">
+          <a href="/blog" class="text-sm text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 transition">
+            All writing &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-  <Container className="mt-9">
-    <div class="max-w-2xl">
-      <h1
-        class="md:leading-14 text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-xl sm:text-4xl sm:leading-10 md:text-6xl"
-      >
-        User-First,<br class="hidden md:block" /> Product-Driven,<br
-          class="hidden sm:block"
-        /> Frontend Engineer.
-
-        <style>
-          .wave {
-            animation-name: wave-animation;
-            /* Refers to the name of your @keyframes element below */
-            animation-duration: 2.5s;
-            /* Change to speed up or slow down */
-            animation-iteration-count: infinite;
-            /* Never stop waving :) */
-            transform-origin: 70% 70%;
-            /* Pivot around the bottom-left palm */
-            display: inline-block;
-          }
-
-          @keyframes wave-animation {
-            0% {
-              transform: rotate(0deg);
-            }
-
-            10% {
-              transform: rotate(14deg);
-            }
-
-            20% {
-              transform: rotate(-8deg);
-            }
-
-            30% {
-              transform: rotate(14deg);
-            }
-
-            40% {
-              transform: rotate(-4deg);
-            }
-
-            50% {
-              transform: rotate(10deg);
-            }
-
-            60% {
-              transform: rotate(0deg);
-            }
-
-            /* Reset for the last half to pause */
-            100% {
-              transform: rotate(0deg);
-            }
-          }
-        </style>
-      </h1>
-      <p
-        class="mt-6 rounded bg-gradient-to-bl from-black/30 to-black/20 p-4 text-base text-white shadow-inner"
-      >
-        <span role="img" aria-label="waving hand" class="wave pr-1 text-white">
-          {'👋🏻'}
-        </span>
-        I&apos;m Eric Clemmons{' '} – I've built, lead, & contributed to user-centered,
-        remote engineering teams for over 15 years.
-      </p>
-      <div class="mt-6 flex gap-6">
-        <HeroSocialLink
-          href="https://twitter.com/ericclemmons"
-          aria-label="Follow on Twitter"
-          icon={TwitterIcon}
-        />
-        <HeroSocialLink
-          href="https://github.com/ericclemmons"
-          aria-label="Follow on GitHub"
-          icon={GitHubIcon}
-        />
-        <HeroSocialLink
-          href="https://www.linkedin.com/in/ericclemmons"
-          aria-label="Follow on LinkedIn"
-          icon={LinkedInIcon}
-        />
-      </div>
-    </div>
-  </Container>
-  <Photos />
-  <Container className="mt-24 md:mt-28">
-    <div
-      class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"
-    >
-      <div class="flex flex-col gap-16">
-        {posts.map((post) => <Post post={post} />)}
-      </div>
-      <div class="space-y-10 lg:pl-16 xl:pl-24">
-        <Newsletter />
-        <Resume />
-      </div>
-    </div>
-  </Container>
 </Layout>

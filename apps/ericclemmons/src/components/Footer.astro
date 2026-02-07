@@ -1,29 +1,12 @@
 ---
-import { InnerContainer, OuterContainer } from '@/components/Container.astro'
-import NavLink from '@/components/NavLink.astro'
 ---
 
-<footer class="mt-32">
-  <OuterContainer>
-    <div class="border-t border-zinc-100 pt-10 pb-16 dark:border-zinc-700/40">
-      <InnerContainer>
-        <div
-          class="flex flex-col items-center justify-between gap-6 sm:flex-row"
-        >
-          <div
-            class="flex gap-6 text-sm font-medium text-zinc-800 dark:text-zinc-200"
-          >
-            <NavLink href="/about">About</NavLink>
-            <NavLink href="/blog">Blog</NavLink>
-            <NavLink href="/projects">Projects</NavLink>
-            <NavLink href="/speaking">Speaking</NavLink>
-            <NavLink href="/uses">Uses</NavLink>
-          </div>
-          <p class="text-sm text-zinc-400 dark:text-zinc-500">
-            &copy; {new Date().getFullYear()} Eric Clemmons. All rights reserved.
-          </p>
-        </div>
-      </InnerContainer>
+<footer class="mt-24 pb-16 px-6 sm:px-8 lg:px-12">
+  <div class="mx-auto max-w-2xl lg:max-w-3xl">
+    <div class="border-t border-stone-200 dark:border-stone-800 pt-8">
+      <p class="text-sm text-stone-400 dark:text-stone-600">
+        &copy; {new Date().getFullYear()} Eric Clemmons
+      </p>
     </div>
-  </OuterContainer>
+  </div>
 </footer>

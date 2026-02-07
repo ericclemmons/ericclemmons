@@ -1,4 +1,5 @@
 const colors = require('tailwindcss/colors')
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -9,7 +10,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: colors.fuchsia,
+        primary: colors.stone,
+        cream: '#FAF8F3',
+        'cream-dark': '#F5F0E8',
+      },
+      fontFamily: {
+        serif: ['Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif'],
+        sans: ['Inter', ...defaultTheme.fontFamily.sans],
       },
     },
     fontSize: {
@@ -54,45 +61,45 @@ module.exports = {
       },
       DEFAULT: {
         css: {
-          '--tw-prose-body': theme('colors.zinc.600'),
-          '--tw-prose-headings': theme('colors.zinc.900'),
-          '--tw-prose-links': theme('colors.fuchsia.500'),
-          '--tw-prose-links-hover': theme('colors.fuchsia.600'),
-          '--tw-prose-underline': theme('colors.fuchsia.500 / 0.2'),
-          '--tw-prose-underline-hover': theme('colors.fuchsia.500'),
-          '--tw-prose-bold': theme('colors.zinc.900'),
-          '--tw-prose-counters': theme('colors.zinc.900'),
-          '--tw-prose-bullets': theme('colors.zinc.900'),
-          '--tw-prose-hr': theme('colors.zinc.100'),
-          '--tw-prose-quote-borders': theme('colors.zinc.200'),
-          '--tw-prose-captions': theme('colors.zinc.400'),
-          '--tw-prose-code': theme('colors.zinc.700'),
-          '--tw-prose-code-bg': theme('colors.zinc.300 / 0.2'),
-          '--tw-prose-pre-code': theme('colors.zinc.100'),
-          '--tw-prose-pre-bg': theme('colors.zinc.900'),
+          '--tw-prose-body': theme('colors.stone.600'),
+          '--tw-prose-headings': theme('colors.stone.900'),
+          '--tw-prose-links': theme('colors.stone.900'),
+          '--tw-prose-links-hover': theme('colors.stone.600'),
+          '--tw-prose-underline': theme('colors.stone.900 / 0.2'),
+          '--tw-prose-underline-hover': theme('colors.stone.900'),
+          '--tw-prose-bold': theme('colors.stone.900'),
+          '--tw-prose-counters': theme('colors.stone.900'),
+          '--tw-prose-bullets': theme('colors.stone.900'),
+          '--tw-prose-hr': theme('colors.stone.200'),
+          '--tw-prose-quote-borders': theme('colors.stone.300'),
+          '--tw-prose-captions': theme('colors.stone.400'),
+          '--tw-prose-code': theme('colors.stone.700'),
+          '--tw-prose-code-bg': theme('colors.stone.300 / 0.2'),
+          '--tw-prose-pre-code': theme('colors.stone.100'),
+          '--tw-prose-pre-bg': theme('colors.stone.900'),
           '--tw-prose-pre-border': 'transparent',
-          '--tw-prose-th-borders': theme('colors.zinc.200'),
-          '--tw-prose-td-borders': theme('colors.zinc.100'),
+          '--tw-prose-th-borders': theme('colors.stone.200'),
+          '--tw-prose-td-borders': theme('colors.stone.100'),
 
-          '--tw-prose-invert-body': theme('colors.zinc.400'),
-          '--tw-prose-invert-headings': theme('colors.zinc.200'),
-          '--tw-prose-invert-links': theme('colors.fuchsia.400'),
-          '--tw-prose-invert-links-hover': theme('colors.fuchsia.400'),
-          '--tw-prose-invert-underline': theme('colors.fuchsia.400 / 0.3'),
-          '--tw-prose-invert-underline-hover': theme('colors.fuchsia.400'),
-          '--tw-prose-invert-bold': theme('colors.zinc.200'),
-          '--tw-prose-invert-counters': theme('colors.zinc.200'),
-          '--tw-prose-invert-bullets': theme('colors.zinc.200'),
-          '--tw-prose-invert-hr': theme('colors.zinc.700 / 0.4'),
-          '--tw-prose-invert-quote-borders': theme('colors.zinc.500'),
-          '--tw-prose-invert-captions': theme('colors.zinc.500'),
-          '--tw-prose-invert-code': theme('colors.zinc.300'),
-          '--tw-prose-invert-code-bg': theme('colors.zinc.200 / 0.05'),
-          '--tw-prose-invert-pre-code': theme('colors.zinc.100'),
+          '--tw-prose-invert-body': theme('colors.stone.400'),
+          '--tw-prose-invert-headings': theme('colors.stone.200'),
+          '--tw-prose-invert-links': theme('colors.stone.200'),
+          '--tw-prose-invert-links-hover': theme('colors.stone.400'),
+          '--tw-prose-invert-underline': theme('colors.stone.200 / 0.3'),
+          '--tw-prose-invert-underline-hover': theme('colors.stone.200'),
+          '--tw-prose-invert-bold': theme('colors.stone.200'),
+          '--tw-prose-invert-counters': theme('colors.stone.200'),
+          '--tw-prose-invert-bullets': theme('colors.stone.200'),
+          '--tw-prose-invert-hr': theme('colors.stone.700 / 0.4'),
+          '--tw-prose-invert-quote-borders': theme('colors.stone.500'),
+          '--tw-prose-invert-captions': theme('colors.stone.500'),
+          '--tw-prose-invert-code': theme('colors.stone.300'),
+          '--tw-prose-invert-code-bg': theme('colors.stone.200 / 0.05'),
+          '--tw-prose-invert-pre-code': theme('colors.stone.100'),
           '--tw-prose-invert-pre-bg': 'rgb(0 0 0 / 0.4)',
-          '--tw-prose-invert-pre-border': theme('colors.zinc.200 / 0.1'),
-          '--tw-prose-invert-th-borders': theme('colors.zinc.700'),
-          '--tw-prose-invert-td-borders': theme('colors.zinc.800'),
+          '--tw-prose-invert-pre-border': theme('colors.stone.200 / 0.1'),
+          '--tw-prose-invert-th-borders': theme('colors.stone.700'),
+          '--tw-prose-invert-td-borders': theme('colors.stone.800'),
 
           // Base
           color: 'var(--tw-prose-body)',
@@ -130,7 +137,6 @@ module.exports = {
           // Images
           img: {
             borderRadius: theme('borderRadius.lg'),
-            filter: 'drop-shadow(0 0.5rem 1.5rem rgba(0,0,0,0.25))',
           },
 
           // Inline elements
@@ -246,14 +252,10 @@ module.exports = {
 
           // Horizontal rules
           hr: {
-            marginTop: theme('spacing.20'),
-            marginBottom: theme('spacing.20'),
+            marginTop: theme('spacing.12'),
+            marginBottom: theme('spacing.12'),
             borderTopWidth: '1px',
             borderColor: 'var(--tw-prose-hr)',
-            '@screen lg': {
-              marginLeft: `calc(${theme('spacing.12')} * -1)`,
-              marginRight: `calc(${theme('spacing.12')} * -1)`,
-            },
           },
 
           // Tables

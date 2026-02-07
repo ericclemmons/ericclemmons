@@ -30,7 +30,7 @@ export function Card({
 Card.Link = function CardLink({ children, ...props }) {
   return (
     <>
-      <div class="absolute -inset-y-6 -inset-x-4 z-0 scale-95 bg-zinc-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-zinc-800/50 sm:-inset-x-6 sm:rounded-2xl" />
+      <div class="absolute -inset-y-6 -inset-x-4 z-0 scale-95 bg-stone-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 dark:bg-stone-800/50 sm:-inset-x-6 sm:rounded-2xl" />
       <a {...props}>
         <span class="absolute -inset-y-6 -inset-x-4 z-20 sm:-inset-x-6 sm:rounded-2xl" />
         <span class="relative z-10">{children}</span>
@@ -41,7 +41,7 @@ Card.Link = function CardLink({ children, ...props }) {
 
 Card.Title = function CardTitle({ as: Component = 'h2', href, children }) {
   return (
-    <Component className="text-base font-semibold tracking-tight text-zinc-800 dark:text-zinc-100">
+    <Component className="text-base font-semibold tracking-tight text-stone-800 dark:text-stone-100">
       {href ? <Card.Link href={href}>{children}</Card.Link> : children}
     </Component>
   )
@@ -49,7 +49,7 @@ Card.Title = function CardTitle({ as: Component = 'h2', href, children }) {
 
 Card.Description = function CardDescription({ children }) {
   return (
-    <p class="relative z-10 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+    <p class="relative z-10 mt-2 text-sm text-stone-600 dark:text-stone-400">
       {children}
     </p>
   )
@@ -59,7 +59,7 @@ Card.Cta = function CardCta({ children }) {
   return (
     <div
       aria-hidden="true"
-      class="relative z-10 mt-4 flex items-center text-sm font-medium text-fuchsia-500"
+      class="relative z-10 mt-4 flex items-center text-sm font-medium text-stone-600"
     >
       {children}
       <ChevronRightIcon className="ml-1 h-4 w-4 stroke-current" />
@@ -78,7 +78,7 @@ Card.Eyebrow = function CardEyebrow({
     <Component
       className={clsx(
         className,
-        'relative z-10 order-first mb-3 flex items-center text-sm text-zinc-400 dark:text-zinc-500',
+        'relative z-10 order-first mb-3 flex items-center text-sm text-stone-400 dark:text-stone-500',
         decorate && 'pl-3.5'
       )}
       {...props}
@@ -88,7 +88,7 @@ Card.Eyebrow = function CardEyebrow({
           class="absolute inset-y-0 left-0 flex items-center"
           aria-hidden="true"
         >
-          <span class="h-4 w-0.5 rounded-full bg-zinc-200 dark:bg-zinc-500" />
+          <span class="h-4 w-0.5 rounded-full bg-stone-200 dark:bg-stone-500" />
         </span>
       )}
       {children}

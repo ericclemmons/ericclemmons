@@ -5,7 +5,7 @@ export { default as Tweet } from '@/components/Tweet.astro'
 export const h2 = (props: any) => {
   return (
     <h2
-      className="bg-gradient-to-br from-pink-400 to-red-600 [-webkit-background-clip:text] text-2xl text-transparent"
+      className="font-serif text-2xl font-normal text-stone-900 dark:text-stone-100"
       {...props}
     />
   )

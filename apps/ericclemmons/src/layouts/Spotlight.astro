@@ -19,7 +19,7 @@ const { href, origin } = Astro.url
 
     <meta
       property="og:title"
-      content="Converting Next.js to Astro / Eric Clemmons"
+      content={[title, 'Eric Clemmons'].filter(Boolean).join(' / ')}
     />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -85,75 +85,8 @@ const { href, origin } = Astro.url
       }
     </script>
     <link href="/favicon.png" rel="icon" type="image/png" />
-
-    <style is:global>
-      @keyframes appear {
-        0% {
-          transform: translateY(2rem);
-          mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 150%
-            0 / 400% no-repeat;
-          opacity: 0.2;
-        }
-        100% {
-          mask: linear-gradient(90deg, #000 25%, #000000e6 50%, #00000000) 0 /
-            400% no-repeat;
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes burns {
-        0% {
-          opacity: 0;
-          clip-path: inset(5%);
-          filter: brightness(2);
-          transform: scale(111.11%);
-        }
-        100% {
-          opacity: 1;
-          filter: brightness(1);
-          clip-path: inset(0);
-          transform: scale(1);
-        }
-      }
-
-      @keyframes bloom {
-        0% {
-          opacity: 0;
-          filter: brightness(1) blur(20px);
-        }
-        10% {
-          opacity: 1;
-          filter: brightness(2) blur(10px);
-        }
-        100% {
-          opacity: 1;
-          filter: brightness(1) blur(0);
-        }
-      }
-
-      [data-appear],
-      [astro-island] > * {
-        animation-name: appear;
-        animation-duration: 1s;
-        animation-fill-mode: backwards;
-        animation-delay: calc(var(--animation-delay) * 0.05s);
-      }
-
-      img[data-appear] {
-        animation-name: burns;
-      }
-    </style>
   </head>
-  <body class="flex h-full flex-col bg-zinc-50 dark:bg-black">
-    <div class="fixed inset-0 flex justify-center sm:px-8">
-      <div class="flex w-full max-w-7xl lg:px-8">
-        <div
-          class="w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"
-        >
-        </div>
-      </div>
-    </div>
+  <body class="flex h-full flex-col bg-cream dark:bg-stone-950">
     <div class="relative">
       <Header />
 
@@ -163,29 +96,5 @@ const { href, origin } = Astro.url
 
       <Footer />
     </div>
-
-    <script is:inline>
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)
-          .forEach((entry, i) => {
-            if (entry.isIntersecting) {
-              entry.intersectionRatio
-              entry.target.dataset.appear = ''
-              entry.target.style.setProperty(
-                '--animation-delay',
-                i + 1 / Math.sqrt(i + 1)
-              )
-
-              observer.disconnect()
-            }
-          })
-      })
-
-      document
-        .querySelector('main')
-        .querySelectorAll('h1,h2,h3,h4,h5,h6,a,li,blockquote,p,time,img')
-        .forEach((element) => observer.observe(element))
-    </script>
   </body>
 </html>
