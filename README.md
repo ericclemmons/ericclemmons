@@ -6,9 +6,9 @@ I'm **Eric Clemmons**, an engineering **leader** specializing in **autonomous, o
 
 ## About me
 
-- 💼 Staff Engineer @ [honor](https://www.honorcare.com/)
+- 💼 Engineering Manager & Principal Systems Engineer @ [Cloudflare](https://www.cloudflare.com/)
 
-  _Previously Staff Frontend Engineer at [Stripe](https://stripe.com/connect), [AWS Amplify (UI & JS)](https://github.com/aws-amplify/amplify-ui), [Starbucks](https://www.starbucks.com/), & [HigherEducation.com](https://highereducation.com/)_
+  _Previously CTO @ [TestDriver.ai](https://testdriver.ai/), Staff Engineer @ [honor](https://www.honorcare.com/),  Staff Frontend Engineer at [Stripe](https://stripe.com/connect), [AWS Amplify (UI & JS)](https://github.com/aws-amplify/amplify-ui), [Starbucks](https://www.starbucks.com/), & [HigherEducation.com](https://highereducation.com/)_
 
 - ❤️ I love improving remote team culture, defining a technical vision from ambiguity, and experimenting with next-level DX tooling.
 
