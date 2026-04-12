@@ -1,127 +1,146 @@
 ---
-import Canvas from '@/components/Canvas.astro'
 import Container from '@/components/Container.astro'
-import HeroSocialLink from '@/components/HeroSocialLink.astro'
-import { GitHubIcon, LinkedInIcon, TwitterIcon } from '@/components/Icons'
-import Newsletter from '@/components/Newsletter.astro'
-import Photos from '@/components/Photos.astro'
-import Post from '@/components/Post.astro'
-import Resume from '@/components/Resume.astro'
+import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/Icons'
 import Layout from '@/layouts/Spotlight.astro'
-import { getCollection } from 'astro:content'
+import { formatDate } from '@/lib/formatDate'
+import { getPosts } from '@/lib/getPosts'
+import { getResume } from '@/lib/getResume'
 
-const posts = (await getCollection('blog'))
-  .sort((a, z) => z.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 4)
+const posts = await getPosts()
+const resume = await getResume()
+
+const allRoles = resume.work
+const osProjects = resume.projects?.slice(0, 2) ?? []
+
+const latestDate = posts[0]?.data.date ?? new Date()
+const oneYearAgo = new Date(latestDate)
+oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+const featuredPosts = posts.filter((p) => p.data.date >= oneYearAgo)
+const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
+
+const archiveByYear: Record<number, typeof posts> = {}
+for (const post of archivePosts) {
+  const year = post.data.date.getFullYear()
+  if (!archiveByYear[year]) archiveByYear[year] = []
+  archiveByYear[year].push(post)
+}
+const archiveYears = Object.keys(archiveByYear)
+  .map(Number)
+  .sort((a, b) => b - a)
+
+function shortDate(d: Date) {
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+}
+function numDate(d: Date) {
+  return `${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}`
+}
+function yearRange(start: string, end?: string) {
+  const s = new Date(start).getFullYear()
+  const e = end ? new Date(end).getFullYear() : null
+  return e ? `${s}–${e}` : `${s}–`
+}
+
+
 ---
 
 <Layout>
-  <div
-    class="absolute -mt-16 h-[30rem] w-full bg-fuchsia-500 shadow-inner"
-    style={{
-      clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
-    }}
-  >
-    <Canvas />
-  </div>
-  <Container className="mt-9">
-    <div class="max-w-2xl">
-      <h1
-        class="md:leading-14 text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-xl sm:text-4xl sm:leading-10 md:text-6xl"
-      >
-        User-First,<br class="hidden md:block" /> Product-Driven,<br
-          class="hidden sm:block"
-        /> Frontend Engineer.
+  <Container className="mt-16 sm:mt-24">
+    <div class="mx-auto max-w-2xl font-satoshi">
 
-        <style>
-          .wave {
-            animation-name: wave-animation;
-            /* Refers to the name of your @keyframes element below */
-            animation-duration: 2.5s;
-            /* Change to speed up or slow down */
-            animation-iteration-count: infinite;
-            /* Never stop waving :) */
-            transform-origin: 70% 70%;
-            /* Pivot around the bottom-left palm */
-            display: inline-block;
-          }
+      <!-- Hero -->
+      <div class="mb-16 border-b border-amber-200/60 pb-16 dark:border-amber-900/20">
+        <h1 class="font-lora text-5xl tracking-tight text-zinc-900 dark:text-zinc-100">
+          {resume.basics.name}
+        </h1>
+        <div class="mt-6 space-y-4 text-base text-zinc-600 dark:text-zinc-400">
+          <p>
+            I lead engineering teams and build open-source tools for the web.
+            17 years shipping across the stack — from startups to AWS, Stripe,
+            and Cloudflare. Right now I'm deep in AI-native development and
+            what comes next for developer tooling.
+          </p>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            When I'm not coding: cooking for my family, drums & guitar, Destiny 2.
+          </p>
+        </div>
 
-          @keyframes wave-animation {
-            0% {
-              transform: rotate(0deg);
-            }
-
-            10% {
-              transform: rotate(14deg);
-            }
-
-            20% {
-              transform: rotate(-8deg);
-            }
-
-            30% {
-              transform: rotate(14deg);
-            }
-
-            40% {
-              transform: rotate(-4deg);
-            }
-
-            50% {
-              transform: rotate(10deg);
-            }
-
-            60% {
-              transform: rotate(0deg);
-            }
-
-            /* Reset for the last half to pause */
-            100% {
-              transform: rotate(0deg);
-            }
-          }
-        </style>
-      </h1>
-      <p
-        class="mt-6 rounded bg-gradient-to-bl from-black/30 to-black/20 p-4 text-base text-white shadow-inner"
-      >
-        <span role="img" aria-label="waving hand" class="wave pr-1 text-white">
-          {'👋🏻'}
-        </span>
-        I&apos;m Eric Clemmons{' '} – I've built, lead, & contributed to user-centered,
-        remote engineering teams for over 15 years.
-      </p>
-      <div class="mt-6 flex gap-6">
-        <HeroSocialLink
-          href="https://twitter.com/ericclemmons"
-          aria-label="Follow on Twitter"
-          icon={TwitterIcon}
-        />
-        <HeroSocialLink
-          href="https://github.com/ericclemmons"
-          aria-label="Follow on GitHub"
-          icon={GitHubIcon}
-        />
-        <HeroSocialLink
-          href="https://www.linkedin.com/in/ericclemmons"
-          aria-label="Follow on LinkedIn"
-          icon={LinkedInIcon}
-        />
+        <div class="mt-6 flex gap-5">
+          <a href="https://x.com/ericclemmons" aria-label="Follow on X" class="fill-zinc-400 transition-colors hover:fill-amber-700 dark:fill-zinc-500 dark:hover:fill-amber-400"><XIcon className="h-5 w-5" /></a>
+          <a href="https://github.com/ericclemmons" aria-label="Follow on GitHub" class="fill-zinc-400 transition-colors hover:fill-amber-700 dark:fill-zinc-500 dark:hover:fill-amber-400"><GitHubIcon className="h-5 w-5" /></a>
+          <a href="https://www.linkedin.com/in/ericclemmons" aria-label="Follow on LinkedIn" class="fill-zinc-400 transition-colors hover:fill-amber-700 dark:fill-zinc-500 dark:hover:fill-amber-400"><LinkedInIcon className="h-5 w-5" /></a>
+        </div>
       </div>
-    </div>
-  </Container>
-  <Photos />
-  <Container className="mt-24 md:mt-28">
-    <div
-      class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"
-    >
-      <div class="flex flex-col gap-16">
-        {posts.map((post) => <Post post={post} />)}
-      </div>
-      <div class="space-y-10 lg:pl-16 xl:pl-24">
-        <Newsletter />
-        <Resume />
-      </div>
+
+      <!-- Experience -->
+      <section class="mb-20">
+        <h2 class="mb-6 text-sm font-medium text-zinc-400 dark:text-zinc-500">Experience</h2>
+        <div class="space-y-6">
+          {allRoles.map((role) => (
+            <div>
+              <div class="flex items-baseline justify-between gap-4">
+                <h3 class="text-base font-medium text-zinc-900 dark:text-zinc-100 text-pretty">
+                  {role.position} <span class="text-zinc-400 dark:text-zinc-500">at</span> {role.name}
+                </h3>
+                <span class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{yearRange(role.startDate, role.endDate)}</span>
+              </div>
+              <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-pretty">{role.summary}</p>
+            </div>
+          ))}
+        </div>
+        <a href="/cv" class="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 transition-colors hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300">
+          Full CV
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+        </a>
+      </section>
+
+      <!-- Open Source -->
+      <section class="mb-20">
+        <h2 class="mb-6 text-sm font-medium text-zinc-400 dark:text-zinc-500">Open Source</h2>
+        <div class="space-y-4">
+          {osProjects.map((proj) => (
+            <a href={proj.url} class="group block">
+              <h3 class="text-base font-medium text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{proj.name}</h3>
+              <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{proj.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Recent Writing -->
+      <section class="mb-20">
+        <h2 class="mb-8 text-sm font-medium text-zinc-400 dark:text-zinc-500">Recent Writing</h2>
+        <div class="space-y-10">
+          {featuredPosts.map((post) => (
+            <a href={`/blog/${post.slug}`} class="group block">
+              <time datetime={formatDate(post.data.date)} class="font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{shortDate(post.data.date)}</time>
+              <h3 class="mt-1.5 font-lora text-xl text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{post.data.title}</h3>
+              {post.data.summary && <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">{post.data.summary}</p>}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Archive -->
+      {archiveYears.length > 0 && (
+        <section>
+          <h2 class="mb-8 text-sm font-medium text-zinc-400 dark:text-zinc-500">Archive</h2>
+          {archiveYears.map((year, yi) => (
+            <div class={yi > 0 ? 'mt-10' : ''}>
+              <div class="mb-3 font-lora text-3xl tabular-nums tracking-tight text-zinc-200 dark:text-zinc-800">{year}</div>
+              <div class="divide-y divide-zinc-100 dark:divide-zinc-800/80">
+                {archiveByYear[year].map((post) => (
+                  <a href={`/blog/${post.slug}`} class="group flex items-baseline gap-4 py-2 transition-colors">
+                    <time datetime={formatDate(post.data.date)} class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{numDate(post.data.date)}</time>
+                    <span class="min-w-0 truncate text-sm font-medium text-zinc-700 transition-colors group-hover:text-amber-700 dark:text-zinc-300 dark:group-hover:text-amber-400">{post.data.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
     </div>
   </Container>
 </Layout>

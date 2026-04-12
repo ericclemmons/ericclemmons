@@ -3,8 +3,8 @@ const { props } = Astro
 const { className } = props
 ---
 
-<div {...props} class:list={['relative px-4 sm:px-8 lg:px-12', className]}>
-  <div class="mx-auto max-w-2xl lg:max-w-5xl">
+<div {...props} class:list={['relative px-4 md:px-8', className]}>
+  <div class="mx-auto max-w-2xl">
     <slot />
   </div>
 </div>

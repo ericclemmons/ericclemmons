@@ -9,14 +9,14 @@ const isActive = Astro.url.pathname === href
     class:list={[
       'relative block px-3 py-2 transition',
       isActive
-        ? 'text-fuchsia-500 dark:text-fuchsia-400'
-        : 'hover:text-fuchsia-500 dark:hover:text-fuchsia-400',
+        ? 'text-amber-700 dark:text-amber-400'
+        : 'hover:text-amber-700 dark:hover:text-amber-400',
     ]}
   >
     <slot />
     {
       isActive && (
-        <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-fuchsia-500/0 via-fuchsia-500/40 to-fuchsia-500/0 dark:from-fuchsia-400/0 dark:via-fuchsia-400/40 dark:to-fuchsia-400/0" />
+        <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-amber-700/0 via-amber-700/40 to-amber-700/0 dark:from-amber-400/0 dark:via-amber-400/40 dark:to-amber-400/0" />
       )
     }
   </a>
