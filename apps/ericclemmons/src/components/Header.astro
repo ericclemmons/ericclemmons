@@ -1,16 +1,9 @@
 ---
 import Container from '@/components/Container.astro'
 import ModeToggle from '@/components/Header/ModeToggle.astro'
+import { navLinks } from '@/lib/navLinks'
 
 const pathname = Astro.url.pathname
-
-const links = [
-  { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/speaking', label: 'Speaking' },
-  { href: '/uses', label: 'Uses' },
-]
 
 function isActive(href: string) {
   return href === '/' ? pathname === '/' : pathname.startsWith(href)
@@ -20,8 +13,8 @@ function isActive(href: string) {
 <header class="relative z-50 font-satoshi">
   <Container className="pt-8 pb-4">
     <div class="flex items-center justify-between">
-      <nav class="flex gap-6 text-sm font-medium text-zinc-700 dark:text-zinc-300 max-md:hidden">
-        {links.map(({ href, label }) => (
+      <nav class="flex gap-4 text-sm font-medium text-zinc-700 dark:text-zinc-300 sm:gap-6">
+        {navLinks.map(({ href, label }) => (
           <a
             href={href}
             class:list={[
@@ -35,27 +28,6 @@ function isActive(href: string) {
           </a>
         ))}
       </nav>
-      <details class="relative md:hidden">
-        <summary class="cursor-pointer list-none text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Menu
-          <svg class="ml-1 inline h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
-        </summary>
-        <nav class="absolute left-0 top-full z-50 mt-2 w-48 rounded-lg bg-white py-2 shadow-lg ring-1 ring-zinc-900/5 dark:bg-zinc-800 dark:ring-zinc-700">
-          {links.map(({ href, label }) => (
-            <a
-              href={href}
-              class:list={[
-                'block px-4 py-2 text-sm transition-colors',
-                isActive(href)
-                  ? 'text-amber-700 dark:text-amber-400'
-                  : 'text-zinc-700 hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-400',
-              ]}
-            >
-              {label}
-            </a>
-          ))}
-        </nav>
-      </details>
       <ModeToggle />
     </div>
   </Container>

@@ -1,6 +1,7 @@
 ---
 import { InnerContainer, OuterContainer } from '@/components/Container.astro'
 import NavLink from '@/components/NavLink.astro'
+import { navLinks } from '@/lib/navLinks'
 ---
 
 <footer class="mt-32">
@@ -13,11 +14,9 @@ import NavLink from '@/components/NavLink.astro'
           <div
             class="flex gap-6 text-sm font-medium text-zinc-800 dark:text-zinc-200"
           >
-            <NavLink href="/">Home</NavLink>
-            <NavLink href="/blog">Blog</NavLink>
-            <NavLink href="/projects">Projects</NavLink>
-            <NavLink href="/speaking">Speaking</NavLink>
-            <NavLink href="/uses">Uses</NavLink>
+            {navLinks.map(({ href, label }) => (
+              <NavLink href={href}>{label}</NavLink>
+            ))}
           </div>
           <p class="text-sm text-zinc-400 dark:text-zinc-500">
             &copy; {new Date().getFullYear()} Eric Clemmons. All rights reserved.

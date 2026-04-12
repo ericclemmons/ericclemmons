@@ -1,18 +1,12 @@
 ---
-import Layout from '@/layouts/Spotlight.astro'
 import Container from '@/components/Container.astro'
-import { formatDate } from '@/lib/formatDate'
+import PostArchive from '@/components/PostArchive.astro'
+import Layout from '@/layouts/Spotlight.astro'
+import { groupByYear } from '@/lib/formatDate'
 import { getPosts } from '@/lib/getPosts'
 
 const posts = await getPosts()
-
-const postsByYear: Record<number, typeof posts> = {}
-for (const post of posts) {
-  const year = post.data.date.getFullYear()
-  if (!postsByYear[year]) postsByYear[year] = []
-  postsByYear[year].push(post)
-}
-const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
+const { years } = groupByYear(posts)
 ---
 
 <Layout
@@ -23,7 +17,7 @@ const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
     <div class="mx-auto max-w-2xl font-satoshi">
       <header class="mb-16">
         <h1
-          class="font-lora text-4xl tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl"
+          class="font-lora text-4xl tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl text-balance"
         >
           Archive
         </h1>
@@ -32,33 +26,7 @@ const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a)
         </p>
       </header>
 
-      {
-        years.map((year, yi) => (
-          <div class={yi > 0 ? 'mt-12' : ''}>
-            <div class="mb-4 font-lora text-3xl tabular-nums tracking-tight text-zinc-200 dark:text-zinc-800">
-              {year}
-            </div>
-            <div class="divide-y divide-zinc-100 dark:divide-zinc-800/80">
-              {postsByYear[year].map((post) => (
-                <a
-                  href={`/blog/${post.slug}`}
-                  class="group flex items-baseline gap-4 py-2 transition-colors"
-                >
-                  <time
-                    datetime={formatDate(post.data.date)}
-                    class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600"
-                  >
-                    {`${String(post.data.date.getUTCMonth() + 1).padStart(2, '0')}/${String(post.data.date.getUTCDate()).padStart(2, '0')}`}
-                  </time>
-                  <span class="min-w-0 truncate text-sm font-medium text-zinc-700 transition-colors group-hover:text-amber-700 dark:text-zinc-300 dark:group-hover:text-amber-400">
-                    {post.data.title}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-        ))
-      }
+      <PostArchive posts={posts} />
     </div>
   </Container>
 </Layout>

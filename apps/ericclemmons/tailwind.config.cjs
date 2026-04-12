@@ -135,7 +135,8 @@ module.exports = {
           // Images
           img: {
             borderRadius: theme('borderRadius.lg'),
-            filter: 'drop-shadow(0 0.5rem 1.5rem rgba(0,0,0,0.25))',
+            outline: '1px solid var(--tw-prose-hr)',
+            outlineOffset: '-1px',
           },
 
           // Inline elements

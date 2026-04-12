@@ -4,7 +4,7 @@ import Header from '@/components/Header.astro'
 
 const {
   title = 'Home',
-  description = "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 15 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
+  description = "I'm Eric Clemmons, an engineering leader specializing in autonomous, outcome-driven remote teams with over 17 years of experience as an open-source JavaScript/Node.js developer focused on UX & DX.",
 } = Astro.props
 const { href, origin } = Astro.url
 ---
@@ -19,7 +19,7 @@ const { href, origin } = Astro.url
 
     <meta
       property="og:title"
-      content="Converting Next.js to Astro / Eric Clemmons"
+      content={`${title} / Eric Clemmons`}
     />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
