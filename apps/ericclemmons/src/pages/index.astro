@@ -2,7 +2,7 @@
 import ArrowLink from '@/components/ArrowLink.astro'
 import Container from '@/components/Container.astro'
 import PostArchive from '@/components/PostArchive.astro'
-import SectionLabel from '@/components/SectionLabel.astro'
+import Section from '@/components/Section.astro'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/Icons'
 import Layout from '@/layouts/Spotlight.astro'
 import { formatDate, shortDate, yearRange } from '@/lib/formatDate'
@@ -25,10 +25,10 @@ const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
 
 <Layout>
   <Container className="mt-16 sm:mt-24">
-    <div class="mx-auto max-w-2xl font-satoshi">
+    <div class="font-satoshi">
 
       <!-- Hero -->
-      <div class="mb-16">
+      <div class="mx-auto mb-20 max-w-2xl">
         <h1 class="font-lora text-5xl tracking-tight text-zinc-900 dark:text-zinc-100 text-balance">
           {resume.basics.name}
         </h1>
@@ -51,57 +51,55 @@ const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
         </div>
       </div>
 
-      <!-- Experience -->
-      <section class="mb-20">
-        <SectionLabel class="mb-6">Experience</SectionLabel>
-        <div class="space-y-6">
-          {allRoles.map((role) => (
-            <div class="grid grid-cols-[1fr_auto] gap-x-4">
-              <h3 class="text-base font-medium text-zinc-900 dark:text-zinc-100 text-pretty">
-                {role.position} <span class="text-zinc-400 dark:text-zinc-500">at</span> {role.name}
-              </h3>
-              <span class="self-baseline font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{yearRange(role.startDate, role.endDate)}</span>
-              <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-balance">{role.summary}</p>
-            </div>
-          ))}
-        </div>
-        <ArrowLink href="/cv" class="mt-6">Full CV</ArrowLink>
-      </section>
+      <div class="space-y-20">
+        <!-- Experience -->
+        <Section title="Experience">
+          <div class="space-y-6">
+            {allRoles.map((role) => (
+              <div class="grid grid-cols-[1fr_auto] gap-x-4">
+                <h3 class="text-base font-medium text-zinc-900 dark:text-zinc-100 text-pretty">
+                  {role.position} <span class="text-zinc-400 dark:text-zinc-500">at</span> {role.name}
+                </h3>
+                <span class="self-baseline font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{yearRange(role.startDate, role.endDate)}</span>
+                <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-balance">{role.summary}</p>
+              </div>
+            ))}
+          </div>
+          <ArrowLink href="/cv" class="mt-6">Full CV</ArrowLink>
+        </Section>
 
-      <!-- Open Source -->
-      <section class="mb-20">
-        <SectionLabel class="mb-6">Open Source</SectionLabel>
-        <div class="space-y-4">
-          {osProjects.map((proj) => (
-            <a href={proj.url} class="group block">
-              <h3 class="text-base font-medium text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{proj.name}</h3>
-              <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{proj.description}</p>
-            </a>
-          ))}
-        </div>
-      </section>
+        <!-- Open Source -->
+        <Section title="Open Source">
+          <div class="space-y-4">
+            {osProjects.map((proj) => (
+              <a href={proj.url} class="group block">
+                <h3 class="text-base font-medium text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{proj.name}</h3>
+                <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{proj.description}</p>
+              </a>
+            ))}
+          </div>
+        </Section>
 
-      <!-- Recent Writing -->
-      <section class="mb-20">
-        <SectionLabel class="mb-8">Recent Writing</SectionLabel>
-        <div class="space-y-10">
-          {featuredPosts.map((post) => (
-            <a href={`/blog/${post.slug}`} class="group block">
-              <time datetime={formatDate(post.data.date)} class="font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{shortDate(post.data.date)}</time>
-              <h3 class="mt-1.5 font-lora text-xl text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{post.data.title}</h3>
-              {post.data.summary && <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 text-pretty">{post.data.summary}</p>}
-            </a>
-          ))}
-        </div>
-      </section>
+        <!-- Recent Writing -->
+        <Section title="Recent Writing">
+          <div class="space-y-10">
+            {featuredPosts.map((post) => (
+              <a href={`/blog/${post.slug}`} class="group block">
+                <time datetime={formatDate(post.data.date)} class="font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{shortDate(post.data.date)}</time>
+                <h3 class="mt-1.5 font-lora text-xl text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{post.data.title}</h3>
+                {post.data.summary && <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 text-pretty">{post.data.summary}</p>}
+              </a>
+            ))}
+          </div>
+        </Section>
 
-      <!-- Archive -->
-      {archivePosts.length > 0 && (
-        <section>
-          <SectionLabel class="mb-8">Archive</SectionLabel>
-          <PostArchive posts={archivePosts} />
-        </section>
-      )}
+        <!-- Archive -->
+        {archivePosts.length > 0 && (
+          <Section title="Archive">
+            <PostArchive posts={archivePosts} />
+          </Section>
+        )}
+      </div>
 
     </div>
   </Container>
