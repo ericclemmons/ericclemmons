@@ -21,5 +21,6 @@
       "enabled": false
     }
   },
-  "route": "ericclemmons.com/*"
+  "route": "ericclemmons.com/*",
+  "workers_dev": true,
 }
