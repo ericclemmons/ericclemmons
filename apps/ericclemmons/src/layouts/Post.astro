@@ -65,12 +65,12 @@ const tocHeadings = headings.filter((h) => h.depth === 2)
         <header>
           <time
             datetime={formatDate(post.data.date)}
-            class="font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600"
+            class="font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-600"
           >
             {formatDate(post.data.date)}
           </time>
           <h1
-            class="mt-2 font-lora text-4xl tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl text-balance"
+            class="mt-2 font-display text-4xl tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl text-balance"
           >
             {post.data.title}
           </h1>
@@ -99,7 +99,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2)
         }
 
         <Prose
-          className="prose-amber mt-10 prose-lg [&_h2]:font-lora [&_h3]:font-lora [&_h4]:font-lora"
+          className="prose-amber mt-10 prose-lg [&_h2]:font-display [&_h3]:font-display [&_h4]:font-display"
         >
           <slot />
         </Prose>

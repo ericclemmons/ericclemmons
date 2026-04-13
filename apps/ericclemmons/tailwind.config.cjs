@@ -13,8 +13,8 @@ module.exports = {
       },
       fontFamily: {
         satoshi: ['"Satoshi"', 'sans-serif'],
-        lora: ['"Lora"', 'serif'],
-        'ibm-plex': ['"IBM Plex Mono"', 'monospace'],
+        display: ['"Zodiak"', 'serif'],
+        code: ['"Azeret Mono"', 'monospace'],
       },
     },
     fontSize: {

@@ -14,13 +14,13 @@ const { basics, work, projects, skills, education, references } = resume
 
       <!-- Header -->
       <header class="mb-12">
-        <h1 class="font-lora text-4xl tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl text-balance">
+        <h1 class="font-display text-4xl tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-5xl text-balance">
           {basics.name}
         </h1>
         <p class="mt-2 text-lg text-zinc-600 dark:text-zinc-400">
           {basics.label}
         </p>
-        <div class="mt-4 flex flex-wrap gap-x-6 gap-y-1 font-ibm-plex text-xs text-zinc-400 dark:text-zinc-500">
+        <div class="mt-4 flex flex-wrap gap-x-6 gap-y-1 font-code text-xs text-zinc-400 dark:text-zinc-500">
           <span>{basics.location.city}, {basics.location.region}</span>
           {basics.profiles.map((p) => (
             <a href={p.url} class="transition-colors hover:text-amber-700 dark:hover:text-amber-400">{p.url.replace(/^https?:\/\//, '')}</a>
@@ -33,7 +33,7 @@ const { basics, work, projects, skills, education, references } = resume
 
       <!-- Experience -->
       <section class="mb-16">
-        <h2 class="mb-8 font-lora text-xl text-zinc-900 dark:text-zinc-100">Experience</h2>
+        <h2 class="mb-8 font-display text-xl text-zinc-900 dark:text-zinc-100">Experience</h2>
         <div class="space-y-10">
           {work.map((role) => (
             <div>
@@ -43,7 +43,7 @@ const { basics, work, projects, skills, education, references } = resume
                   <span class="text-zinc-400 dark:text-zinc-500"> · </span>
                   {role.name}
                 </h3>
-                <span class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">
+                <span class="shrink-0 font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-600">
                   {yearRange(role.startDate, role.endDate)}
                 </span>
               </div>
@@ -65,7 +65,7 @@ const { basics, work, projects, skills, education, references } = resume
       <!-- Projects -->
       {projects?.length > 0 && (
         <section class="mb-16">
-          <h2 class="mb-8 font-lora text-xl text-zinc-900 dark:text-zinc-100">Projects</h2>
+          <h2 class="mb-8 font-display text-xl text-zinc-900 dark:text-zinc-100">Projects</h2>
           <div class="space-y-5">
             {projects.map((proj) => (
               <a href={proj.url} class="group block">
@@ -82,7 +82,7 @@ const { basics, work, projects, skills, education, references } = resume
       <!-- Skills -->
       {skills?.length > 0 && (
         <section class="mb-16">
-          <h2 class="mb-8 font-lora text-xl text-zinc-900 dark:text-zinc-100">Skills</h2>
+          <h2 class="mb-8 font-display text-xl text-zinc-900 dark:text-zinc-100">Skills</h2>
           <div class="space-y-4">
             {skills.map((group) => (
               <div>
@@ -97,14 +97,14 @@ const { basics, work, projects, skills, education, references } = resume
       <!-- Education -->
       {education?.length > 0 && (
         <section class="mb-16">
-          <h2 class="mb-8 font-lora text-xl text-zinc-900 dark:text-zinc-100">Education</h2>
+          <h2 class="mb-8 font-display text-xl text-zinc-900 dark:text-zinc-100">Education</h2>
           {education.map((edu) => (
             <div class="flex items-baseline justify-between gap-4">
               <div>
                 <h3 class="text-base font-medium text-zinc-900 dark:text-zinc-100">{edu.institution}</h3>
                 <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{edu.studyType}, {edu.area}</p>
               </div>
-              <span class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">
+              <span class="shrink-0 font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-600">
                 {new Date(edu.endDate).getFullYear()}
               </span>
             </div>
@@ -115,12 +115,12 @@ const { basics, work, projects, skills, education, references } = resume
       <!-- Testimonials -->
       {references?.length > 0 && (
         <section class="mb-16">
-          <h2 class="mb-8 font-lora text-xl text-zinc-900 dark:text-zinc-100">What Others Say</h2>
+          <h2 class="mb-8 font-display text-xl text-zinc-900 dark:text-zinc-100">What Others Say</h2>
           <div class="space-y-8">
             {references.map((t) => (
               <blockquote class="border-l-2 border-amber-300/60 pl-5 dark:border-amber-700/30">
                 <p class="text-sm text-zinc-600 dark:text-zinc-400 text-pretty">"{t.reference}"</p>
-                <footer class="mt-2 font-ibm-plex text-xs text-zinc-400 dark:text-zinc-500">— {t.name}</footer>
+                <footer class="mt-2 font-code text-xs text-zinc-400 dark:text-zinc-500">— {t.name}</footer>
               </blockquote>
             ))}
           </div>

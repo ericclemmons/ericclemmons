@@ -10,13 +10,13 @@ const { href, class: className } = Astro.props
 <a
   href={href}
   class:list={[
-    'inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 transition-colors hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300',
+    'group/arrow inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 transition-colors hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300',
     className,
   ]}
 >
   <slot />
   <svg
-    class="size-4"
+    class="size-4 transition-transform duration-200 group-hover/arrow:translate-x-0.5"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"

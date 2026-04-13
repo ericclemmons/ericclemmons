@@ -15,7 +15,7 @@ const { years, byYear } = groupByYear(posts)
   {
     years.map((year, yi) => (
       <div class={yi > 0 ? 'mt-10' : ''}>
-        <div class="mb-3 font-lora text-3xl tabular-nums tracking-tight text-zinc-200 dark:text-zinc-800">
+        <div class="mb-3 font-display text-3xl tabular-nums tracking-tight text-zinc-200 dark:text-zinc-800">
           {year}
         </div>
         <div>
@@ -26,7 +26,7 @@ const { years, byYear } = groupByYear(posts)
             >
               <time
                 datetime={formatDate(post.data.date)}
-                class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600"
+                class="shrink-0 font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-600"
               >
                 {numDate(post.data.date)}
               </time>
