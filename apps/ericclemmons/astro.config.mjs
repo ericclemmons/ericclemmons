@@ -60,7 +60,6 @@ export default defineConfig({
     mdx(),
     preact({ compat: true }),
   ],
-  output: 'static',
   adapter: cloudflare({
     imageService: 'cloudflare',
   }),
