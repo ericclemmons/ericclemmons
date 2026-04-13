@@ -8,7 +8,7 @@ const { title, display = false } = Astro.props
 ---
 
 <section>
-  <div class="grid max-w-3xl grid-cols-1 items-baseline gap-y-8 md:grid-cols-4">
+  <div class="grid max-w-3xl grid-cols-1 items-baseline gap-y-8 md:grid-cols-[140px_1fr]">
     <h2
       class:list={[
         display
@@ -18,7 +18,7 @@ const { title, display = false } = Astro.props
     >
       {title}
     </h2>
-    <div class="md:col-span-3">
+    <div>
       <slot />
     </div>
   </div>
