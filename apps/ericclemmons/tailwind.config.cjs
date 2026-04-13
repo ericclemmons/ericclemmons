@@ -9,7 +9,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: colors.fuchsia,
+        primary: colors.amber,
+      },
+      fontFamily: {
+        satoshi: ['"Satoshi"', 'sans-serif'],
+        lora: ['"Lora"', 'serif'],
+        'ibm-plex': ['"IBM Plex Mono"', 'monospace'],
       },
     },
     fontSize: {
@@ -56,10 +61,10 @@ module.exports = {
         css: {
           '--tw-prose-body': theme('colors.zinc.600'),
           '--tw-prose-headings': theme('colors.zinc.900'),
-          '--tw-prose-links': theme('colors.fuchsia.500'),
-          '--tw-prose-links-hover': theme('colors.fuchsia.600'),
-          '--tw-prose-underline': theme('colors.fuchsia.500 / 0.2'),
-          '--tw-prose-underline-hover': theme('colors.fuchsia.500'),
+          '--tw-prose-links': theme('colors.amber.700'),
+          '--tw-prose-links-hover': theme('colors.amber.800'),
+          '--tw-prose-underline': theme('colors.amber.700 / 0.2'),
+          '--tw-prose-underline-hover': theme('colors.amber.700'),
           '--tw-prose-bold': theme('colors.zinc.900'),
           '--tw-prose-counters': theme('colors.zinc.900'),
           '--tw-prose-bullets': theme('colors.zinc.900'),
@@ -76,10 +81,10 @@ module.exports = {
 
           '--tw-prose-invert-body': theme('colors.zinc.400'),
           '--tw-prose-invert-headings': theme('colors.zinc.200'),
-          '--tw-prose-invert-links': theme('colors.fuchsia.400'),
-          '--tw-prose-invert-links-hover': theme('colors.fuchsia.400'),
-          '--tw-prose-invert-underline': theme('colors.fuchsia.400 / 0.3'),
-          '--tw-prose-invert-underline-hover': theme('colors.fuchsia.400'),
+          '--tw-prose-invert-links': theme('colors.amber.400'),
+          '--tw-prose-invert-links-hover': theme('colors.amber.400'),
+          '--tw-prose-invert-underline': theme('colors.amber.400 / 0.3'),
+          '--tw-prose-invert-underline-hover': theme('colors.amber.400'),
           '--tw-prose-invert-bold': theme('colors.zinc.200'),
           '--tw-prose-invert-counters': theme('colors.zinc.200'),
           '--tw-prose-invert-bullets': theme('colors.zinc.200'),
@@ -130,7 +135,8 @@ module.exports = {
           // Images
           img: {
             borderRadius: theme('borderRadius.lg'),
-            filter: 'drop-shadow(0 0.5rem 1.5rem rgba(0,0,0,0.25))',
+            outline: '1px solid var(--tw-prose-hr)',
+            outlineOffset: '-1px',
           },
 
           // Inline elements

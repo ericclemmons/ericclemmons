@@ -1,0 +1,42 @@
+---
+import { formatDate, numDate, groupByYear } from '@/lib/formatDate'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  posts: CollectionEntry<'blog'>[]
+  class?: string
+}
+
+const { posts, class: className } = Astro.props
+const { years, byYear } = groupByYear(posts)
+---
+
+<div class={className}>
+  {
+    years.map((year, yi) => (
+      <div class={yi > 0 ? 'mt-10' : ''}>
+        <div class="mb-3 font-lora text-3xl tabular-nums tracking-tight text-zinc-200 dark:text-zinc-800">
+          {year}
+        </div>
+        <div>
+          {byYear[year].map((post) => (
+            <a
+              href={`/blog/${post.slug}`}
+              class="group flex items-baseline gap-4 py-2 transition-colors"
+            >
+              <time
+                datetime={formatDate(post.data.date)}
+                class="shrink-0 font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600"
+              >
+                {numDate(post.data.date)}
+              </time>
+              <span class="min-w-0 truncate text-sm font-medium text-zinc-700 transition-colors group-hover:text-amber-700 dark:text-zinc-300 dark:group-hover:text-amber-400">
+                {post.data.title}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))
+  }
+</div>

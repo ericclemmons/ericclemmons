@@ -15,9 +15,9 @@ const post = (await getEntryBySlug(
   slug as string
 )) as CollectionEntry<'blog'>
 
-const { Content } = await post.render()
+const { Content, headings } = await post.render()
 ---
 
-<Layout post={post}>
+<Layout post={post} headings={headings}>
   <Content components={components} />
 </Layout>

@@ -1,127 +1,106 @@
 ---
-import Canvas from '@/components/Canvas.astro'
+import ArrowLink from '@/components/ArrowLink.astro'
 import Container from '@/components/Container.astro'
-import HeroSocialLink from '@/components/HeroSocialLink.astro'
-import { GitHubIcon, LinkedInIcon, TwitterIcon } from '@/components/Icons'
-import Newsletter from '@/components/Newsletter.astro'
-import Photos from '@/components/Photos.astro'
-import Post from '@/components/Post.astro'
-import Resume from '@/components/Resume.astro'
+import PostArchive from '@/components/PostArchive.astro'
+import Section from '@/components/Section.astro'
+import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/Icons'
 import Layout from '@/layouts/Spotlight.astro'
-import { getCollection } from 'astro:content'
+import { formatDate, shortDate, yearRange } from '@/lib/formatDate'
+import { getPosts } from '@/lib/getPosts'
+import { getResume } from '@/lib/getResume'
 
-const posts = (await getCollection('blog'))
-  .sort((a, z) => z.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 4)
+const posts = await getPosts()
+const resume = await getResume()
+
+const allRoles = resume.work
+const osProjects = resume.projects?.slice(0, 2) ?? []
+
+const latestDate = posts[0]?.data.date ?? new Date()
+const oneYearAgo = new Date(latestDate)
+oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
+
+const featuredPosts = posts.filter((p) => p.data.date >= oneYearAgo)
+const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
 ---
 
 <Layout>
-  <div
-    class="absolute -mt-16 h-[30rem] w-full bg-fuchsia-500 shadow-inner"
-    style={{
-      clipPath: 'polygon(0 1.5vw, 100% 0, 100% calc(100% - 2.5vw), 0 100%)',
-    }}
-  >
-    <Canvas />
-  </div>
-  <Container className="mt-9">
-    <div class="max-w-2xl">
-      <h1
-        class="md:leading-14 text-3xl font-extrabold leading-9 tracking-tight text-white drop-shadow-xl sm:text-4xl sm:leading-10 md:text-6xl"
-      >
-        User-First,<br class="hidden md:block" /> Product-Driven,<br
-          class="hidden sm:block"
-        /> Frontend Engineer.
+  <Container className="mt-16 sm:mt-24">
+    <div class="font-satoshi">
 
-        <style>
-          .wave {
-            animation-name: wave-animation;
-            /* Refers to the name of your @keyframes element below */
-            animation-duration: 2.5s;
-            /* Change to speed up or slow down */
-            animation-iteration-count: infinite;
-            /* Never stop waving :) */
-            transform-origin: 70% 70%;
-            /* Pivot around the bottom-left palm */
-            display: inline-block;
-          }
+      <!-- Hero -->
+      <div class="mx-auto mb-20 max-w-2xl">
+        <h1 class="font-lora text-5xl tracking-tight text-zinc-900 dark:text-zinc-100 text-balance">
+          {resume.basics.name}
+        </h1>
+        <div class="mt-6 space-y-4 text-base text-zinc-600 dark:text-zinc-400">
+          <p class="text-pretty">
+            I lead engineering teams and build open-source tools for the web.
+            17 years shipping across the stack — from startups to AWS, Stripe,
+            and Cloudflare. Right now I'm deep in AI-native development and
+            what comes next for developer tooling.
+          </p>
+          <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            When I'm not coding: cooking for my family, drums & guitar, Destiny 2.
+          </p>
+        </div>
 
-          @keyframes wave-animation {
-            0% {
-              transform: rotate(0deg);
-            }
-
-            10% {
-              transform: rotate(14deg);
-            }
-
-            20% {
-              transform: rotate(-8deg);
-            }
-
-            30% {
-              transform: rotate(14deg);
-            }
-
-            40% {
-              transform: rotate(-4deg);
-            }
-
-            50% {
-              transform: rotate(10deg);
-            }
-
-            60% {
-              transform: rotate(0deg);
-            }
-
-            /* Reset for the last half to pause */
-            100% {
-              transform: rotate(0deg);
-            }
-          }
-        </style>
-      </h1>
-      <p
-        class="mt-6 rounded bg-gradient-to-bl from-black/30 to-black/20 p-4 text-base text-white shadow-inner"
-      >
-        <span role="img" aria-label="waving hand" class="wave pr-1 text-white">
-          {'👋🏻'}
-        </span>
-        I&apos;m Eric Clemmons{' '} – I've built, lead, & contributed to user-centered,
-        remote engineering teams for over 15 years.
-      </p>
-      <div class="mt-6 flex gap-6">
-        <HeroSocialLink
-          href="https://twitter.com/ericclemmons"
-          aria-label="Follow on Twitter"
-          icon={TwitterIcon}
-        />
-        <HeroSocialLink
-          href="https://github.com/ericclemmons"
-          aria-label="Follow on GitHub"
-          icon={GitHubIcon}
-        />
-        <HeroSocialLink
-          href="https://www.linkedin.com/in/ericclemmons"
-          aria-label="Follow on LinkedIn"
-          icon={LinkedInIcon}
-        />
+        <div class="mt-6 flex gap-5">
+          <a href="https://x.com/ericclemmons" aria-label="Follow on X" class="fill-zinc-400 transition-colors hover:fill-amber-700 dark:fill-zinc-500 dark:hover:fill-amber-400"><XIcon className="size-5" /></a>
+          <a href="https://github.com/ericclemmons" aria-label="Follow on GitHub" class="fill-zinc-400 transition-colors hover:fill-amber-700 dark:fill-zinc-500 dark:hover:fill-amber-400"><GitHubIcon className="size-5" /></a>
+          <a href="https://www.linkedin.com/in/ericclemmons" aria-label="Follow on LinkedIn" class="fill-zinc-400 transition-colors hover:fill-amber-700 dark:fill-zinc-500 dark:hover:fill-amber-400"><LinkedInIcon className="size-5" /></a>
+        </div>
       </div>
-    </div>
-  </Container>
-  <Photos />
-  <Container className="mt-24 md:mt-28">
-    <div
-      class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2"
-    >
-      <div class="flex flex-col gap-16">
-        {posts.map((post) => <Post post={post} />)}
+
+      <div class="space-y-20">
+        <!-- Experience -->
+        <Section title="Experience">
+          <div class="space-y-6">
+            {allRoles.map((role) => (
+              <div class="grid grid-cols-[1fr_auto] gap-x-4">
+                <h3 class="text-base font-medium text-zinc-900 dark:text-zinc-100 text-pretty">
+                  {role.position} <span class="text-zinc-400 dark:text-zinc-500">at</span> {role.name}
+                </h3>
+                <span class="self-baseline font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{yearRange(role.startDate, role.endDate)}</span>
+                <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-balance">{role.summary}</p>
+              </div>
+            ))}
+          </div>
+          <ArrowLink href="/cv" class="mt-6">Full CV</ArrowLink>
+        </Section>
+
+        <!-- Open Source -->
+        <Section title="Open Source">
+          <div class="space-y-4">
+            {osProjects.map((proj) => (
+              <a href={proj.url} class="group block">
+                <h3 class="text-base font-medium text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{proj.name}</h3>
+                <p class="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">{proj.description}</p>
+              </a>
+            ))}
+          </div>
+        </Section>
+
+        <!-- Recent Writing -->
+        <Section title="Recent Writing">
+          <div class="space-y-10">
+            {featuredPosts.map((post) => (
+              <a href={`/blog/${post.slug}`} class="group block">
+                <time datetime={formatDate(post.data.date)} class="font-ibm-plex text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{shortDate(post.data.date)}</time>
+                <h3 class="mt-1.5 font-lora text-xl text-zinc-900 transition-colors group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{post.data.title}</h3>
+                {post.data.summary && <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 text-pretty">{post.data.summary}</p>}
+              </a>
+            ))}
+          </div>
+        </Section>
+
+        <!-- Archive -->
+        {archivePosts.length > 0 && (
+          <Section title="Archive">
+            <PostArchive posts={archivePosts} />
+          </Section>
+        )}
       </div>
-      <div class="space-y-10 lg:pl-16 xl:pl-24">
-        <Newsletter />
-        <Resume />
-      </div>
+
     </div>
   </Container>
 </Layout>
