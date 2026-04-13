@@ -87,14 +87,31 @@ const { href, origin } = Astro.url
     <link href="/favicon.png" rel="icon" type="image/png" />
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Lora:wght@400..700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --pixel-color: rgba(0, 0, 0, 0.04);
+      }
+      .dark {
+        --pixel-color: rgba(255, 255, 255, 0.04);
+      }
+    </style>
 
   </head>
   <body class="flex h-full flex-col bg-zinc-50 dark:bg-black">
     <div class="fixed inset-0 flex justify-center md:px-8">
       <div class="flex w-full max-w-7xl">
         <div
-          class="w-full bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"
+          class="relative w-full overflow-hidden bg-white ring-1 ring-zinc-100 dark:bg-zinc-900 dark:ring-zinc-300/20"
         >
+          <!-- Pixel dither gutters — left and right -->
+          <div
+            class="pointer-events-none absolute inset-y-0 left-0 w-[200px]"
+            style="background-image: repeating-conic-gradient(var(--pixel-color) 0% 25%, transparent 0% 50%); background-size: 4px 4px; mask-image: linear-gradient(to right, black 20%, transparent 100%);"
+          ></div>
+          <div
+            class="pointer-events-none absolute inset-y-0 right-0 w-[200px]"
+            style="background-image: repeating-conic-gradient(var(--pixel-color) 0% 25%, transparent 0% 50%); background-size: 4px 4px; mask-image: linear-gradient(to left, black 20%, transparent 100%);"
+          ></div>
         </div>
       </div>
     </div>
