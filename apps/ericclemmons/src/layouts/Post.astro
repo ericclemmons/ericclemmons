@@ -111,7 +111,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2)
         {
           previousPost ? (
             <a
-              href={`/blog/${previousPost.slug}`}
+              href={`/blog/${previousPost.id}`}
               class="group flex max-w-[45%] flex-col"
             >
               <span class="text-xs text-zinc-400 dark:text-zinc-500">
@@ -128,7 +128,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2)
         {
           nextPost ? (
             <a
-              href={`/blog/${nextPost.slug}`}
+              href={`/blog/${nextPost.id}`}
               class="group flex max-w-[45%] flex-col items-end text-right"
             >
               <span class="text-xs text-zinc-400 dark:text-zinc-500">

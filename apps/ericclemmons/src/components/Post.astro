@@ -12,7 +12,7 @@ const { post } = Astro.props
 ---
 
 <Card as="article">
-  <Card.Title href={`/blog/${post.slug}`}>{post.data.title}</Card.Title>
+  <Card.Title href={`/blog/${post.id}`}>{post.data.title}</Card.Title>
   <Card.Eyebrow
     as="time"
     dateTime={formatDate(post.data.date)}

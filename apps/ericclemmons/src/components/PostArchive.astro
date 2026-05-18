@@ -21,7 +21,7 @@ const { years, byYear } = groupByYear(posts)
         <div>
           {byYear[year].map((post) => (
             <a
-              href={`/blog/${post.slug}`}
+              href={`/blog/${post.id}`}
               class="group flex items-baseline gap-4 py-2 transition-colors"
             >
               <time

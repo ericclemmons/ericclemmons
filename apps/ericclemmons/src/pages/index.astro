@@ -103,7 +103,7 @@ const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
           <Section title="Recent Writing">
             <div class="space-y-2">
               {featuredPosts.map((post) => (
-                <a href={`/blog/${post.slug}`} class="group -mx-3 block rounded-lg px-3 py-3 transition-all duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
+                <a href={`/blog/${post.id}`} class="group -mx-3 block rounded-lg px-3 py-3 transition-all duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
                   <time datetime={formatDate(post.data.date)} class="font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{shortDate(post.data.date)}</time>
                   <h3 class="mt-1.5 font-display text-xl text-zinc-900 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-amber-700 dark:text-zinc-100 dark:group-hover:text-amber-400">{post.data.title}</h3>
                   {post.data.summary && <p class="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400 text-pretty">{post.data.summary}</p>}
