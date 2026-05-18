@@ -1,4 +1,5 @@
-const GIST_ID = '66431faefc349ce95fd6b83a249442e3'
+const RESUME_URL =
+  'https://gist.githubusercontent.com/ericclemmons/66431faefc349ce95fd6b83a249442e3/raw/resume.json'
 
 interface ResumeWork {
   name: string
@@ -42,21 +43,11 @@ export interface Resume {
 }
 
 export async function getResume(): Promise<Resume> {
-  const res = await fetch(
-    `https://api.github.com/gists/${GIST_ID}`,
-    { headers: { Accept: 'application/vnd.github.v3+json' } }
-  )
+  const res = await fetch(RESUME_URL)
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch resume gist: ${res.status}`)
+    throw new Error(`Failed to fetch resume: ${res.status}`)
   }
 
-  const gist = await res.json()
-  const content = gist.files['resume.json']?.content
-
-  if (!content) {
-    throw new Error('resume.json not found in gist')
-  }
-
-  return JSON.parse(content) as Resume
+  return res.json() as Promise<Resume>
 }
