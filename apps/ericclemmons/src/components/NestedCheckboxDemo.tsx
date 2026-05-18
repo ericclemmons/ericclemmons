@@ -1,5 +1,4 @@
-import type { JSX } from 'preact'
-import { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 
 type CheckboxOption = {
   [key: string]: boolean | CheckboxOption
@@ -51,7 +50,7 @@ const NestedCheckbox = ({
               type="checkbox"
               name={key}
               checked={isCheckboxOptionChecked(val)}
-              onChange={(event: JSX.TargetedEvent<HTMLInputElement>) => {
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
                 toggleCheckboxOption(
                   value,
                   key,

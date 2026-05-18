@@ -1,7 +1,8 @@
+import fs from 'node:fs'
 import mdx from '@astrojs/mdx'
-import preact from '@astrojs/preact'
+import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
-import tailwind from '@astrojs/tailwind'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'astro/config'
 import cloudflare from '@astrojs/cloudflare'
 
@@ -53,17 +54,16 @@ export default defineConfig({
     },
   },
   integrations: [
-    tailwind(),
     sitemap({
       customPages,
     }),
     mdx(),
-    preact({ compat: true }),
+    react(),
   ],
   adapter: cloudflare({
     imageService: 'cloudflare',
   }),
   vite: {
-    plugins: [hexLoader],
+    plugins: [tailwindcss(), hexLoader],
   },
 })
