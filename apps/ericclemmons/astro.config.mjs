@@ -54,9 +54,7 @@ export default defineConfig({
     },
   },
   integrations: [
-    sitemap({
-      customPages,
-    }),
+    sitemap({ customPages }),
     mdx(),
     react(),
   ],

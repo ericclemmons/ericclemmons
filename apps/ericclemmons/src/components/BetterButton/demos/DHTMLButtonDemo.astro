@@ -1,0 +1,16 @@
+<button id="submit" type="submit">
+  Submit
+</button>
+
+<script>
+  // This is pre-jQuery, mind you
+  var button = document.getElementById('submit');
+  button.onclick = () => {
+    button.disabled = true;
+    button.textContent = 'Submitting...';
+  };
+</script>
+
+<style>
+  button { all: revert; }
+</style>

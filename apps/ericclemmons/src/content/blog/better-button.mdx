@@ -1,0 +1,263 @@
+---
+date: 2026-05-17
+summary: No `isLoading`. No `useState` in parents.  `yield` your `onClick` handler. 
+tags: [react, button, generators, effect, design system]
+title: Better Loading Buttons in React with Generators
+
+---
+
+import Example from "@/components/Example.astro";
+import { Code } from 'astro:components'
+import StaticButtonDemo from "@/components/BetterButton/demos/StaticButtonDemo.astro";
+import StaticButtonDemoSource from "@/components/BetterButton/demos/StaticButtonDemo.astro?raw";
+import DHTMLButtonDemo from "@/components/BetterButton/demos/DHTMLButtonDemo.astro";
+import DHTMLButtonDemoSource from "@/components/BetterButton/demos/DHTMLButtonDemo.astro?raw";
+import SPAButtonDemo from "@/components/BetterButton/demos/SPAButtonDemo.tsx";
+import SPAButtonDemoSource from "@/components/BetterButton/demos/SPAButtonDemo.tsx?raw";
+import AJAXButtonDemo from "@/components/BetterButton/demos/AJAXButtonDemo.tsx";
+import AJAXButtonDemoSource from "@/components/BetterButton/demos/AJAXButtonDemo.tsx?raw";
+import TanStackQueryButtonDemo from "@/components/BetterButton/demos/TanStackQueryButtonDemo.tsx";
+import TanStackQueryButtonDemoSource from "@/components/BetterButton/demos/TanStackQueryButtonDemo.tsx?raw";
+import SonnerDemo from "@/components/BetterButton/demos/SonnerDemo.tsx";
+import SonnerDemoSource from "@/components/BetterButton/demos/SonnerDemo.tsx?raw";
+import PromiseButtonDemo from "@/components/BetterButton/demos/PromiseButtonDemo.tsx";
+import PromiseButtonDemoSource from "@/components/BetterButton/demos/PromiseButtonDemo.tsx?raw";
+import PromiseButtonPropsDemo from "@/components/BetterButton/demos/PromiseButtonPropsDemo.tsx";
+import PromiseButtonPropsDemoSource from "@/components/BetterButton/demos/PromiseButtonPropsDemo.tsx?raw";
+import TanStackCancelButtonDemo from "@/components/BetterButton/demos/TanStackCancelButtonDemo.tsx";
+import TanStackCancelButtonDemoSource from "@/components/BetterButton/demos/TanStackCancelButtonDemo.tsx?raw";
+import PromiseButtonAbortDemo from "@/components/BetterButton/demos/PromiseButtonAbortDemo.tsx";
+import PromiseButtonAbortDemoSource from "@/components/BetterButton/demos/PromiseButtonAbortDemo.tsx?raw";
+
+_This **entirely handwritten, 0️⃣ AI** post is a follow-up to this spur-of-the-moment viral (for me) tweet:_
+
+<Tweet tweetLink="https://x.com/ericclemmons/status/2055085109573734784" />
+
+_(Gratuitous use of em-dashes are because I thought they were cool _before_ ChatGippity.)_
+
+## The Problem
+
+The web is asynchronous.  Clicking a button _does something_.
+**The amount of _somethings_ keeps increasing, along with their failure states.**
+Telling the user that something is _Loading..._ is not enough.
+Nor is _Oops, something went wrong_.
+
+> Is it?  Is it _really_ that big of a problem?
+> – Everyone
+
+No. You wrap up that asynchronous complexity however you want it:
+
+- Multiple components like `SubmitButton`, `CreateProjectButton`, `DeleteUserButton`, `UploadAvatarButton`, etc.
+- Wrap the complexity inside a TanStack `useMutation` or  `useCreateProject()` hook.
+
+There's a point where you need more than communicate _state_: **you need to communicate _progress_**.
+
+## Buttons over the years
+
+> Ok boomer, who cares about the '90s?
+> – Most of SF
+
+Ahem. I'm a _Millennial_. But I get it.  [Jump to the solution](#the-solution) then.
+
+### The Static Button
+
+The OG `button`: `<button type="submit">`. Simple. Pure.
+And the reason behind **double-submissions** everywhere from boomers double-clicking submit buttons
+like they're Desktop shortcuts:
+
+<Example code={StaticButtonDemoSource} lang="html">
+  <StaticButtonDemo />
+</Example>
+
+Then **💥 BOOM!**: multiple charges to their Discover Card.
+No one knew until the page went **white** and did something.
+Or, you knew to look for this beautiful animation: <video src="/static/netscape.mp4" autoPlay loop muted className="size-8 inline-block" />
+
+### The DHTML Button
+
+In the days of [DHTML](https://udn.realityripple.com/docs/Glossary/DHTML), you'd at least
+prevent the **double-submission problem** by disabling the button.
+We've doubled the number of states to 2: <code>IDLE</code> and <code>LOADING</code>.
+
+<Example code={DHTMLButtonDemoSource} lang="html">
+  <DHTMLButtonDemo />
+</Example>
+
+### The SPA Button
+
+Then, we realized that HTML was the problem all along and made everything a [SPA](https://en.wikipedia.org/wiki/Single-page_application).
+and branded it [JAMStack](https://jamstack.org/).
+The data would be fetched up front, populate the page, and buttons would be **live**:
+
+<Example code={SPAButtonDemoSource} lang="tsx">
+  <SPAButtonDemo client:visible />
+</Example>
+
+For local state where changes block the main thread and are imperceptibly instant,
+we were back to 1 state: <code>IDLE</code>...
+Up until we needed to talk to the server again. 😮‍💨
+
+## The AJAX Button
+
+It could be validating & submitting a form, fetching some data, or mutatating some state.
+We realized we didn't just _submit_ the form, but needed to see if it _worked_:
+
+<Example code={AJAXButtonDemoSource} lang="tsx">
+  <AJAXButtonDemo client:visible />
+</Example>
+
+1. Click Subscribe
+2. ❌ Error
+3. Change email to `new@example.com` and click Subscribe, again
+4. ✅ Success (but also ❌ Error!?)
+
+This meant tracking state in the DOM or in the parent component with (many) `useState`.
+And, in this case, I (intentionally because it's common) forgot to reset the state between attempts 😣.
+
+Yes, this can be improved with `useReducer`, `useMutation`, or even [state machines](https://github.com/statelyai/xstate).
+But this is actually **almost exactly how ~humans~ [agents write code](https://chatgpt.com/share/6a0a8e27-90e0-8332-b5d4-7ed43a16fff4)**.
+
+Now we're up to 4 states: <code>IDLE</code>, <code>PENDING</code>, <code>SUCCESS</code>, and <code>ERROR</code>.
+
+## Reducing State Complexity with TanStack Query
+
+I recommend using [TanStack Query's `useMutation` hook](https://tanstack.com/query/latest/docs/framework/react/guides/mutations):
+
+<Example code={TanStackQueryButtonDemoSource} lang="tsx">
+  <TanStackQueryButtonDemo client:visible />
+</Example>
+
+Just like before, but **impossible states are now impossible**! `isError` and `isSuccess` are mutually exclusive.
+
+_Note: React has [form Action props](https://react.dev/reference/react/useTransition#exposing-action-props-from-components)
+that replaces `useState` with `useActionState`. I can't say much about it because each time I use it, I end up ripping it out._
+
+## Reducing Conditional Complexity with PromiseButton
+
+With fewer `useState` calls, the next source of complexity is conditional rendering (or _ternary soup_ 🍲).
+We could replace this button with a specialized `SpamSubscribeButton` component, but then we'd do that _everywhere_.
+
+**What if we could have a generic `PromiseButton` that had handled each state explicitly**?
+
+### Insipiration
+
+Let's look at [Sonner](https://sonner.emilkowal.ski/)'s `toast.promise` API:
+
+```tsx
+toast.promise(promise, {
+  loading: 'Loading...',
+  success: (data) => {
+    return `${data.name} toast has been added`;
+  },
+  error: (error) => error.message,
+});
+```
+
+See for yourself, this neatly captures the `LOADING`, `SUCCESS`, and `ERROR` states:
+
+<Example code={SonnerDemoSource} lang="tsx">
+  <SonnerDemo client:visible />
+</Example>
+
+### `PromiseButton`
+
+We could do something really similar with a `PromiseButton` that infers `disabled` from the `onClick`'s handler:
+
+<Example code={PromiseButtonDemoSource} lang="tsx">
+  <PromiseButtonDemo client:visible />
+</Example>
+
+This is great!  Now we've replaced conditionals with clear, `on*` props.
+
+### `PromiseButtonProps`
+
+However, returning `children` isn't flexible enough.  We should be able to return `...props` too!
+
+<Example code={PromiseButtonPropsDemoSource} lang="tsx">
+  <PromiseButtonPropsDemo client:visible />
+</Example>
+
+Now we're able to customize pretty much anything about the button!
+Except, all this time we forgot about _another_ state...
+
+## Cancellation
+
+When making a `fetch` request, we can now [`abort()`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal#examples)
+it, adding a _5th_ state to our button: `CANCELLED`.
+
+Luckily, TanStack Query supports `signal` for [cancelling queries](https://tanstack.com/query/latest/docs/framework/react/guides/query-cancellation).
+When a component unmounts, it's automatically cancelled.
+In this case, I'll _manually_ cancel the query when the button is clicked again:
+
+
+<Example code={TanStackCancelButtonDemoSource} lang="tsx">
+  <TanStackCancelButtonDemo client:visible />
+</Example>
+
+_Note: `useQuery` [does not have a cancelled state](https://github.com/TanStack/query/discussions/2807) & `useMutation` [does not support cancel/abort](https://github.com/TanStack/query/discussions/1551)_.
+
+Instead, I can accomplish this by passing in a `signal` to the `onClick` handler _and_
+`yield`ing back a _new_ `onClick` handler that aborts the query:
+
+<Example code={PromiseButtonAbortDemoSource} lang="tsx">
+  <PromiseButtonAbortDemo client:visible />
+</Example>
+
+## Progress 
+
+
+Let's go a little further where the UI _needs_ to go beyond a few labels...
+
+### File Uploads
+
+This is where AJAX still beats `fetch`: **upload progress**.
+
+
+_(I had to verify this again for myself: **in 2026, [`fetch` still doesn't support upload progress](https://jakearchibald.com/2025/fetch-streams-not-for-progress/#how-to-measure-upload-progress)!**)_
+
+Here's what what users see when uploading files with `fetch` or a normal `<form action>`:
+
+<div
+  className="mx-auto my-6 w-max rounded-lg border-2 border-dashed border-gray-300 bg-gray-100 px-6 py-4 text-center text-gray-500 font-mono text-sm select-none shadow"
+  aria-label="blank placard"
+>
+  This space intentionally left blank
+</div>
+
+The answer to this _today_ (as far as I know) is for uploads to be a a _separate_ process
+with `XMLHttpRequest` that shows progress and returns the asset URL.
+Then, the `<form action>` only has to pass along the asset URL.
+
+But now we're back to the same problem: **4 states with N permutations for each use-case**.
+
+## Inject Another Solution
+
+Let's go back to the [Sonner](https://sonner.emilkowal.ski/)'s `toast.promise` API,
+but also combine it with the inferred `Button` behavior.
+
+**What if the behavior could update the UI without creating a new component every time?**
+
+We can do this by injected a 2nd argument `setProps` into the `onClick` handler:
+
+
+```tsx
+<BetterButton onClick={async (event, setProps) => {
+  setProps({ children: "Loading...", disabled: true });
+  await wait(1000);
+  if (Math.random() > 0.5) {
+    setProps({ children: "Error! 💥" });
+  } else {
+    setProps({ children: "Success! 🎉" });
+  }
+}}>Click me</BetterButton>
+```
+
+This works well with uploading files because not the `PENDING` / `LOADING` / `SUBMITTING` state
+can communicate much more than a single, static label:
+
+
+Let's make it more clever by overriding the `onClick` to _abort_ the upload:
+
+
+
+## Yield to Another Solution

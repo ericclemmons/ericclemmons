@@ -1,0 +1,68 @@
+---
+interface Props {
+  code: string
+  lang: string
+}
+
+import { Code } from 'astro:components'
+
+const { code, lang = 'tsx' } = Astro.props
+
+const group = `example-${crypto.randomUUID()}`
+const demoId = `${group}-demo`
+const sourceId = `${group}-source`
+---
+
+<div
+  class="group/example flex flex-col divide-y divide-black/10 overflow-clip rounded-lg bg-white shadow-sm dark:bg-gray-800/50 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10"
+>
+  <div
+    role="tablist"
+    aria-label="Example views"
+    class="flex divide-x divide-gray-200 rounded-t-lg dark:divide-white/10 dark:bg-gray-800/50 dark:shadow-none dark:outline dark:-outline-offset-1 dark:outline-white/10"
+  >
+    <input
+      type="radio"
+      name={group}
+      id={demoId}
+      data-tab="demo"
+      checked
+      class="peer/demo sr-only"
+    />
+    <label
+      for={demoId}
+      role="tab"
+      class="relative min-w-0 flex-1 cursor-pointer overflow-hidden px-4 py-4 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 focus:z-10 peer-checked/demo:text-gray-900 peer-checked/demo:dark:text-white peer-checked/demo:[&>span:last-child]:bg-indigo-500 peer-checked/demo:[&>span:last-child]:dark:bg-indigo-400 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+    >
+      <span>Demo</span>
+      <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-0.5 bg-transparent"></span>
+    </label>
+    <input
+      type="radio"
+      name={group}
+      id={sourceId}
+      data-tab="source"
+      class="peer/source sr-only"
+    />
+    <label
+      for={sourceId}
+      role="tab"
+      class="relative min-w-0 flex-1 cursor-pointer overflow-hidden rounded-r-lg px-4 py-4 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-700 focus:z-10 peer-checked/source:text-gray-900 peer-checked/source:dark:text-white peer-checked/source:[&>span:last-child]:bg-indigo-500 peer-checked/source:[&>span:last-child]:dark:bg-indigo-400 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+    >
+      <span>Source</span>
+      <span aria-hidden="true" class="absolute inset-x-0 bottom-0 h-0.5 bg-transparent"></span>
+    </label>
+  </div>
+
+  <div
+    class="p-4 items-center group-has-[[data-tab=source]:checked]/example:hidden"
+  >
+    <slot />
+  </div>
+
+  <div
+    class="hidden group-has-[[data-tab=source]:checked]/example:block [&_pre]:rounded-none [&_pre]:border-0 [&_pre]:shadow-none"
+  >
+    <Code code={code} lang={lang as any} />
+  </div>
+</div>
