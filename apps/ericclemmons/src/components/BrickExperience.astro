@@ -1,0 +1,101 @@
+---
+import ArrowLink from '@/components/ArrowLink.astro'
+import { yearRange } from '@/lib/formatDate'
+import type { Resume } from '@/lib/getResume'
+interface Props { roles: Resume['work'] }
+const { roles } = Astro.props
+const models: Record<string,string> = {
+  Cloudflare:'cloudflare', 'TestDriver.ai':'testdriver', honor:'honor', Stripe:'stripe',
+  'AWS Amplify':'aws', Amazon:'aws', AWS:'aws', Starbucks:'starbucks',
+  'HigherEducation.com':'higher', WhiteFence:'whitefence',
+}
+---
+
+<section class="brick-experience" data-brick-experience aria-labelledby="experience-title">
+  <div class="experience-heading" data-safe>
+    <h2 id="experience-title" class="text-sm font-medium text-zinc-400 dark:text-zinc-500">Experience</h2>
+    <button type="button" data-brick-sound data-enabled="true" aria-label="Mute sound effects" aria-pressed="true" title="Brick sound effects" class="sound-toggle text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M11 5 6 9H3v6h3l5 4V5Z" />
+        <g class="sound-waves"><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14" /></g>
+        <path class="sound-muted" d="m16 9 5 6m0-6-5 6" />
+      </svg>
+    </button>
+  </div>
+  <p id="brick-instructions" class="sr-only">Interactive brick sculptures. Click to scatter, hold to charge, or drag to sweep. Click an empty sculpture or its pile to rebuild. With a sculpture focused, Enter scatters its bricks and Escape rebuilds it.</p>
+  <div class="roles">
+    {roles.map(role => (
+      <article class="role">
+        {models[role.name] ? (
+          <button class="sculpture" data-model={models[role.name]} aria-label={role.name==='TestDriver.ai'?'Play with the TestDriver helmet':`Play with the ${role.name} brick logo`} aria-describedby="brick-instructions" disabled>
+            <span class="logo-fallback" aria-hidden="true">{role.name}</span>
+          </button>
+        ) : <div aria-hidden="true" />}
+        <div class="role-copy" data-safe>
+          <div class="role-heading">
+            <h3 class="text-base font-medium text-zinc-900 dark:text-zinc-100">{role.position} <span class="text-zinc-400 dark:text-zinc-500">at</span> {role.name}</h3>
+            <span class="date font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-500">{yearRange(role.startDate,role.endDate)}</span>
+          </div>
+          <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400 text-pretty">{role.summary}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="experience-cv" data-safe><ArrowLink href="/cv">Full CV</ArrowLink></div>
+  <div data-brick-stage class="brick-stage" aria-hidden="true"></div>
+  <p data-brick-status class="sr-only" role="status" aria-live="polite"></p>
+  <!-- Geometry and sound attribution: /bricks/credits.txt -->
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-brick-experience]')
+  if (root) {
+    const observer = new IntersectionObserver(async entries => {
+      if (!entries.some(entry => entry.isIntersecting) || root.dataset.initialized) return
+      root.dataset.initialized = 'true'
+      observer.disconnect()
+      const { initBricks } = await import('@/lib/bricks/scene.js')
+      await initBricks(root)
+    }, { rootMargin:'200px' })
+    observer.observe(document.querySelector('.brick-title') || root)
+  }
+</script>
+
+<style>
+  .brick-experience { position:relative; }
+  .experience-heading { position:relative; z-index:3; display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem; }
+  .sound-toggle { display:grid; width:2rem; height:2rem; place-items:center; border-radius:50%; cursor:pointer; }
+  .sound-toggle svg { width:1rem; height:1rem; }
+  .sound-toggle:focus-visible { outline:2px solid #eab308; outline-offset:2px; }
+  .sound-muted, .sound-toggle[data-enabled="false"] .sound-waves { display:none; }
+  .sound-toggle[data-enabled="false"] .sound-muted { display:block; }
+  .role { position:relative; display:grid; grid-template-columns:140px minmax(0,1fr); align-items:center; min-height:210px; padding:1rem 0 4rem; margin-bottom:1rem; }
+  .sculpture { position:relative; z-index:2; width:128px; height:128px; border:0; padding:0; background:transparent; touch-action:none; }
+  .sculpture:focus-visible { outline:2px solid #eab308; outline-offset:4px; border-radius:8px; }
+  .logo-fallback { color:var(--color-zinc-500); font-size:.75rem; }
+  :global(.bricks-ready) .logo-fallback { opacity:0; }
+  :global(.bricks-ready) .sculpture { cursor:grab; }
+  .role-copy { position:relative; z-index:3; }
+  .role-heading { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.4rem .8rem; }
+  .date { align-self:baseline; white-space:nowrap; }
+  .experience-cv { position:relative; z-index:3; margin-left:140px; }
+  .brick-stage { position:fixed; inset:0; pointer-events:none; z-index:2; }
+  @media(max-width:767px) {
+    .role { grid-template-columns:96px minmax(0,1fr); column-gap:1rem; min-height:200px; padding-bottom:3.5rem; }
+    .sculpture { width:96px; height:120px; }
+    .role-heading { grid-template-columns:1fr; gap:.4rem; }
+    .experience-cv { margin-left:112px; }
+  }
+</style>
+<style is:global>
+  body:has([data-brick-experience]) { overflow-x:clip; }
+  .row-stage { position:absolute; top:-64px; left:calc(50% - 50vw); width:100vw; max-width:none; pointer-events:none; z-index:1; display:block; }
+  .pile-zone { position:absolute; bottom:26px; left:calc(50% - 50vw); width:100vw; height:58px; border:0; background:transparent; z-index:2; touch-action:none; cursor:grab; }
+  .hero > .pile-zone { bottom:0; height:42px; }
+  .pile-zone:disabled { pointer-events:none; }
+  .pile-zone:focus-visible { outline:2px solid #eab308; outline-offset:-4px; }
+  .cursor-shadow { position:absolute; width:26px; height:30px; margin:-5px 0 0 -10px; color:rgb(36 40 40 / .22); pointer-events:none; opacity:0; }
+  .cursor-shadow svg { display:block; width:100%; height:100%; overflow:visible; transform:scaleY(.4); transform-origin:top; }
+  .dark .cursor-shadow { color:rgb(0 0 0 / .3); }
+  body.grabbing, body.grabbing button { cursor:grabbing; user-select:none; }
+</style>

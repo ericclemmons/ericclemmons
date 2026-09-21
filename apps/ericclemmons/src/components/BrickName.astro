@@ -1,0 +1,14 @@
+<h1 class="brick-title font-display text-zinc-900 dark:text-zinc-100" aria-label="Eric Clemmons">
+  <button class="name" data-model="name" aria-label="Play with the Eric Clemmons brick sculpture" aria-describedby="brick-instructions" disabled>
+    <span>Eric</span><span>Clemmons</span>
+  </button>
+</h1>
+
+<style>
+  .brick-title { position:relative; width:100%; margin:0; }
+  .name { display:block; position:relative; z-index:2; width:100%; height:clamp(11rem,28vw,15rem); border:0; padding:0; background:transparent; text-align:left; touch-action:none; font-family:inherit; font-size:clamp(2.5rem,7vw,4rem); line-height:1.1; letter-spacing:-.04em; }
+  .name span { display:block; }
+  .name:focus-visible { outline:2px solid #eab308; outline-offset:6px; border-radius:4px; }
+  :global(.bricks-ready) .name span { opacity:0; }
+  :global(.bricks-ready) .name { cursor:grab; }
+</style>

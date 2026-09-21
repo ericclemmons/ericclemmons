@@ -1,11 +1,12 @@
 ---
-import ArrowLink from '@/components/ArrowLink.astro'
+import BrickExperience from '@/components/BrickExperience.astro'
+import BrickName from '@/components/BrickName.astro'
 import Container from '@/components/Container.astro'
 import PostArchive from '@/components/PostArchive.astro'
 import Section from '@/components/Section.astro'
 import { GitHubIcon, LinkedInIcon, XIcon } from '@/components/Icons'
 import Layout from '@/layouts/Spotlight.astro'
-import { formatDate, shortDate, yearRange } from '@/lib/formatDate'
+import { formatDate, shortDate } from '@/lib/formatDate'
 import { getPosts } from '@/lib/getPosts'
 import { getResume } from '@/lib/getResume'
 import profilePhoto from '@/images/profile.jpg'
@@ -29,19 +30,24 @@ const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
     <div class="font-satoshi">
 
       <!-- Hero -->
-      <div class="mb-20" data-enter style="--enter-delay: 0ms">
-        <h1 class="font-display text-5xl tracking-tight text-zinc-900 dark:text-zinc-100 text-balance">
-          {resume.basics.name}
-        </h1>
-        <div class="mt-8 grid max-w-3xl grid-cols-1 items-start gap-y-6 md:grid-cols-[140px_1fr]">
-          <img
+      <div class="hero mb-20">
+        <div class="hero-heading"><BrickName /></div>
+        <div class="hero-profile" data-safe>
+          <img data-brick-obstacle
             src={profilePhoto.src}
             alt="Eric Clemmons"
             width={140}
             height={140}
             class="w-24 aspect-square rounded-2xl object-cover shadow-lg ring-1 ring-zinc-900/5 md:w-[112px] dark:ring-zinc-100/10 dark:shadow-zinc-950/40"
           />
-          <div>
+          <div class="hero-socials mt-6 flex justify-between">
+            <a data-brick-obstacle href="https://x.com/ericclemmons" aria-label="Follow on X" class="fill-zinc-400 transition-all duration-200 hover:fill-amber-700 hover:scale-110 dark:fill-zinc-500 dark:hover:fill-amber-400"><XIcon className="size-5" /></a>
+            <a data-brick-obstacle href="https://github.com/ericclemmons" aria-label="Follow on GitHub" class="fill-zinc-400 transition-all duration-200 hover:fill-amber-700 hover:scale-110 dark:fill-zinc-500 dark:hover:fill-amber-400"><GitHubIcon className="size-5" /></a>
+            <a data-brick-obstacle href="https://www.linkedin.com/in/ericclemmons" aria-label="Follow on LinkedIn" class="fill-zinc-400 transition-all duration-200 hover:fill-amber-700 hover:scale-110 dark:fill-zinc-500 dark:hover:fill-amber-400"><LinkedInIcon className="size-5" /></a>
+          </div>
+        </div>
+        <div class="hero-main">
+          <div class="hero-copy" data-safe>
             <div class="space-y-4 text-base text-zinc-600 dark:text-zinc-400">
               <p class="text-pretty">
                 I lead engineering teams and build open-source tools for the web.
@@ -53,36 +59,13 @@ const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
                 When I'm not coding: cooking for my family, drums & guitar, Destiny 2.
               </p>
             </div>
-
-            <div class="mt-6 flex gap-5">
-              <a href="https://x.com/ericclemmons" aria-label="Follow on X" class="fill-zinc-400 transition-all duration-200 hover:fill-amber-700 hover:scale-110 dark:fill-zinc-500 dark:hover:fill-amber-400"><XIcon className="size-5" /></a>
-              <a href="https://github.com/ericclemmons" aria-label="Follow on GitHub" class="fill-zinc-400 transition-all duration-200 hover:fill-amber-700 hover:scale-110 dark:fill-zinc-500 dark:hover:fill-amber-400"><GitHubIcon className="size-5" /></a>
-              <a href="https://www.linkedin.com/in/ericclemmons" aria-label="Follow on LinkedIn" class="fill-zinc-400 transition-all duration-200 hover:fill-amber-700 hover:scale-110 dark:fill-zinc-500 dark:hover:fill-amber-400"><LinkedInIcon className="size-5" /></a>
-            </div>
           </div>
         </div>
       </div>
 
       <div class="space-y-20">
         <!-- Experience -->
-        <div data-enter style="--enter-delay: 100ms">
-          <Section title="Experience">
-            <div class="space-y-1">
-              {allRoles.map((role) => (
-                <div class="group/item -mx-3 rounded-lg px-3 py-3 transition-all duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800/40">
-                  <div class="grid grid-cols-[1fr_auto] gap-x-4">
-                    <h3 class="text-base font-medium text-zinc-900 transition-transform duration-200 group-hover/item:translate-x-0.5 dark:text-zinc-100">
-                      {role.position} <span class="text-zinc-400 dark:text-zinc-500">at</span> {role.name}
-                    </h3>
-                    <span class="self-baseline font-code text-xs tabular-nums text-zinc-400 dark:text-zinc-600">{yearRange(role.startDate, role.endDate)}</span>
-                    <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400 text-balance">{role.summary}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <ArrowLink href="/cv" class="mt-6">Full CV</ArrowLink>
-          </Section>
-        </div>
+        <BrickExperience roles={allRoles} />
 
         <!-- Open Source -->
         <div data-enter style="--enter-delay: 200ms">
@@ -126,3 +109,15 @@ const archivePosts = posts.filter((p) => p.data.date < oneYearAgo)
     </div>
   </Container>
 </Layout>
+
+<style>
+  .hero { position:relative; display:grid; grid-template-columns:minmax(0,1fr); row-gap:2rem; align-items:start; padding-bottom:4rem; }
+  .hero-heading { grid-column:1 / -1; min-width:0; }
+  .hero-profile, .hero-copy { position:relative; z-index:3; }
+  .hero-profile { width:96px; }
+  .hero-main { min-width:0; }
+  @media(min-width:768px) {
+    .hero { grid-template-columns:140px minmax(0,1fr); }
+    .hero-profile { width:112px; }
+  }
+</style>

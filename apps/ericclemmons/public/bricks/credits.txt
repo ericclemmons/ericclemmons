@@ -1,0 +1,105 @@
+# LDraw tile attribution
+
+Official LDraw geometry from https://library.ldraw.org/. Source part definitions are retained in src/lib/bricks/ldraw.json. Loaded with Three.js LDrawLoader, reoriented, and given 3× tile depth for the interactive homepage. Curved corners combine parts 27507, 79393, 27925, and 25269.
+
+- 3070b.dat: Chris Dee [cwdee]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/3070bs01.dat: Chris Dee [cwdee]; Licensed under CC BY 4.0 : see CAreadme.txt
+- box4.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- box5.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3069b.dat: Santeri Piippo [arezey]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/3069bs01.dat: Santeri Piippo [arezey]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 63864.dat: Tim Gould [timgould]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/63864s01.dat: Ulrich Röder [UR]; Licensed under CC BY 4.0 : see CAreadme.txt
+- stud3.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 4-4edge.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 4-4disc.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 4-4cyli.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 2431.dat: Santeri Piippo [arezey]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/2431s01.dat: Santeri Piippo [arezey]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3068b.dat: Takeshi Takahashi [RainbowDolphin]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/3068bs01.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- stud4.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 4-4ring3.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 4-4ndis.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 26603.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/26603s01.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- stug4-1x2.dat: Steffen [Steffen]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 87079.dat: Tim Gould [timgould]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/87079s01.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 27507.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-4ring3.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/27507s01.dat: Gerald Lasser [GeraldLasser]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-24cyli.dat: Niels Karsdorp [nielsk]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-24edge.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-12cylo.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-12edge.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-12cyli.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-24cylo.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-24ring60.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-4edge.dat: Magnus Forsberg [MagFors]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-16cyli.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-16edge.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-16cylo.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-16ring60.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-24chrd.dat: Alex Taylor [anathema]; Licensed under CC BY 4.0 : see CAreadme.txt
+- rect.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- rect3.dat: Mark Kennedy [mkennedy]; Licensed under CC BY 4.0 : see CAreadme.txt
+- rect2p.dat: Donald Sutter [technog]; Licensed under CC BY 4.0 : see CAreadme.txt
+- rect1.dat: Chris Dee [cwdee]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 79393.dat: Gerald Lasser [GeraldLasser]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/79393s01.dat: Gerald Lasser [GeraldLasser]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/79393s02.dat: Gerald Lasser [GeraldLasser]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 2-4ring3.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 2-4cylo.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 2-4edge.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 2-4cyli.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 2-4chrd.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3-16ring3.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3-16cylo.dat: J.C. Tchang [tchang]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3-16edge.dat: Donald Sutter [technog]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3-16cyli.dat: Mark Kennedy [mkennedy]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 3-16chrd.dat: Niels Karsdorp [nielsk]; Licensed under CC BY 4.0 : see CAreadme.txt
+- box3u4p.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-12ring39.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- rect2a.dat: Chris Dee [cwdee]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-8cyli.dat: Steve Bliss [sbliss]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-8edge.dat: [PTadmin]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-4ring2.dat: Steffen [Steffen]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 27925.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/27925s01.dat: Gerald Lasser [GeraldLasser]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4cylo.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4edge.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4cyli.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4tang.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4ring20.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-12chrd.dat: Willy Tschager [Holly-Wood]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4ring1.dat: Chris Dee [cwdee]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 48/1-4aring.dat: Max Martin Richter [MMR1988]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 25269.dat: Magnus Forsberg [MagFors]; Licensed under CC BY 4.0 : see CAreadme.txt
+- s/25269s01.dat: Magnus Forsberg [MagFors]; Licensed under CC BY 4.0 : see CAreadme.txt
+- box2-5.dat: Steffen [Steffen]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-16edge.dat: Marc Klein [marckl]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-16cyli.dat: Marc Klein [marckl]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-16chrd.dat: Philippe Hurbain [Philo]; Licensed under CC BY 4.0 : see CAreadme.txt
+- empty.dat: Steffen [Steffen]; Licensed under CC BY 4.0 : see CAreadme.txt
+- 1-4disc.dat: James Jessiman; Licensed under CC BY 4.0 : see CAreadme.txt
+
+CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
+
+# Sound effects
+
+Blast: Cork by freesound_community, Pixabay.
+https://pixabay.com/sound-effects/film-special-effects-cork-85200/
+
+Source: https://cdn.pixabay.com/audio/2022/03/15/audio_f746cb8177.mp3
+License: Pixabay Content License, https://pixabay.com/service/license-summary/
+Retrieved 2026-09-12. Embedded in the interactive website; not offered as a standalone download.
+
+Ground impact recordings: Raycast × NuPhy keyboard demo (Nano Blush switches).
+https://www.raycast.com/keyboard
+Source: https://www.raycast.com/_next/static/immutable/media/switches.1det-cnl016nc.mp3
+Retrieved 2026-09-12 for the user-requested local prototype.
+Three 52 ms excerpts: 0.822–0.874, 2.106–2.158, 4.202–4.254 seconds.
+Adaptations: mono, short fades, reduced playback volume and minor pitch variation.
+No blanket reuse license asserted for this product demo; source credit retained.
+Charging, wall, text, and brick-to-brick contacts are silent. Only the section floor triggers impact audio.
