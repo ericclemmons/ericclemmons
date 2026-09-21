@@ -68,9 +68,6 @@ const { href, origin } = Astro.url
           document.documentElement.classList.remove('dark')
         }
 
-        if (isDarkMode === isSystemDarkMode) {
-          delete window.localStorage.isDarkMode
-        }
       }
 
       function disableTransitionsTemporarily() {
