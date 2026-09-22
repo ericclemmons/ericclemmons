@@ -54,8 +54,13 @@ const models: Record<string,string> = {
       if (!entries.some(entry => entry.isIntersecting) || root.dataset.initialized) return
       root.dataset.initialized = 'true'
       observer.disconnect()
-      const { initBricks } = await import('@/lib/bricks/scene.js')
-      await initBricks(root)
+      try {
+        const { initBricks } = await import('@/lib/bricks/scene.js')
+        await initBricks(root)
+      } catch (error) {
+        document.body.classList.add('bricks-unavailable')
+        console.error(error)
+      }
     }, { rootMargin:'200px' })
     observer.observe(document.querySelector('.brick-title') || root)
   }

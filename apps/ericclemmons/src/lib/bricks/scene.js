@@ -1016,6 +1016,7 @@ try {
     if (!document.hidden) requestDraw()
   })
   renderer.domElement.addEventListener('webglcontextlost', e => {
+    document.body.classList.add('bricks-unavailable')
     e.preventDefault(); document.body.classList.remove('bricks-ready'); stage.style.display = 'none'; for (const g of groups) g.canvas.style.display = 'none'
     status.textContent = '3D paused. Reload to play again.'
   })
@@ -1045,6 +1046,7 @@ try {
   bounds(); lightStudio(); layout(); paint(); document.body.classList.add('bricks-ready'); for (const g of groups) g.el.disabled = false
   status.textContent = ''
 } catch (error) {
+  document.body.classList.add('bricks-unavailable')
   console.error(error)
   status.textContent = 'Interactive logos are unavailable. The full experience history is still available below.'
 }
